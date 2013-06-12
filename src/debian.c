@@ -246,6 +246,97 @@ static void save_control()
     fclose(fp);
 }
 
+/* GPL version of the copyright file */
+static int save_copyright_gpl(char * filename, float version)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: GPL-%.1f+\n\n",version);
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: GPL-%.1f+\n\n",version);
+
+	fprintf(fp,"License: GPL-%.1f+\n",version);
+	fprintf(fp," This program is free software: you can redistribute it and/or modify\n");
+	fprintf(fp," it under the terms of the GNU General Public License as published by\n");
+	fprintf(fp," the Free Software Foundation, either version %d of the License, or\n",(int)version);
+	fprintf(fp," (at your option) any later version.\n .\n");
+
+	fprintf(fp," This package is distributed in the hope that it will be useful,\n");
+	fprintf(fp," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	fprintf(fp," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	fprintf(fp," GNU General Public License for more details.\n .\n");
+
+	fprintf(fp," You should have received a copy of the GNU General Public License\n");
+	fprintf(fp," along with this program. If not, see <http://www.gnu.org/licenses/>.\n .\n");
+
+	fprintf(fp," On Debian systems, the complete text of the GNU General\n");
+	fprintf(fp," Public License version %d can be found in \"/usr/share/common-licenses/GPL-%d\".\n",
+			(int)version,(int)version);
+
+	fclose(fp);
+	return 0;
+}
+
+/* save the copyright file */
+static int save_copyright(char * directory)
+{
+	char license[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	int i;
+
+	get_setting("license", license);
+
+	/* the copyright path and filename */
+	sprintf(filename, "%s%cdebian%ccopyright",
+			directory, DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR);
+
+	/* convert to lower case */
+	for (i = 0; i < strlen(license); i++) {
+		license[i] = tolower(license[i]);
+	}
+
+	/* GPL version 2 */
+	if (strstr(license,"gpl2")!=NULL) {
+		return save_copyright_gpl(filename, 2.0f);
+	}
+
+	/* GPL version 3 */
+	if (strstr(license,"gpl3")!=NULL) {
+		return save_copyright_gpl(filename, 3.0f);
+	}
+	return 0;
+}
 
 int save_debian()
 {
@@ -262,6 +353,7 @@ int save_debian()
 
 	save_compat();
 	save_control();
+	save_copyright(directory);
 
 	return retval;
 }

@@ -147,6 +147,17 @@ int main(int argc, char* argv[])
 				printf("No version control URL given\n");
 			}
 		}
+		/* license */
+		if ((strcmp(argv[i],"-l")==0) ||
+			(strcmp(argv[i],"--license")==0)) {
+			i++;
+			if (i < argc) {
+				add_setting("license",argv[i]);
+			}
+			else {
+				printf("No license given\n");
+			}
+		}
 		/* vcs repository */
 		if (strcmp(argv[i],"--repository")==0) {
 			i++;
