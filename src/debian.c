@@ -307,6 +307,74 @@ static int save_copyright_gpl(char * filename, float version)
 	return 0;
 }
 
+/* BSD version of the copyright file */
+static int save_copyright_bsd(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: BSD-3-Clause\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: BSD-3-Clause\n\n");
+
+	fprintf(fp,"License: BSD-3-Clause\n");
+	fprintf(fp," Redistribution and use in source and binary forms, with or without\n");
+	fprintf(fp," modification, are permitted provided that the following conditions\n");
+	fprintf(fp," are met:\n");
+	fprintf(fp," 1. Redistributions of source code must retain the above copyright\n");
+	fprintf(fp,"    notice, this list of conditions and the following disclaimer.\n");
+	fprintf(fp," 2. Redistributions in binary form must reproduce the above copyright\n");
+	fprintf(fp,"    notice, this list of conditions and the following disclaimer in the\n");
+	fprintf(fp,"    documentation and/or other materials provided with the distribution.\n");
+	fprintf(fp," 3. Neither the name of the University nor the names of its contributors\n");
+	fprintf(fp,"    may be used to endorse or promote products derived from this software\n");
+	fprintf(fp,"    without specific prior written permission.\n .\n");
+
+	fprintf(fp," THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n");
+	fprintf(fp," ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n");
+	fprintf(fp," LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n");
+	fprintf(fp," A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE HOLDERS OR\n");
+	fprintf(fp," CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n");
+	fprintf(fp," EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n");
+	fprintf(fp," PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n");
+	fprintf(fp," PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n");
+	fprintf(fp," LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n");
+	fprintf(fp," NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n");
+	fprintf(fp," SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+
+	fclose(fp);
+	return 0;
+}
+
 /* save the copyright file */
 static int save_copyright(char * directory)
 {
@@ -334,6 +402,11 @@ static int save_copyright(char * directory)
 	/* GPL version 3 */
 	if (strstr(license,"gpl3")!=NULL) {
 		return save_copyright_gpl(filename, 3.0f);
+	}
+
+	/* BSD */
+	if (strstr(license,"bsd")!=NULL) {
+		return save_copyright_bsd(filename);
 	}
 	return 0;
 }
