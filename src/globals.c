@@ -94,3 +94,24 @@ int match_string(char * str, char ** strings, int no_of_strings)
 	}
 	return 0;
 }
+
+/* returns a non-zero value if the given license is valid */
+int valid_license(char * license)
+{
+	int i;
+
+	/* convert to lower case */
+	for (i = 0; i < strlen(license); i++) {
+		license[i] = tolower(license[i]);
+	}
+
+	/* check against a list of known licenses */
+	if ((strcmp(license,"gpl2")==0) ||
+		(strcmp(license,"gpl3")==0) ||
+		(strcmp(license,"mit")==0) ||
+		(strcmp(license,"bsd")==0) ||
+		(strcmp(license,"apache")==0)) {
+		return 1;
+	}
+	return 0;
+}

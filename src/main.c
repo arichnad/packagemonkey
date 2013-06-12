@@ -220,6 +220,10 @@ int main(int argc, char* argv[])
 		printf("No license specified\n");
 		return -1;
 	} 
+	if (valid_license(license)==0) {
+		printf("%s is not a recognised license\n",license);
+		return -1;
+	}
 
 	/* check that the Debian sections are valid */
 	get_setting("section", section);

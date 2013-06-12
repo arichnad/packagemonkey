@@ -24,7 +24,7 @@ void show_help()
 	printf(" -d  --dir <directory>      Set the working directory\n");
 	printf(" -s  --scripts <directory>  Set directory containing scripts to be packaged\n");
 	printf(" -b  --binary <filename>    Set filename for pre-built binary to be packaged\n");
-	printf(" -l  --license <type>       The license type\n");
+	printf(" -l  --license <type>       The license type (gpl2|gpl3|mit|bsd|apache)\n");
 	printf(" -e  --email <address>      Set full name and email address\n");
 	printf("     --brief <description>  A brief one line description of the project\n");
 	printf("     --desc <description>   A full description of the project\n");

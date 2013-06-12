@@ -25,6 +25,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 #define VERSION "0.10"
 
@@ -53,5 +54,6 @@ void get_file_extension(char * filename, char * extension);
 void get_subdirectory(char * directory, char * subdirectory);
 int valid_project_name(char * project_name);
 int match_string(char * str, char ** strings, int no_of_strings);
+int valid_license(char * license);
 
 #endif
