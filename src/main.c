@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
+	char license[BLOCK_SIZE];
 
 	if (argc <= 1) {
 		show_help();
@@ -212,6 +213,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	add_setting("project name",project_name);
+
+	/* check that a license is specified */
+	get_setting("license",license);
+	if (strlen(license) == 0) {
+		printf("No license specified\n");
+		return -1;
+	} 
 
 	/* check that the Debian sections are valid */
 	get_setting("section", section);
