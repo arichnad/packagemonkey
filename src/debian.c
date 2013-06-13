@@ -617,6 +617,95 @@ static int save_copyright(char * directory)
 	return 0;
 }
 
+/* saves the Debian rules file */
+static void save_rules(char * directory)
+{
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	FILE * fp;
+
+	/* rules file path and filename */
+	sprintf(filename, "%s%cdebian%crules",
+			directory, DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR);
+
+	get_setting("project name",project_name);
+	get_setting("project type",project_type);
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"#!/usr/bin/make -f\n\n");
+
+	fprintf(fp,"APP=%s\n",project_name);
+	fprintf(fp,"application = $(CURDIR)/$(APP)\n");
+	fprintf(fp,"DEST_APP = $(CURDIR)/debian/$(APP)/usr/bin\n\n");
+
+	fprintf(fp,"CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)\n");
+	fprintf(fp,"CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)\n");
+	fprintf(fp,"CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS)\n");
+	fprintf(fp,"LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)\n\n");
+
+	fprintf(fp,"build: build-stamp\n");
+	if ((strcmp(project_type,"c++")==0) ||
+		(strcmp(project_type,"cpp")==0) ||
+		(strcmp(project_type,"C++")==0)) {
+		fprintf(fp,"	g++ -Wall -pedantic -O3 $(CFLAGS) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o ${APP} src/*.cpp -Isrc\n");
+	}
+	if ((strcmp(project_type,"c")==0) ||
+		(strcmp(project_type,"C")==0)) {
+		fprintf(fp,"	gcc -Wall -ansi -pedantic -O3 $(CFLAGS) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $(APP) src/*.c -Isrc\n");
+	}
+	fprintf(fp,"build-arch: build-stamp\n");
+	fprintf(fp,"build-indep: build-stamp\n");
+	fprintf(fp,"build-stamp:\n");
+	fprintf(fp,"		dh_testdir\n");
+	fprintf(fp,"		touch build-stamp\n\n");
+
+	fprintf(fp,"clean:\n");
+	fprintf(fp,"		dh_testdir\n");
+	fprintf(fp,"		dh_testroot\n");
+	fprintf(fp,"		rm -f build-stamp\n");
+	fprintf(fp,"		dh_clean\n\n");
+
+	fprintf(fp,"install: build clean $(application)\n");
+	fprintf(fp,"		 dh_testdir\n");
+	fprintf(fp,"		 dh_testroot\n");
+	fprintf(fp,"		 dh_prep\n");
+	fprintf(fp,"		 dh_installdirs\n\n");
+
+	fprintf(fp,"		 mkdir -m 755 -p $(DEST_APP)\n");
+	fprintf(fp,"		 install -m 755 --strip $(application) $(DEST_APP)\n\n");
+
+	fprintf(fp,"binary-indep: build install\n");
+	fprintf(fp,"			  dh_shlibdeps\n");
+	fprintf(fp,"			  dh_testdir\n");
+	fprintf(fp,"			  dh_testroot\n");
+	fprintf(fp,"			  dh_installchangelogs\n");
+	fprintf(fp,"			  dh_installdocs\n");
+	fprintf(fp,"			  dh_installexamples\n");
+	fprintf(fp,"			  dh_installman\n");
+	fprintf(fp,"			  dh_link\n");
+	fprintf(fp,"			  dh_compress\n");
+	fprintf(fp,"			  dh_fixperms\n");
+	fprintf(fp,"			  dh_installdeb\n");
+	fprintf(fp,"			  dh_gencontrol\n");
+	fprintf(fp,"			  dh_md5sums\n");
+	fprintf(fp,"			  dh_builddeb\n\n");
+
+	fprintf(fp,"binary-arch: build install\n\n");
+
+	fprintf(fp,"binary: binary-indep binary-arch\n");
+	fprintf(fp,".PHONY: build clean binary-indep binary-arch binary install\n");
+
+	fclose(fp);
+}
+
+static void save_manpages(char * directory)
+{
+}
+
 int save_debian()
 {
 	char debdir[BLOCK_SIZE];
@@ -633,6 +722,7 @@ int save_debian()
 	save_compat();
 	save_control();
 	save_copyright(directory);
+	save_rules(directory);
 
 	return retval;
 }
