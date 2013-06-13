@@ -702,8 +702,89 @@ static void save_rules(char * directory)
 	fclose(fp);
 }
 
+/* generate a manpage */
 static void save_manpages(char * directory)
 {
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char manpage[BLOCK_SIZE];
+	char description_brief[BLOCK_SIZE];
+	char description[BLOCK_SIZE];
+	char email_address[BLOCK_SIZE];
+	char homepage[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year,month,day;
+	char * monthname[] = {
+		"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+	};
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+	month = timeinfo->tm_mon;
+	day = timeinfo->tm_mday;
+
+	sprintf(filename,"%s%cdebian%cmanpages",
+			directory, DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR);
+
+	get_setting("project name",project_name);
+
+	/* path and filename of the manpage */
+	sprintf(manpage,"%s%cman%c%s.1.gz",
+			directory,
+			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR,
+			project_name);
+
+	/* save debian/manpages */
+	fp = fopen(filename,"w");
+	if (!fp) return;
+	fprintf(fp,"man/%s.1.gz\n",project_name);
+	fclose(fp);
+
+	if (file_exists(manpage)!=0) return;
+
+	/* create an empty manpage */
+	sprintf(filename,"%s%cman%c%s.1",
+			directory,
+			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR,
+			project_name);
+	fp = fopen(filename,"w");
+	if (!fp) return;
+	fprintf(fp,".TH %s 1 \"%02d %s %d\" \"\" \"User's Manual\"\n\n",
+			project_name, day, monthname[month], year);
+
+	fprintf(fp,".SH \"NAME\"\n");
+	get_setting("description brief",description_brief);
+	fprintf(fp,"%s \\- %s\n\n",project_name,description_brief);
+
+	fprintf(fp,".SH \"DESCRIPTION\"\n");
+	get_setting("description",description);
+	fprintf(fp,"%s\n\n",description);
+
+	fprintf(fp,".SH \"INSTALLATION\"\n\n");
+	fprintf(fp,"Installation instructions go here ...\n\n");
+
+	fprintf(fp,".SH \"SEE ALSO\"\n\n");
+	fprintf(fp,"Any related manpages ...\n\n");
+
+	fprintf(fp,".SH \"BUGS\"\n");
+	fprintf(fp,"Report bugs at ...\n\n");
+
+	fprintf(fp,".SH \"AUTHOR\"\n");
+	get_setting("email",email_address);
+	get_setting("homepage",homepage);
+	fprintf(fp,"%s\n",email_address);
+	fprintf(fp,".br\n.I %s\n",homepage);
+	fclose(fp);
+
+	/* gzip the file */
+	sprintf(commandstr,"gzip %s",filename);
+	day = system(commandstr);
 }
 
 int save_debian()
