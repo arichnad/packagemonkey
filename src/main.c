@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
 	char project_name[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
+	char homepage[BLOCK_SIZE];
+	char email_address[BLOCK_SIZE];
 
 	if (argc <= 1) {
 		show_help();
@@ -244,6 +246,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	add_setting("project name",project_name);
+	add_setting("version","0.10");
 
 	/* check that a license is specified */
 	get_setting("license",license);
@@ -262,6 +265,24 @@ int main(int argc, char* argv[])
 		if (debian_valid_section(section) == 0) {
 			return -1;
 		}
+	}
+
+	/* check that the email address is valid */
+	get_setting("email", email_address);
+	if (strlen(email_address) == 0) {
+		printf("Please specify an email address using the --email option\n");
+		return -1;
+	}
+	if (valid_email(email_address) == 0) {
+		printf("%s is not a valid email.  Use the format:\n\n  name <user@domain>\n\n", email_address);
+		return -1;
+	}
+
+	/* check that a homepage has been given */
+	get_setting("homepage", homepage);
+	if (strlen(homepage) == 0) {
+		printf("Please specify a project homepage URL using the --homepage option\n");
+		return -1;
 	}
 
 	save_debian();

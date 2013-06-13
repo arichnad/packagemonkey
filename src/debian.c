@@ -622,11 +622,12 @@ static int save_copyright(char * directory)
 }
 
 /* saves the Debian rules file */
-static void save_rules(char * directory)
+static int save_rules(char * directory)
 {
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
 	FILE * fp;
 
 	/* rules file path and filename */
@@ -638,7 +639,7 @@ static void save_rules(char * directory)
 	get_setting("project type",project_type);
 
 	fp = fopen(filename,"w");
-	if (!fp) return;
+	if (!fp) return 0;
 
 	fprintf(fp,"#!/usr/bin/make -f\n\n");
 
@@ -704,6 +705,9 @@ static void save_rules(char * directory)
 	fprintf(fp,".PHONY: build clean binary-indep binary-arch binary install\n");
 
 	fclose(fp);
+
+	sprintf(commandstr,"chmod +x %s", filename);
+	return system(commandstr);
 }
 
 /* generate a manpage */
@@ -1952,6 +1956,131 @@ static void save_include_binary(char * directory)
 	fclose(fp);
 }
 
+/* save the format file */
+static void save_format(char * directory)
+{
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+
+	sprintf(filename,"%s%cformat",directory,DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"3.0 (quilt)");
+
+	fclose(fp);
+}
+
+/* save the debian/docs file */
+static void save_docs(char * directory)
+{
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+
+	sprintf(filename,"%s%cdebian%cdocs", directory,
+			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"README.md\n");
+
+	fclose(fp);
+}
+
+/* readme file */
+static void save_readme(char * directory)
+{
+	FILE * fp;
+	int i;
+	char project_name[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+
+	sprintf(filename,"%s%cREADME.md",directory,DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return;
+
+	get_setting("project name",project_name);
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s\n",project_name);
+	for (i = 0; i < strlen(project_name); i++) {
+		fprintf(fp,"%c",'=');
+	}
+	fprintf(fp,"\n\n");
+
+	fclose(fp);
+}
+
+/* saves a script which can be used to build the package */
+static int save_debian_build_script(char * directory)
+{
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char project_version[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+
+	sprintf(filename,"%s%cdebian.sh",
+			directory, DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return 0;
+
+	get_setting("project name",project_name);
+	get_setting("version",project_version);
+
+	fp = fopen(filename,"w");
+	if (!fp) return 0;
+
+	fprintf(fp,"#!/bin/bash\n\n");
+
+	fprintf(fp,"APP=%s\n",project_name);
+	fprintf(fp,"PREV_VERSION=%s\n",project_version);
+	fprintf(fp,"VERSION=%s\n",project_version);
+	fprintf(fp,"ARCH_TYPE=`uname -m`\n");
+	fprintf(fp,"DIR=${APP}-${VERSION}\n\n");
+
+	fprintf(fp,"if [ $ARCH_TYPE == \"x86_64\" ]; then\n");
+	fprintf(fp,"    ARCH_TYPE=\"amd64\"\n");
+	fprintf(fp,"fi\n");
+	fprintf(fp,"if [ $ARCH_TYPE == \"i686\" ]; then\n");
+	fprintf(fp,"    ARCH_TYPE=\"i386\"\n");
+	fprintf(fp,"fi\n\n");
+
+	fprintf(fp,"#update version numbers automatically - so you don't have to\n");
+	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile rpm.sh\n");
+	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
+
+	fprintf(fp,"# change the parent directory name to debian format\n");
+	fprintf(fp,"mv ../${APP} ../${DIR}\n\n");
+
+	fprintf(fp,"# Create a source archive\n");
+	fprintf(fp,"make clean\n");
+	fprintf(fp,"make source\n\n");
+
+	fprintf(fp,"# Build the package\n");
+	fprintf(fp,"dpkg-buildpackage -F\n\n");
+
+	fprintf(fp,"# sign files\n");
+	fprintf(fp,"gpg -ba ../${APP}_${VERSION}-1_${ARCH_TYPE}.deb\n");
+	fprintf(fp,"gpg -ba ../${APP}_${VERSION}.orig.tar.gz\n\n");
+
+	fprintf(fp,"# restore the parent directory name\n");
+	fprintf(fp,"mv ../${DIR} ../${APP}\n");
+
+	fclose(fp);
+
+	sprintf(commandstr,"chmod +x %s", filename);
+	return system(commandstr);
+}
+
 int save_debian()
 {
 	char debdir[BLOCK_SIZE];
@@ -2022,6 +2151,10 @@ int save_debian()
 	save_changelog(directory);
 	save_license(directory);
 	save_include_binary(debsourcedir);
+	save_format(debsourcedir);
+	save_readme(directory);
+	save_docs(directory);
+    save_debian_build_script(directory);
 
 	return retval;
 }

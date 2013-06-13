@@ -56,5 +56,6 @@ void get_subdirectory(char * directory, char * subdirectory);
 int valid_project_name(char * project_name);
 int match_string(char * str, char ** strings, int no_of_strings);
 int valid_license(char * license);
+int valid_email(char * email_address);
 
 #endif

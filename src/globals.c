@@ -115,3 +115,47 @@ int valid_license(char * license)
 	}
 	return 0;
 }
+
+/* returns a non-zero value if the given email addess is in the correct format */
+int valid_email(char * email_address)
+{
+	int i,state=0;
+
+	for (i = 0; i < strlen(email_address); i++) {
+		switch(state) {
+		case 0: {
+			if ((email_address[i]>='a') &&
+				(email_address[i]<='z')) {
+				state++;
+			}
+			break;
+		}	
+		case 1: {
+			if (email_address[i] == ' ') {
+				state++;
+			}
+			break;
+		}
+		case 2: {
+			if (email_address[i] == '<') {
+				state++;
+			}
+			break;
+		}
+		case 3: {
+			if (email_address[i] == '@') {
+				state++;
+			}
+			break;
+		}
+		case 4: {
+			if (email_address[i] == '>') {
+				state++;
+			}
+			break;
+		}
+		}
+	}
+	if (state == 5) return 1;
+	return 0;
+}
