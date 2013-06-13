@@ -709,20 +709,64 @@ static void save_manpages(char * directory)
 int save_debian()
 {
 	char debdir[BLOCK_SIZE];
+	char debsourcedir[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+	char mandir[BLOCK_SIZE];
+	char desktopdir[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
-	int retval;
+	int retval=0;
 
 	/* create the debian directory */
 	get_setting("directory", directory);
 	sprintf(debdir,"%s%cdebian", directory, DIRECTORY_SEPARATOR);
-	sprintf(commandstr,"%s %s",COMMAND_MKDIR,debdir);
+	if (directory_exists(debdir)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,debdir);
+		retval = system(commandstr);
+	}
+	/* create debian/source */
+	sprintf(debsourcedir,"%s%cdebian%csource",
+			directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	if (directory_exists(debsourcedir)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,debsourcedir);
+		retval = system(commandstr);
+	}
+	/* create src */
+	sprintf(sourcedir,"%s%csrc",
+			directory, DIRECTORY_SEPARATOR);
+	if (directory_exists(sourcedir)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,sourcedir);
+		retval = system(commandstr);
+	}
+	/* create man */
+	sprintf(mandir,"%s%cman",
+			directory, DIRECTORY_SEPARATOR);
+	if (directory_exists(mandir)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,mandir);
+		retval = system(commandstr);
+	}
+	/* create desktop */
+	sprintf(desktopdir,"%s%cdesktop",
+			directory, DIRECTORY_SEPARATOR);
+	if (directory_exists(desktopdir)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,desktopdir);
+		retval = system(commandstr);
+	}
+
+	/* move any code into the src directory */
+	sprintf(commandstr,
+			"%s *.c *.cpp *.h *.py *.vala *.java " \
+			"*.rbbas *.rbuistate *.rbmnu *.rbfrm " \
+			"*.rbtbar *.rbvcp *.rbres *.ico *.png " \
+			"*.jpg *.gif src",
+			COMMAND_MOVE);
 	retval = system(commandstr);
 
 	save_compat();
 	save_control();
 	save_copyright(directory);
 	save_rules(directory);
+	save_manpages(directory);
 
 	return retval;
 }

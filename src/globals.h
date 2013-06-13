@@ -46,7 +46,8 @@
 /* commands */
 #define COMMAND_MKDIR  "mkdir"
 #define COMMAND_COPY   "cp"
-#define COMMAND_DELETE "rm"
+#define COMMAND_DELETE "rm -f"
+#define COMMAND_MOVE   "mv"
 
 int file_exists(char * filename);
 int directory_exists(char * directory);
