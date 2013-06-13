@@ -450,6 +450,127 @@ static int save_copyright_bsd(char * filename)
 	return 0;
 }
 
+/* MIT version of the copyright file */
+static int save_copyright_mit(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: MIT\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: MIT\n\n");
+
+	fprintf(fp,"License: MIT\n");
+	fprintf(fp," Permission is hereby granted, free of charge, to any person obtaining a\n");
+	fprintf(fp," copy of this software and associated documentation files (the \"Software\"),\n");
+	fprintf(fp," to deal in the Software without restriction, including without limitation\n");
+	fprintf(fp," the rights to use, copy, modify, merge, publish, distribute, sublicense,\n");
+	fprintf(fp," and/or sell copies of the Software, and to permit persons to whom the\n");
+	fprintf(fp," Software is furnished to do so, subject to the following conditions:\n .\n");
+
+	fprintf(fp," The above copyright notice and this permission notice shall be included\n");
+	fprintf(fp," in all copies or substantial portions of the Software.\n .\n");
+
+	fprintf(fp," THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n");
+	fprintf(fp," OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n");
+	fprintf(fp," MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n");
+	fprintf(fp," IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\n");
+	fprintf(fp," CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, \n");
+	fprintf(fp," TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE \n");
+	fprintf(fp," SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n");
+
+	fclose(fp);
+	return 0;
+}
+
+/* Apache version of the copyright file */
+static int save_copyright_apache(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: Apache-2.0\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"License: Apache-2.0\n\n");
+
+	fprintf(fp,"License: Apache-2.0\n");
+	fprintf(fp," Licensed under the Apache License, Version 2.0 (the \"License\");\n");
+	fprintf(fp," you may not use this file except in compliance with the License.\n");
+	fprintf(fp," You may obtain a copy of the License at\n .\n");
+
+	fprintf(fp," http://www.apache.org/licenses/LICENSE-2.0\n .\n");
+
+	fprintf(fp," Unless required by applicable law or agreed to in writing, software\n");
+	fprintf(fp," distributed under the License is distributed on an \"AS IS\" BASIS,\n");
+	fprintf(fp," WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n");
+	fprintf(fp," See the License for the specific language governing permissions and\n");
+	fprintf(fp," limitations under the License.\n .\n");
+
+	fprintf(fp," On Debian systems, the complete text of the Apache version 2.0 license\n");
+	fprintf(fp," can be found in \"/usr/share/common-licenses/Apache-2.0\".\n");
+
+	fclose(fp);
+	return 0;
+}
+
 /* save the copyright file */
 static int save_copyright(char * directory)
 {
@@ -482,6 +603,16 @@ static int save_copyright(char * directory)
 	/* BSD */
 	if (strstr(license,"bsd") != NULL) {
 		return save_copyright_bsd(filename);
+	}
+
+	/* MIT */
+	if (strstr(license,"mit") != NULL) {
+		return save_copyright_mit(filename);
+	}
+
+	/* Apache */
+	if (strstr(license,"apache") != NULL) {
+		return save_copyright_apache(filename);
 	}
 	return 0;
 }
