@@ -18,8 +18,7 @@
 
 #include "debian.h"
 
-const int no_of_sections = 53;
-char * sections[] = {
+char * sections_squeeze[] = {
 	"admin","cli-mono","comm","database","debian-installer",
 	"debug","devel","doc","editors","electronics",
 	"embedded","fonts","games","gnome","gnu-r",
@@ -33,10 +32,79 @@ char * sections[] = {
 	"x11","xfce","zope"
 };
 
+char * sections_wheezy[] = {
+	"admin","cli-mono","comm","database","debian-installer",
+	"debug","devel","doc","editors","electronics",
+	"embedded","fonts","games","gnome","gnu-r",
+	"gnustep","graphics","hamradio","haskell","httpd",
+	"interpreters","java","kde","kernel","libdevel",
+	"libs","lisp","localization","mail","math",
+	"misc","net","news","ocaml","oldlibs",
+	"otherosfs","perl","php","python","ruby",
+	"science","shells","sound","tex","text",
+	"utils","vcs","video","virtual","web",
+	"x11","xfce","zope"
+};
+
+/* returns the version of Debian for which the package will be created */
+static float get_debian_version()
+{
+	char str[BLOCK_SIZE];
+
+	str[0]=0;
+	get_setting("debian version",str);
+	if (strlen(str) > 0) {
+		return atof(str);
+	}
+	return DEFAULT_DEBIAN_VERSION;
+}
+
+/* returns the Debian packaging standard based upon the OS version number */
+static void get_debian_standard(char * standard)
+{
+	float debian_version = get_debian_version();
+	
+	if ((int)debian_version == 6) {
+		sprintf(standard,"%s","3.9.2");
+	}
+
+	sprintf(standard,"%s","3.9.4");
+}
+
+/* returns the Debhelper version based upon the OS version */
+static void get_debhelper_version(char * debhelper_version)
+{
+	float debian_version = get_debian_version();
+	
+	if ((int)debian_version == 6) {
+		sprintf(debhelper_version, "%s", "8.0.0");
+	}
+
+	sprintf(debhelper_version, "%s", "9.0.0");
+}
+
+/* returns the possible section names for the given Debian version */
+static int get_sections(char ***sections)
+{
+	float debian_version = get_debian_version();
+
+	/* default */
+	*sections = sections_wheezy;
+
+	if ((int)debian_version == 6) {
+		*sections = sections_squeeze;
+		return 53;
+	}
+
+	return 53;
+}
+
 /* print all the section names */
 void debian_list_sections()
 {
 	int i;
+	char ** sections;
+	int no_of_sections = get_sections(&sections);
 
 	for (i = 0; i < no_of_sections; i++) {
 		printf("%s\n",sections[i]);
@@ -48,6 +116,8 @@ int debian_valid_section(char * section)
 {
 	int i, j=-1, ctr=0;
 	char subsection[BLOCK_SIZE];
+	char ** sections;
+	int no_of_sections = get_sections(&sections);
 
 	for (i = 0; i < strlen(section); i++) {
 		if (((section[i] > 'a') && (section[i] > 'z')) ||
@@ -106,12 +176,13 @@ static void save_compat()
 	directory[0]=0;
 	filename[0]=0;
 
+	get_debhelper_version(dh_version);
+
 	get_setting("directory", directory);
 	sprintf(filename,"%s%cdebian%ccompat", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
 	fp = fopen(filename,"w");
 	if (!fp) return;
-	sprintf(dh_version,"%s",DEBHELPER_VERSION);
 	while ((i< strlen(dh_version)-1) && (dh_version[i]!='.')) {
 		fprintf(fp, "%c", dh_version[i]);
 		i++;
@@ -126,6 +197,7 @@ static void save_control()
 	FILE * fp;
 	int i, ctr, j, k;
 	char str[77];
+	char standard[BLOCK_SIZE], dh_version[BLOCK_SIZE];
 
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
@@ -167,6 +239,9 @@ static void save_control()
 	get_setting("description", description);
 	get_setting("section", section);
 
+	get_debian_standard(standard);
+	get_debhelper_version(dh_version);
+
 	fp = fopen(filename,"w");
 	if (!fp) return;
 
@@ -179,12 +254,12 @@ static void save_control()
 	}
     fprintf(fp,"Priority: extra\n");
     fprintf(fp,"Maintainer: %s\n",email_address);
-    fprintf(fp,"Build-Depends: debhelper (>= %s)",DEBHELPER_VERSION);
+    fprintf(fp,"Build-Depends: debhelper (>= %s)", dh_version);
 	if (strlen(build_depends) > 0) {
 		fprintf(fp,", %s",build_depends);
 	}
 	fprintf(fp,"\n");
-	fprintf(fp,"Standards-Version: %s\n", DEBIAN_STANDARD);
+	fprintf(fp,"Standards-Version: %s\n", standard);
 	fprintf(fp,"Homepage: %s\n",homepage);
 	if (strlen(vcs_browser) > 0) {
 		fprintf(fp,"Vcs-Browser: %s\n", vcs_browser);
@@ -395,17 +470,17 @@ static int save_copyright(char * directory)
 	}
 
 	/* GPL version 2 */
-	if (strstr(license,"gpl2")!=NULL) {
+	if (strstr(license,"gpl2") != NULL) {
 		return save_copyright_gpl(filename, 2.0f);
 	}
 
 	/* GPL version 3 */
-	if (strstr(license,"gpl3")!=NULL) {
+	if (strstr(license,"gpl3") != NULL) {
 		return save_copyright_gpl(filename, 3.0f);
 	}
 
 	/* BSD */
-	if (strstr(license,"bsd")!=NULL) {
+	if (strstr(license,"bsd") != NULL) {
 		return save_copyright_bsd(filename);
 	}
 	return 0;

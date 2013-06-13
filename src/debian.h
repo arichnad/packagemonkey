@@ -19,8 +19,7 @@
 #ifndef DEBIAN_H
 #define DEBIAN_H
 
-#define DEBHELPER_VERSION "9.0.0"
-#define DEBIAN_STANDARD   "3.9.4"
+#define DEFAULT_DEBIAN_VERSION 7
 
 #include <stdio.h>
 #include <stdlib.h>
