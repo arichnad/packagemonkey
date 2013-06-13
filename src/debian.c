@@ -1931,6 +1931,27 @@ static void save_license(char * directory)
 	}
 }
 
+/* file containing list of binaries to be included in the source */
+static void save_include_binary(char * directory)
+{
+	FILE * fp;
+	char project_name[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+
+	sprintf(filename,"%s%cinclude-binaries",directory,DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return;
+
+	get_setting("project name",project_name);
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"man/%s.1.gz",project_name);
+
+	fclose(fp);
+}
+
 int save_debian()
 {
 	char debdir[BLOCK_SIZE];
@@ -1987,6 +2008,12 @@ int save_debian()
 			directory, COMMAND_MOVE);
 	retval = system(commandstr);
 
+	/* remove any object files */
+	sprintf(commandstr,
+			"cd %s; %s *.o *.pyc",
+			directory, COMMAND_DELETE);
+	retval = system(commandstr);
+
 	save_compat();
 	save_control();
 	save_copyright(directory);
@@ -1994,6 +2021,7 @@ int save_debian()
 	save_manpages(directory);
 	save_changelog(directory);
 	save_license(directory);
+	save_include_binary(debsourcedir);
 
 	return retval;
 }
