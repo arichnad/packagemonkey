@@ -26,6 +26,7 @@ void show_help()
 	printf(" -b  --binary <filename>    Set filename for pre-built binary to be packaged\n");
 	printf(" -l  --license <type>       The license type (gpl2|gpl3|mit|bsd|apache)\n");
 	printf(" -e  --email <address>      Set full name and email address\n");
+	printf("     --type <c|c++>         Specify the type of project\n");
 	printf("     --brief <description>  A brief one line description of the project\n");
 	printf("     --desc <description>   A full description of the project\n");
 	printf("     --homepage <url>       URL of the project home page\n");

@@ -179,6 +179,16 @@ int main(int argc, char* argv[])
 				printf("No Debian section given\n");
 			}
 		}
+		/* Project type */
+		if (strcmp(argv[i],"--type")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("project type",argv[i]);
+			}
+			else {
+				printf("No project type given\n");
+			}
+		}
 		/* Debian version */
 		if (strcmp(argv[i],"--debian")==0) {
 			i++;
