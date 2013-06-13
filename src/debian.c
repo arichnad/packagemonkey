@@ -1753,6 +1753,50 @@ static void save_license_gpl3(char * filename)
 	fclose(fp);
 }
 
+/* saves a LICENSE file for MIT */
+static void save_license_mit(char * filename)
+{
+	FILE * fp;
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+	char email_address[BLOCK_SIZE];
+
+	get_setting("email",email_address);
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"The MIT License (MIT)\n\n");
+
+	fprintf(fp,"Copyright (c) %d %s\n\n",year,email_address);
+
+	fprintf(fp,"Permission is hereby granted, free of charge, to any person obtaining a copy\n");
+	fprintf(fp,"of this software and associated documentation files (the \"Software\"), to deal\n");
+	fprintf(fp,"in the Software without restriction, including without limitation the rights\n");
+	fprintf(fp,"to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
+	fprintf(fp,"copies of the Software, and to permit persons to whom the Software is\n");
+	fprintf(fp,"furnished to do so, subject to the following conditions:\n\n");
+
+	fprintf(fp,"The above copyright notice and this permission notice shall be included in\n");
+	fprintf(fp,"all copies or substantial portions of the Software.\n\n");
+
+	fprintf(fp,"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
+	fprintf(fp,"IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
+	fprintf(fp,"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
+	fprintf(fp,"AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
+	fprintf(fp,"LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
+	fprintf(fp,"OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n");
+	fprintf(fp,"THE SOFTWARE.\n");
+
+	fclose(fp);
+}
+
 /* saves a file called LICENSE */
 static void save_license(char * directory)
 {
