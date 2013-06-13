@@ -18,6 +18,10 @@
 
 #include "debian.h"
 
+char * monthname[] = {
+	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+};
+
 char * sections_squeeze[] = {
 	"admin","cli-mono","comm","database","debian-installer",
 	"debug","devel","doc","editors","electronics",
@@ -717,9 +721,6 @@ static void save_manpages(char * directory)
 	time_t rawtime;
 	struct tm * timeinfo;
 	int year,month,day;
-	char * monthname[] = {
-		"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
-	};
 
 	/* get the current year */
 	time(&rawtime);
@@ -787,6 +788,50 @@ static void save_manpages(char * directory)
 	day = system(commandstr);
 }
 
+static void save_changelog(char * directory)
+{
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char email_address[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year,month,day,weekday,hour,min;
+	char * dayname[] = {
+		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+	};
+
+	sprintf(filename,"%s%cdebian%cchangelog",directory,
+			DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR);
+
+	/* does it already exist? */
+	if (file_exists(filename) != 0) return;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+	month = timeinfo->tm_mon;
+	day = timeinfo->tm_mday;
+	weekday = timeinfo->tm_wday;
+	hour = timeinfo->tm_hour;
+	min = timeinfo->tm_min;
+
+	get_setting("project name",project_name);
+	get_setting("email",email_address);
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s (%s-1) stable; urgency=medium\n\n",project_name,VERSION);
+	fprintf(fp,"  * Initial release\n\n");
+	fprintf(fp," -- %s  %s, %02d %s %d %02d:%02d:00 +0100\n",
+			email_address, dayname[weekday], day, monthname[month], year,
+			hour, min);
+
+	fclose(fp);
+}
+
 int save_debian()
 {
 	char debdir[BLOCK_SIZE];
@@ -848,6 +893,7 @@ int save_debian()
 	save_copyright(directory);
 	save_rules(directory);
 	save_manpages(directory);
+	save_changelog(directory);
 
 	return retval;
 }

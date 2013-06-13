@@ -23,6 +23,7 @@
 #include "globals.h"
 #include "tests.h"
 #include "settings.h"
+#include "makefile.h"
 #include "debian.h"
 #include "rpm.h"
 #include "help.h"
