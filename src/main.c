@@ -179,6 +179,26 @@ int main(int argc, char* argv[])
 				printf("No Debian section given\n");
 			}
 		}
+		/* Debian version */
+		if (strcmp(argv[i],"--debian")==0) {
+			i++;
+			if (i < argc) {
+				if (strcmp(argv[i],"squeeze")==0) {
+					add_setting("debian version","6");
+				}
+				else {
+					if (strcmp(argv[i],"wheezy")==0) {
+						add_setting("debian version","7");
+					}
+					else {
+						add_setting("debian version",argv[i]);
+					}
+				}
+			}
+			else {
+				printf("No Debian version number given\n");
+			}
+		}
 		/* list the Debian sections */
 		if (strcmp(argv[i],"--list-sections")==0) {
 			debian_list_sections();

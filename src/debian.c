@@ -84,7 +84,7 @@ static void get_debhelper_version(char * debhelper_version)
 }
 
 /* returns the possible section names for the given Debian version */
-static int get_sections(char ***sections)
+static int get_sections(char *** sections)
 {
 	float debian_version = get_debian_version();
 
