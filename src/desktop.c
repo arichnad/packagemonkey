@@ -220,16 +220,62 @@ int valid_additional_category(char * category)
 /* Shows the possible categories */
 void show_categories()
 {
-	int i;
+	int i,ctr=0;
 
 	printf("Main Categories:\n");
 	for (i = 0; i < no_of_main_categories; i++) {
-		printf("\t%s\n",category_main[i]);
+		printf("  %s",category_main[i]);
+		if (ctr > 3) {
+		    printf("\n");
+		    ctr = 0;
+	    }
+		ctr++;
 	}
-	printf("\nAdditional Categories:\n");
+	ctr = 0;
+	printf("\n\nAdditional Categories:\n");
 	for (i = 0; i < no_of_additional_categories; i++) {
-		printf("\t%s\n",category_additional[i]);
+		printf("  %s",category_additional[i]);
+		if (ctr > 3) {
+		    printf("\n");
+		    ctr = 0;
+	    }
+		ctr++;
 	}
+	printf("\n");
+}
+
+/* Shows the possible main categories */
+void show_categories_main()
+{
+	int i,ctr=0;
+
+	printf("Main Categories:\n");
+	for (i = 0; i < no_of_main_categories; i++) {
+		printf("  %s",category_main[i]);
+		if (ctr > 3) {
+		    printf("\n");
+		    ctr = 0;
+	    }
+		ctr++;
+	}
+	printf("\n");
+}
+
+/* Shows the possible additional categories */
+void show_categories_additional()
+{
+	int i,ctr=0;
+
+	printf("\n\nAdditional Categories:\n");
+	for (i = 0; i < no_of_additional_categories; i++) {
+		printf("  %s",category_additional[i]);
+		if (ctr > 3) {
+		    printf("\n");
+		    ctr = 0;
+	    }
+		ctr++;
+	}
+	printf("\n");
 }
 
 static int write_png_file(char* filename, int width, int height, unsigned char *buffer)

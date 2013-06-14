@@ -33,5 +33,7 @@ int valid_main_category(char * category);
 int valid_additional_category(char * category);
 void parse_desktop_category(char * str, char * main, char * additional);
 void show_categories();
+void show_categories_main();
+void show_categories_additional();
 
 #endif

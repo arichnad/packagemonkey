@@ -38,7 +38,10 @@ int main(int argc, char* argv[])
 	char section[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
+	char categories[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
+	char main_category[BLOCK_SIZE];
+	char additional_category[BLOCK_SIZE];
 
 	if (argc <= 1) {
 		show_help();
@@ -193,6 +196,16 @@ int main(int argc, char* argv[])
 				printf("No project type given\n");
 			}
 		}
+		/* Set desktop file categories */
+		if (strcmp(argv[i],"--categories")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("categories",argv[i]);
+			}
+			else {
+				printf("No desktop categories given\n");
+			}
+		}
 		/* Debian version */
 		if (strcmp(argv[i],"--debian")==0) {
 			i++;
@@ -293,6 +306,25 @@ int main(int argc, char* argv[])
 	get_setting("homepage", homepage);
 	if (strlen(homepage) == 0) {
 		printf("Please specify a project homepage URL using the --homepage option\n");
+		return -1;
+	}
+
+	get_setting("categories", categories);
+	parse_desktop_category(categories, main_category, additional_category);
+	if (strlen(main_category)==0) {
+		printf("No desktop file main category defined.  Use the --categories option to do this.\n\n");
+		show_categories_main();
+		return -1;
+	}
+	if (valid_main_category(main_category) == -1) {
+		printf("%s is not a valid main category\n\n",main_category);
+		show_categories_main();
+		return -1;
+	}
+	if ((strlen(additional_category) > 0) &&
+		(valid_main_category(additional_category) == -1)) {
+		printf("%s is not a valid additional category\n\n",additional_category);
+		show_categories_additional();
 		return -1;
 	}
 
