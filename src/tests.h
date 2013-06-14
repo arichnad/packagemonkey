@@ -24,6 +24,9 @@
 #include <assert.h>
 #include "globals.h"
 #include "settings.h"
+#include "debian.h"
+#include "rpm.h"
+#include "makefile.h"
 
 void run_tests();
 

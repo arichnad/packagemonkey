@@ -655,6 +655,7 @@ static int save_rules(char * directory)
 	fprintf(fp,"build: build-stamp\n");
 	if ((strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
+		(strcmp(project_type,"CPP")==0) ||
 		(strcmp(project_type,"C++")==0)) {
 		fprintf(fp,"	g++ -Wall -pedantic -O3 $(CFLAGS) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o ${APP} src/*.cpp -Isrc\n");
 	}

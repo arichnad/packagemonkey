@@ -18,6 +18,30 @@
 
 #include "tests.h"
 
+static void test_email()
+{
+	char email_address[BLOCK_SIZE];
+
+	printf("test_email...");
+
+	sprintf(email_address,"%s","Bob <user@domainname.com>");
+	assert(valid_email(email_address) != 0);
+
+	sprintf(email_address,"%s","Bob<user@domainname.com>");
+	assert(valid_email(email_address) == 0);
+
+	sprintf(email_address,"%s","Bob <user@domainname>");
+	assert(valid_email(email_address) == 0);
+
+	sprintf(email_address,"%s","user@domainname.com");
+	assert(valid_email(email_address) == 0);
+
+	sprintf(email_address,"%s","user");
+	assert(valid_email(email_address) == 0);
+
+	printf("Ok\n");
+}
+
 static void test_subdirectory()
 {
 	char directory[BLOCK_SIZE];
@@ -72,8 +96,24 @@ static void test_settings()
 	printf("Ok\n");
 }
 
+static void test_makefile()
+{
+	char filename[BLOCK_SIZE];
+
+	printf("test_makefile...");
+
+	sprintf(filename,"%s%cpm_test_makefile",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+
+	/* TODO */
+
+	printf("Ok\n");
+}
+
 void run_tests()
 {
 	test_settings();
 	test_subdirectory();
+	test_makefile();
+	test_email();
 }

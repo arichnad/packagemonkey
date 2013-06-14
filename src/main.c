@@ -286,7 +286,8 @@ int main(int argc, char* argv[])
 	}
 
 	save_debian();
-
+	save_makefile();
+	
 	return 0;
 }
 

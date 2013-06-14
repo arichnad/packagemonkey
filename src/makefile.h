@@ -27,6 +27,9 @@
 #include "globals.h"
 #include "settings.h"
 
+void save_makefile_as(char * filename);
+void save_makefile();
+int get_makefile_entry(char * section, char * entry);
 int add_makefile_entry(char * section, char * entry);
 
 #endif

@@ -143,12 +143,39 @@ int valid_email(char * email_address)
 			break;
 		}
 		case 3: {
+			if ((email_address[i]>='a') &&
+				(email_address[i]<='z')) {
+				state++;
+			}
+			break;
+		}	
+		case 4: {
 			if (email_address[i] == '@') {
 				state++;
 			}
 			break;
 		}
-		case 4: {
+		case 5: {
+			if ((email_address[i]>='a') &&
+				(email_address[i]<='z')) {
+				state++;
+			}
+			break;
+		}	
+		case 6: {
+			if (email_address[i] == '.') {
+				state++;
+			}
+			break;
+		}
+		case 7: {
+			if ((email_address[i]>='a') &&
+				(email_address[i]<='z')) {
+				state++;
+			}
+			break;
+		}	
+		case 8: {
 			if (email_address[i] == '>') {
 				state++;
 			}
@@ -156,6 +183,6 @@ int valid_email(char * email_address)
 		}
 		}
 	}
-	if (state == 5) return 1;
+	if (state == 9) return 1;
 	return 0;
 }
