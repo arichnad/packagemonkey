@@ -34,7 +34,7 @@ static void settings_filename(char * filename)
 }
 
 /* initialise the settings */
-static int init_settings()
+int init_settings()
 {
 	char directory[BLOCK_SIZE];
 	char command[BLOCK_SIZE];

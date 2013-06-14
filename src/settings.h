@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include "globals.h"
 
+int init_settings();
 int add_setting(char * setting_name, char * value);
 int get_setting(char * setting_name, char * value);
 

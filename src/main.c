@@ -274,8 +274,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	if (valid_email(email_address) == 0) {
-		printf("%s is not a valid email.  Use the format:\n\n  name <user@domain>\n\n", email_address);
+		printf("%s is not a valid email.  Use the format:\n\n  name <user@domain_name>\n\n", email_address);
 		return -1;
+	}
+	if (valid_gpg(email_address) == 0) {
+		printf("WARNING: The email address %s does not appear to be a GPG key.\n", email_address);
+		printf("Run 'gpg --list-keys' to see the keys on your system.\n");
+		printf("You will not be able to sign Debian packages without a GPG key.\n");
 	}
 
 	/* check that a homepage has been given */

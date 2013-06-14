@@ -186,3 +186,48 @@ int valid_email(char * email_address)
 	if (state == 9) return 1;
 	return 0;
 }
+
+/* returns a non-zero value if the given email address exists as a GPG key */
+int valid_gpg(char * email_address)
+{
+	FILE * fp;
+	int found = 0;
+	char directory[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	char result_filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+
+	sprintf(directory, "%s%c.%s",
+			getenv("HOME"), DIRECTORY_SEPARATOR, PROJECT_NAME);
+
+	sprintf(result_filename, "%s/test.txt",	directory);
+
+	sprintf(commandstr, "gpg --list-keys | grep \"%s\" > %s",
+			email_address, result_filename);
+	found = system(commandstr);
+
+	/* check that the email address exists within the GPG keys list */
+	fp = fopen(result_filename,"r");
+	if (!fp) return 0;
+
+	found = 0;
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			if (strstr(linestr, email_address)!=NULL) {
+				found = 1;
+				break;
+			}
+		}		
+	}
+
+	fclose(fp);
+
+	if (found == 0) return 0;
+
+	/* delete the temporary file */
+	sprintf(commandstr,"%s %s",COMMAND_DELETE,result_filename);
+	found = system(commandstr);
+
+	return 1;
+}
