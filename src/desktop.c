@@ -217,6 +217,21 @@ int valid_additional_category(char * category)
 	return -1;
 }
 
+/* Shows the possible categories */
+void show_categories()
+{
+	int i;
+
+	printf("Main Categories:\n");
+	for (i = 0; i < no_of_main_categories; i++) {
+		printf("\t%s\n",category_main[i]);
+	}
+	printf("\nAdditional Categories:\n");
+	for (i = 0; i < no_of_additional_categories; i++) {
+		printf("\t%s\n",category_additional[i]);
+	}
+}
+
 static int write_png_file(char* filename, int width, int height, unsigned char *buffer)
 {
 	png_t png;

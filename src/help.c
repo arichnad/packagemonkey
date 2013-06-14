@@ -32,6 +32,7 @@ void show_help()
 	printf("     --homepage <url>       URL of the project home page\n");
 	printf("     --section <sections>   Debian sections\n");
 	printf("     --list-sections        List the possible Debian sections\n");
+	printf("     --list-desktop         List the possible desktop file categories\n");
 	printf("     --debian <version>     Set the Debian version\n");
 	printf(" -t  --tests                Run unit tests\n");
 	printf(" -v  --version              Show version number\n");

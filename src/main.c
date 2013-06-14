@@ -218,6 +218,11 @@ int main(int argc, char* argv[])
 			debian_list_sections();
 			return 0;
 		}
+		/* list the Desktop file categories */
+		if (strcmp(argv[i],"--list-desktop")==0) {
+			show_categories();
+			return 0;
+		}
 
 	}
 
