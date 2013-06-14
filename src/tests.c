@@ -18,6 +18,37 @@
 
 #include "tests.h"
 
+static void test_categories()
+{
+	char categories[BLOCK_SIZE];
+	char main_category[BLOCK_SIZE];
+	char additional_category[BLOCK_SIZE];
+
+	printf("test_categories...");
+
+	sprintf(categories,"%s","test1;test2");
+	parse_desktop_category(categories, main_category, additional_category);
+	assert(strcmp(main_category,"test1")==0);
+	assert(strcmp(additional_category,"test2")==0);
+
+	sprintf(categories,"%s","test1");
+	parse_desktop_category(categories, main_category, additional_category);
+	assert(strcmp(main_category,"test1")==0);
+	assert(strlen(additional_category)==0);
+
+	assert(valid_main_category("test123")==-1);
+	assert(valid_main_category("Audio")!=-1);
+	assert(valid_main_category("Utility")!=-1);
+
+	assert(valid_additional_category("Profiling")!=-1);
+	assert(valid_additional_category("Database")!=-1);
+	assert(valid_additional_category("test123")==-1);
+	assert(valid_additional_category("ConsoleOnly")!=-1);
+	assert(valid_additional_category("foo")==-1);
+
+	printf("Ok\n");
+}
+
 static void test_email()
 {
 	char email_address[BLOCK_SIZE];
@@ -116,4 +147,5 @@ void run_tests()
 	test_subdirectory();
 	test_makefile();
 	test_email();
+	test_categories();
 }

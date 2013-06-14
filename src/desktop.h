@@ -16,19 +16,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TESTS_H
-#define TESTS_H
+#ifndef DESKTOP_H
+#define DESKTOP_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
+#include <string.h>
+#include <stdio.h>
+#include <zlib.h>
 #include "globals.h"
 #include "settings.h"
-#include "debian.h"
-#include "rpm.h"
-#include "makefile.h"
-#include "desktop.h"
+#include "pnglite.h"
 
-void run_tests();
+int save_desktop();
+int valid_main_category(char * category);
+int valid_additional_category(char * category);
+void parse_desktop_category(char * str, char * main, char * additional);
 
 #endif

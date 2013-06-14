@@ -3,10 +3,10 @@ VERSION=0.10
 ARCH_TYPE=`uname -m`
 
 all:
-	gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc
+	gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc -lz
  
 debug:
-	gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc
+	gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc -lz
 
 source:
 	tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs

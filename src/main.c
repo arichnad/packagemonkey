@@ -25,6 +25,7 @@
 #include "settings.h"
 #include "makefile.h"
 #include "debian.h"
+#include "desktop.h"
 #include "rpm.h"
 #include "help.h"
 
@@ -292,6 +293,7 @@ int main(int argc, char* argv[])
 
 	save_debian();
 	save_makefile();
+	save_desktop();
 	
 	return 0;
 }

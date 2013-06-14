@@ -95,6 +95,18 @@ int match_string(char * str, char ** strings, int no_of_strings)
 	return 0;
 }
 
+/* converts a string to lower case */
+void string_to_lower(char * str, char * result)
+{
+	int i;
+
+	/* convert to lower case */
+	for (i = 0; i < strlen(str); i++) {
+		result[i] = tolower(str[i]);
+	}
+	result[i] = 0;
+}
+
 /* returns a non-zero value if the given license is valid */
 int valid_license(char * license)
 {
