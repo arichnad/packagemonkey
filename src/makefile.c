@@ -75,6 +75,7 @@ int get_makefile_entry_from_file(char * makefilename, char * section, char * ent
 	return index;
 }
 
+/* returns the row index of the given entry */
 int get_makefile_entry(char * section, char * entry)
 {
 	char directory[BLOCK_SIZE];
@@ -92,9 +93,112 @@ int get_makefile_entry(char * section, char * entry)
 	return get_makefile_entry_from_file(filename, section, entry);
 }
 
+/* adds an entry into a makefile */
+int add_makefile_entry_to_file(char * makefilename, char * section, char * entry)
+{
+	int index,row=0,i,j,is_line,section_found=0,retval;
+	char new_filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE], linestr2[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	FILE * fp, * fp_new;
+
+	if (strlen(entry) == 0) return -1;
+
+	index = get_makefile_entry_from_file(makefilename, section, entry);
+	if (index != -1) return -1; /* entry already exists */
+
+	sprintf(new_filename,"%s.new", makefilename);
+
+	fp_new = fopen(new_filename,"w");
+	if (!fp_new) return -1;
+	
+	fp = fopen(makefilename,"r");
+	if (!fp) return -1;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+
+			j = 0;
+			is_line=0;
+			for (i = 0; i < strlen(linestr); i++) {
+				if (linestr[i] != '\t') {
+					if ((linestr[i] != 10) &&
+						(linestr[i] != 13)) {
+						linestr2[j++] = linestr[i];
+					}				
+				}
+				else {
+					/* this is a line and not a section heading */
+					is_line=1;
+				}
+			}
+			linestr2[j]=0;
+
+			if (is_line == 0) {
+				switch(section_found) {
+				case 0: {
+					if (strstr(linestr2,section) != NULL) {
+						section_found = 1;
+					}
+					break;
+				}
+				case 1: {
+					if (section_found == 1) {
+						if (entry[0] != '\t') {
+							fprintf(fp_new,"\t%s\n",entry);
+						}
+						else {
+							fprintf(fp_new,"%s\n",entry);
+						}
+						index = row;
+						section_found = 2;
+					}
+					break;
+				}
+				}
+			}
+
+			fprintf(fp_new,"%s",linestr);
+			row++;
+		}
+	}
+
+	if (section_found == 1) {
+		if (entry[0] != '\t') {
+			fprintf(fp_new,"\t%s\n",entry);
+		}
+		else {
+			fprintf(fp_new,"%s\n",entry);
+		}
+	}
+
+	fclose(fp);
+	fclose(fp_new);
+
+	sprintf(commandstr,"%s %s %s",COMMAND_COPY,new_filename,makefilename);
+	retval = system(commandstr);
+	sprintf(commandstr,"%s %s",COMMAND_DELETE,new_filename);
+	retval = system(commandstr);
+	retval = index;
+	return retval;
+}
+
 int add_makefile_entry(char * section, char * entry)
 {
-	return 0;
+	char directory[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+
+	/* get the project directory */
+	get_setting("directory",directory);
+
+	/* path and filename */
+	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
+
+	/* check if the Makefile exists */
+	if (file_exists(filename) == 0) return -1;
+
+	return add_makefile_entry_to_file(filename, section, entry);
 }
 
 /* saves a makefile with a given filename */

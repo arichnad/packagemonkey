@@ -21,7 +21,7 @@
 static void test_makefile()
 {
 	FILE * fp;
-	int index;
+	int index,row;
 	char filename[BLOCK_SIZE];
 
 	printf("test_makefile...");
@@ -49,6 +49,12 @@ static void test_makefile()
 	index = get_makefile_entry_from_file(filename,"install", "mkdir crazydudes");
 	assert(index == 7);
 
+	row = add_makefile_entry_to_file(filename, "debug", "other debug");
+	index = get_makefile_entry_from_file(filename,"debug", "other debug");
+	assert(index == 4);
+	assert(index == row);
+	row = add_makefile_entry_to_file(filename, "debug", "other debug");
+	assert(row == -1);
 	printf("Ok\n");
 }
 
