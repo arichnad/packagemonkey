@@ -206,14 +206,12 @@ void save_makefile_as(char * filename)
 {
 	char project_name[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
-	char project_type[BLOCK_SIZE];
 	FILE * fp;
 
 	/* check if the Makefile exists */
 	if (file_exists(filename) != 0) return;
 
 	get_setting("project name",project_name);
-	get_setting("project type",project_type);
 	get_setting("version",project_version);
 
 	fp = fopen(filename,"w");
@@ -224,55 +222,14 @@ void save_makefile_as(char * filename)
 	fprintf(fp,"ARCH_TYPE=`uname -m`\n\n");
 
 	fprintf(fp,"all:\n");
-	if ((strcmp(project_type,"c")==0) ||
-		(strcmp(project_type,"C")==0)) {
-		fprintf(fp,"	gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc\n\n");
-	}
-	if ((strcmp(project_type,"c++")==0) ||
-		(strcmp(project_type,"C++")==0) ||
-		(strcmp(project_type,"cpp")==0) ||
-		(strcmp(project_type,"CPP")==0)) {
-		fprintf(fp,"	g++ -Wall -pedantic -O3 -o ${APP} src/*.cpp -Isrc\n\n");
-	}
+
 	fprintf(fp,"debug:\n");
-	if ((strcmp(project_type,"c")==0) ||
-		(strcmp(project_type,"C")==0)) {
-		fprintf(fp,"	gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc\n\n");
-	}
-	if ((strcmp(project_type,"c++")==0) ||
-		(strcmp(project_type,"C++")==0) ||
-		(strcmp(project_type,"cpp")==0) ||
-		(strcmp(project_type,"CPP")==0)) {
-		fprintf(fp,"	g++ -Wall -pedantic -g -o ${APP} src/*.cpp -Isrc\n\n");
-	}
 
 	fprintf(fp,"source:\n");
-	fprintf(fp,"	tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs\n\n");
 
 	fprintf(fp,"install:\n");
-	fprintf(fp,"	install -m 755 --strip $(APP) $(DESTDIR)/usr/bin\n");
-	fprintf(fp,"	install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1\n");
-
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/applications\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/applications/$(APP)\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/pixmaps\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/scalable\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/scalable/apps\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/24x24\n");
-	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/24x24/apps\n");
-	fprintf(fp,"	install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop\n");
-	fprintf(fp,"	install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
-	fprintf(fp,"	install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
-	fprintf(fp,"	install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg\n\n");
-
 
 	fprintf(fp,"clean:\n");
-	fprintf(fp,"	rm -f $(APP) \\#* \\.#* gnuplot* *.png debian/*.substvars debian/*.log\n");
-	fprintf(fp,"	rm -rf deb.* debian/$(APP) rpmpackage/$(ARCH_TYPE)\n");
-	fprintf(fp,"	rm -f ../$(APP)*.deb ../$(APP)*.changes ../$(APP)*.asc ../$(APP)*.dsc\n");
-	fprintf(fp,"	rm -f rpmpackage/*.src.rpm\n");
 
 	fclose(fp);
 }
@@ -282,12 +239,52 @@ void save_makefile()
 {
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 
 	/* get the project directory */
 	get_setting("directory",directory);
+
+	/* the type of project */
+	get_setting("project type",project_type);
 
 	/* path and filename */
 	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
 
 	save_makefile_as(filename);
+
+	/* add lines to the makefile if they don't exist */
+	add_makefile_entry_to_file(filename, "source", "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
+	add_makefile_entry_to_file(filename, "install",	"install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
+	add_makefile_entry_to_file(filename, "install",	"install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/applications");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/applications/$(APP)");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/pixmaps");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/scalable");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/scalable/apps");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/24x24");
+	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/24x24/apps");
+	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop");
+	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png");
+	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg");
+
+	if ((strcmp(project_type,"c")==0) ||
+		(strcmp(project_type,"C")==0)) {
+		add_makefile_entry_to_file(filename, "all", "gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc");
+		add_makefile_entry_to_file(filename, "debug", "gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc");
+	}
+	if ((strcmp(project_type,"c++")==0) ||
+		(strcmp(project_type,"C++")==0) ||
+		(strcmp(project_type,"cpp")==0) ||
+		(strcmp(project_type,"CPP")==0)) {
+		add_makefile_entry_to_file(filename, "all", "g++ -Wall -pedantic -O3 -o ${APP} src/*.cpp -Isrc");
+		add_makefile_entry_to_file(filename, "debug", "g++ -Wall -pedantic -g -o ${APP} src/*.cpp -Isrc");
+	}
+
+	add_makefile_entry_to_file(filename, "clean", "rm -f $(APP) \\#* \\.#* gnuplot* *.png debian/*.substvars debian/*.log");
+	add_makefile_entry_to_file(filename, "clean", "rm -rf deb.* debian/$(APP) rpmpackage/$(ARCH_TYPE)");
+	add_makefile_entry_to_file(filename, "clean", "rm -f ../$(APP)*.deb ../$(APP)*.changes ../$(APP)*.asc ../$(APP)*.dsc");
+	add_makefile_entry_to_file(filename, "clean", "rm -f rpmpackage/*.src.rpm");
 }
