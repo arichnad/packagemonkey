@@ -12,10 +12,8 @@ source:
 	tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs
 
 install:
-	cp $(APP) $(DESTDIR)/usr/bin
-	cp man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1
-	chmod 755 $(DESTDIR)/usr/bin/$(APP)
-	chmod 644 $(DESTDIR)/usr/share/man/man1/$(APP).1.gz
+	install -m 755 --strip $(APP) $(DESTDIR)/usr/bin
+	install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1
 
 clean:
 	rm -f $(APP) \#* \.#* gnuplot* *.png debian/*.substvars debian/*.log

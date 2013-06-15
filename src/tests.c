@@ -18,6 +18,40 @@
 
 #include "tests.h"
 
+static void test_makefile()
+{
+	FILE * fp;
+	int index;
+	char filename[BLOCK_SIZE];
+
+	printf("test_makefile...");
+
+	/* create a test makefile */
+	sprintf(filename,"%s%cpm_test_makefile",TEMP_DIRECTORY,DIRECTORY_SEPARATOR);
+
+	fp = fopen(filename,"w");
+	assert(fp);
+	fprintf(fp,"all:\n");
+	fprintf(fp,"\tgcc, and that\n");
+	fprintf(fp,"debug:\n");
+	fprintf(fp,"\tgcc in debug mode\n");
+	fprintf(fp,"install:\n");
+	fprintf(fp,"\tcd to some directory\n");
+	fprintf(fp,"\tdo some other stuff\n");
+	fprintf(fp,"\tmkdir crazydudes\n");
+	fprintf(fp,"\tinstall -m 755 somefile someotherfile\n");
+	fclose(fp);
+
+	index = get_makefile_entry_from_file(filename,"debug", "gcc in debug mode");
+	assert(index == 3);
+	index = get_makefile_entry_from_file(filename,"debug", "1234");
+	assert(index == -1);
+	index = get_makefile_entry_from_file(filename,"install", "mkdir crazydudes");
+	assert(index == 7);
+
+	printf("Ok\n");
+}
+
 static void test_categories()
 {
 	char categories[BLOCK_SIZE];
@@ -127,19 +161,6 @@ static void test_settings()
 	printf("Ok\n");
 }
 
-static void test_makefile()
-{
-	char filename[BLOCK_SIZE];
-
-	printf("test_makefile...");
-
-	sprintf(filename,"%s%cpm_test_makefile",
-			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
-
-	/* TODO */
-
-	printf("Ok\n");
-}
 
 void run_tests()
 {
@@ -148,4 +169,5 @@ void run_tests()
 	test_makefile();
 	test_email();
 	test_categories();
+	test_makefile();
 }

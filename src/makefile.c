@@ -19,24 +19,16 @@
 #include "makefile.h"
 
 /* returns the row index of the given entry within a makefile */
-int get_makefile_entry(char * section, char * entry)
+int get_makefile_entry_from_file(char * makefilename, char * section, char * entry)
 {
 	int i, j, line_number = 0, is_line, begin_read = 0, index = -1;
 	FILE * fp;
-	char directory[BLOCK_SIZE];
-	char filename[BLOCK_SIZE];
 	char linestr[BLOCK_SIZE],linestr2[BLOCK_SIZE];
 
-	/* get the project directory */
-	get_setting("directory",directory);
-
-	/* path and filename */
-	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
-
 	/* check if the Makefile exists */
-	if (file_exists(filename) == 0) return -1;
+	if (file_exists(makefilename) == 0) return -1;
 
-	fp = fopen(filename,"r");
+	fp = fopen(makefilename,"r");
 	if (!fp) return -1;
 
 	while (!feof(fp)) {
@@ -45,12 +37,14 @@ int get_makefile_entry(char * section, char * entry)
 			j = 0;
 			is_line=0;
 			for (i = 0; i < strlen(linestr); i++) {
-				if ((linestr[i] != '\t') &&
-					(linestr[i] != 10) &&
-					(linestr[i] != 13)) {
-					linestr2[j++] = linestr[i];
+				if (linestr[i] != '\t') {
+					if ((linestr[i] != 10) &&
+						(linestr[i] != 13)) {
+						linestr2[j++] = linestr[i];
+					}				
 				}
 				else {
+					/* this is a line and not a section heading */
 					is_line=1;
 				}
 			}
@@ -58,7 +52,7 @@ int get_makefile_entry(char * section, char * entry)
 			if (is_line==0) {
 				/* compare the section name */
 				if (strncmp(linestr2,section,strlen(section))==0) {
-					begin_read=1;
+					begin_read = 1;
 				}
 				else {
 					if (begin_read == 1) {
@@ -79,6 +73,23 @@ int get_makefile_entry(char * section, char * entry)
 	fclose(fp);
 
 	return index;
+}
+
+int get_makefile_entry(char * section, char * entry)
+{
+	char directory[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+
+	/* get the project directory */
+	get_setting("directory",directory);
+
+	/* path and filename */
+	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
+
+	/* check if the Makefile exists */
+	if (file_exists(filename) == 0) return -1;
+
+	return get_makefile_entry_from_file(filename, section, entry);
 }
 
 int add_makefile_entry(char * section, char * entry)
@@ -135,10 +146,23 @@ void save_makefile_as(char * filename)
 	fprintf(fp,"	tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs\n\n");
 
 	fprintf(fp,"install:\n");
-	fprintf(fp,"	cp $(APP) $(DESTDIR)/usr/bin\n");
-	fprintf(fp,"	cp man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1\n");
-	fprintf(fp,"	chmod 755 $(DESTDIR)/usr/bin/$(APP)\n");
-	fprintf(fp,"	chmod 644 $(DESTDIR)/usr/share/man/man1/$(APP).1.gz\n\n");
+	fprintf(fp,"	install -m 755 --strip $(APP) $(DESTDIR)/usr/bin\n");
+	fprintf(fp,"	install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1\n");
+
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/applications\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/applications/$(APP)\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/pixmaps\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/scalable\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/scalable/apps\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/24x24\n");
+	fprintf(fp,"	mkdir -m 755 -p /usr/share/icons/hicolor/24x24/apps\n");
+	fprintf(fp,"	install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop\n");
+	fprintf(fp,"	install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
+	fprintf(fp,"	install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
+	fprintf(fp,"	install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg\n\n");
+
 
 	fprintf(fp,"clean:\n");
 	fprintf(fp,"	rm -f $(APP) \\#* \\.#* gnuplot* *.png debian/*.substvars debian/*.log\n");
