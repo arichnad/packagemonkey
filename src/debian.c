@@ -128,7 +128,7 @@ int debian_valid_section(char * section)
 	int no_of_sections = get_sections(&sections);
 
 	for (i = 0; i < strlen(section); i++) {
-		if (((section[i] > 'a') && (section[i] > 'z')) ||
+		if (((section[i] >= 'a') && (section[i] <= 'z')) ||
 			(section[i] == '-') || (section[i] == '/')) {
 			if (section[i]=='/') {
 				ctr++;
@@ -136,8 +136,9 @@ int debian_valid_section(char * section)
 			}
 		}
 		else {
-			printf("Sections should only contain lower " \
-				   "case letters or hyphens, with no spaces\n");
+			printf("%d %c %s\nSections should only contain lower " \
+				   "case letters or hyphens, with no spaces\n",
+				   (int)section[i], section[i], section);
 			return 0;
 		}
 	}
@@ -246,7 +247,7 @@ static void save_control()
 	sprintf(filename,"%s%cdebian%ccontrol", directory,
 			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 	get_setting("email", email_address);
-	get_setting("project", project_name);
+	get_setting("project name", project_name);
 	get_setting("homepage",homepage);
 	get_setting("vcs browser", vcs_browser);
 	get_setting("vcs repository", vcs_repository);
@@ -448,14 +449,14 @@ static int save_copyright_lgpl2(char * filename)
 	fprintf(fp,"Files: *\n");
 	fprintf(fp,"Copyright: Copyright %d %s\n",
 			year,email_address);
-	fprintf(fp,"%s","License: LGPL-2.0+\n\n");
+	fprintf(fp,"%s","License: LGPL-2.1+\n\n");
 
 	fprintf(fp,"Files: debian/*\n");
 	fprintf(fp,"Copyright: Copyright %d %s\n",
 			year,email_address);
-	fprintf(fp,"%s","License: LGPL-2.0+\n\n");
+	fprintf(fp,"%s","License: LGPL-2.1+\n\n");
 
-	fprintf(fp,"%s","License: LGPL-2.0+\n");
+	fprintf(fp,"%s","License: LGPL-2.1+\n");
 
 	fprintf(fp,"%s"," This package is free software; you can redistribute it and/or\n");
 	fprintf(fp,"%s"," modify it under the terms of the GNU Lesser General Public\n");
@@ -931,20 +932,7 @@ static int save_rules(char * directory)
 			"--get LDFLAGS)\n\n");
 
 	fprintf(fp,"build: build-stamp\n");
-	if ((strcmp(project_type,"c++")==0) ||
-		(strcmp(project_type,"cpp")==0) ||
-		(strcmp(project_type,"CPP")==0) ||
-		(strcmp(project_type,"C++")==0)) {
-		fprintf(fp,"	g++ -Wall -pedantic -O3 " \
-				"$(CFLAGS) $(LDFLAGS) $(CPPFLAGS) " \
-				"$(CXXFLAGS) -o ${APP} src/*.cpp -Isrc\n");
-	}
-	if ((strcmp(project_type,"c")==0) ||
-		(strcmp(project_type,"C")==0)) {
-		fprintf(fp,"	gcc -Wall -ansi -pedantic -O3 " \
-				"$(CFLAGS) $(LDFLAGS) $(CPPFLAGS) " \
-				"$(CXXFLAGS) -o $(APP) src/*.c -Isrc\n");
-	}
+	fprintf(fp,"%s","\tmake\n");
 	fprintf(fp,"build-arch: build-stamp\n");
 	fprintf(fp,"build-indep: build-stamp\n");
 	fprintf(fp,"build-stamp:\n");

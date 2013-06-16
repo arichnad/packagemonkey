@@ -205,6 +205,11 @@ static void test_settings()
 	get_setting("test1",value);
 	assert(strcmp(value,test1)==0);
 
+	sprintf(test1,"%.3f",7.235);
+	add_setting("test1",test1);
+	get_setting("test1",value);
+	assert(strcmp(value,test1)==0);
+
 	printf("Ok\n");
 }
 

@@ -42,6 +42,8 @@ void show_help()
 		   "URL of the project home page\n");
 	printf("     --section <sections>   " \
 		   "Debian sections\n");
+	printf("     --categories <cat>     " \
+		   ".desktop file categories\n");
 	printf("     --list-sections        " \
 		   "List the possible Debian sections\n");
 	printf("     --list-desktop         " \

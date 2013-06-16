@@ -109,7 +109,7 @@ int add_setting(char * setting_name, char * value)
 	init_settings();
 	settings_filename(filename);
 
-	if (file_exists(filename)==0) {
+	if (file_exists(filename) != 0) {
 		str[0]=0;
 		index = get_setting(setting_name, str);
 	}

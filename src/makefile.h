@@ -33,5 +33,7 @@ int get_makefile_entry_from_file(char * makefilename, char * section, char * ent
 int get_makefile_entry(char * section, char * entry);
 int add_makefile_entry_to_file(char * makefilename, char * section, char * entry);
 int add_makefile_entry(char * section, char * entry);
+int empty_makefile_section(char * makefilename,
+						   char * section);
 
 #endif

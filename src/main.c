@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
+	char project_version[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
@@ -52,6 +53,8 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
+	add_setting("version","0.10");
+
 	/* parse options */
 	for (i = 1; i < argc; i++) {
 		if ((strcmp(argv[i],"-h")==0) ||
@@ -61,8 +64,19 @@ int main(int argc, char* argv[])
 		}
 		if ((strcmp(argv[i],"-v")==0) ||
 			(strcmp(argv[i],"--version")==0)) {
-			printf("%s\n",VERSION);
-			return 0;
+			if (argc == 2) {
+				/* only one option */
+				printf("%s\n",VERSION);
+				return 0;
+			}
+			/* multiple options */
+			i++;
+			if (i < argc) {
+				add_setting("version",argv[i]);
+			}
+			else {
+				printf("No version number given\n");
+			}
 		}
 		/* run unit tests */
 		if ((strcmp(argv[i],"-t")==0) ||
@@ -240,7 +254,7 @@ int main(int argc, char* argv[])
 	}
 
 	/* check that a working directory was given */
-	if (working_directory_specified != 0) {
+	if (working_directory_specified == 0) {
 		printf("No working directory specified.  Use " \
 			   "the --dir option to set the directory " \
 			   "of the project to be packaged.\n");
@@ -265,7 +279,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	add_setting("project name",project_name);
-	add_setting("version","0.10");
+	add_setting("version",project_version);
 
 	/* check that a license is specified */
 	get_setting("license",license);
@@ -343,6 +357,7 @@ int main(int argc, char* argv[])
 	detect_project_type(directory, project_type);
 	if (strlen(project_type) > 0) {
 		add_setting("project type", project_type);
+		printf("Project Type: %s\n", project_type);
 	}
 
 	/* check that a brief description as given */

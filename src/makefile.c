@@ -18,10 +18,12 @@
 
 #include "makefile.h"
 
-/* returns the row index of the given entry within a makefile */
-int get_makefile_entry_from_file(char * makefilename, char * section, char * entry)
+/* returns 1 if the given makefile section is empty */
+int empty_makefile_section(char * makefilename,
+						   char * section)
 {
-	int i, j, line_number = 0, is_line, begin_read = 0, index = -1;
+	int i, j, line_number = 0, is_line, line_count=0;
+	int begin_read = 0;
 	FILE * fp;
 	char linestr[BLOCK_SIZE],linestr2[BLOCK_SIZE];
 
@@ -51,7 +53,74 @@ int get_makefile_entry_from_file(char * makefilename, char * section, char * ent
 			linestr2[j]=0;
 			if (is_line==0) {
 				/* compare the section name */
-				if (strncmp(linestr2,section,strlen(section))==0) {
+				if (strncmp(linestr2,section,
+							strlen(section))==0) {
+					begin_read = 1;
+				}
+				else {
+					if (begin_read == 1) {
+						break;
+					}
+				}
+			}
+			else {
+				if (begin_read == 1) {
+					/* does the line contain some characters? */
+					if (strlen(linestr2) > 0) {
+						line_count++;
+					}
+					break;
+				}
+			}
+			line_number++;
+		}
+	}
+	fclose(fp);
+
+	if (line_count > 0) {
+		return 0;
+	}
+	return 1;
+}
+
+
+/* returns the row index of the given entry within a makefile */
+int get_makefile_entry_from_file(char * makefilename,
+								 char * section, char * entry)
+{
+	int i, j, line_number = 0, is_line;
+	int begin_read = 0, index = -1;
+	FILE * fp;
+	char linestr[BLOCK_SIZE],linestr2[BLOCK_SIZE];
+
+	/* check if the Makefile exists */
+	if (file_exists(makefilename) == 0) return -1;
+
+	fp = fopen(makefilename,"r");
+	if (!fp) return -1;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			j = 0;
+			is_line=0;
+			for (i = 0; i < strlen(linestr); i++) {
+				if (linestr[i] != '\t') {
+					if ((linestr[i] != 10) &&
+						(linestr[i] != 13)) {
+						linestr2[j++] = linestr[i];
+					}				
+				}
+				else {
+					/* this is a line and not a section heading */
+					is_line=1;
+				}
+			}
+			linestr2[j]=0;
+			if (is_line==0) {
+				/* compare the section name */
+				if (strncmp(linestr2, section,
+							strlen(section)) == 0) {
 					begin_read = 1;
 				}
 				else {
@@ -62,9 +131,11 @@ int get_makefile_entry_from_file(char * makefilename, char * section, char * ent
 			}
 			else {
 				/* compare the line */
-				if (strcmp(linestr2,entry)==0) {
-					index = line_number;
-					break;
+				if (begin_read == 1) {
+					if (strcmp(linestr2, entry) == 0) {
+						index = line_number;
+						break;
+					}
 				}
 			}
 			line_number++;
@@ -85,7 +156,8 @@ int get_makefile_entry(char * section, char * entry)
 	get_setting("directory",directory);
 
 	/* path and filename */
-	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cMakefile",directory,
+			DIRECTORY_SEPARATOR);
 
 	/* check if the Makefile exists */
 	if (file_exists(filename) == 0) return -1;
@@ -94,7 +166,8 @@ int get_makefile_entry(char * section, char * entry)
 }
 
 /* adds an entry into a makefile */
-int add_makefile_entry_to_file(char * makefilename, char * section, char * entry)
+int add_makefile_entry_to_file(char * makefilename,
+							   char * section, char * entry)
 {
 	int index,row=0,i,j,is_line,section_found=0,retval;
 	char new_filename[BLOCK_SIZE];
@@ -104,7 +177,8 @@ int add_makefile_entry_to_file(char * makefilename, char * section, char * entry
 
 	if (strlen(entry) == 0) return -1;
 
-	index = get_makefile_entry_from_file(makefilename, section, entry);
+	index = get_makefile_entry_from_file(makefilename,
+										 section, entry);
 	if (index != -1) return -1; /* entry already exists */
 
 	sprintf(new_filename,"%s.new", makefilename);
@@ -176,7 +250,8 @@ int add_makefile_entry_to_file(char * makefilename, char * section, char * entry
 	fclose(fp);
 	fclose(fp_new);
 
-	sprintf(commandstr,"%s %s %s",COMMAND_COPY,new_filename,makefilename);
+	sprintf(commandstr,"%s %s %s",COMMAND_COPY,
+			new_filename,makefilename);
 	retval = system(commandstr);
 	sprintf(commandstr,"%s %s",COMMAND_DELETE,new_filename);
 	retval = system(commandstr);
@@ -193,7 +268,8 @@ int add_makefile_entry(char * section, char * entry)
 	get_setting("directory",directory);
 
 	/* path and filename */
-	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cMakefile",directory,
+			DIRECTORY_SEPARATOR);
 
 	/* check if the Makefile exists */
 	if (file_exists(filename) == 0) return -1;
@@ -248,43 +324,80 @@ void save_makefile()
 	get_setting("project type",project_type);
 
 	/* path and filename */
-	sprintf(filename,"%s%cMakefile",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cMakefile",directory,
+			DIRECTORY_SEPARATOR);
 
 	save_makefile_as(filename);
 
 	/* add lines to the makefile if they don't exist */
-	add_makefile_entry_to_file(filename, "source", "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
-	add_makefile_entry_to_file(filename, "install",	"install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
-	add_makefile_entry_to_file(filename, "install",	"install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/applications");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/applications/$(APP)");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/pixmaps");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/scalable");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/scalable/apps");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/24x24");
-	add_makefile_entry_to_file(filename, "install",	"mkdir -m 755 -p /usr/share/icons/hicolor/24x24/apps");
-	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop");
-	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png");
-	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg");
-	add_makefile_entry_to_file(filename, "install",	"install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg");
+	add_makefile_entry_to_file(filename, "source",
+							   "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/applications");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/applications/$(APP)");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/pixmaps");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons/hicolor");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons/hicolor/scalable");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons/hicolor/scalable/apps");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons/hicolor/24x24");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -m 755 -p /usr/share/icons/hicolor/24x24/apps");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+	add_makefile_entry_to_file(filename, "install",
+							   "install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg");
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0)) {
-		add_makefile_entry_to_file(filename, "all", "gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc");
-		add_makefile_entry_to_file(filename, "debug", "gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc");
+		if (empty_makefile_section(filename,"all") == 1) {
+			add_makefile_entry_to_file(filename, "all",
+									   "gcc -Wall -std=gnu99 -pedantic " \
+									   "-O3 -o $(APP) src/*.c -Isrc");
+		}
+		if (empty_makefile_section(filename,"debug") == 1) {
+			add_makefile_entry_to_file(filename, "debug",
+									   "gcc -Wall -std=gnu99 -pedantic " \
+									   "-g -o $(APP) src/*.c -Isrc");
+		}
 	}
 	if ((strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
-		add_makefile_entry_to_file(filename, "all", "g++ -Wall -pedantic -O3 -o ${APP} src/*.cpp -Isrc");
-		add_makefile_entry_to_file(filename, "debug", "g++ -Wall -pedantic -g -o ${APP} src/*.cpp -Isrc");
+		if (empty_makefile_section(filename,"all") == 1) {
+			add_makefile_entry_to_file(filename, "all",
+									   "g++ -Wall -pedantic -O3 " \
+									   "-o ${APP} src/*.cpp -Isrc");
+		}
+		if (empty_makefile_section(filename,"debug") == 1) {
+			add_makefile_entry_to_file(filename, "debug",
+									   "g++ -Wall -pedantic -g " \
+									   "-o ${APP} src/*.cpp -Isrc");
+		}
 	}
 
-	add_makefile_entry_to_file(filename, "clean", "rm -f $(APP) \\#* \\.#* gnuplot* *.png debian/*.substvars debian/*.log");
-	add_makefile_entry_to_file(filename, "clean", "rm -rf deb.* debian/$(APP) rpmpackage/$(ARCH_TYPE)");
-	add_makefile_entry_to_file(filename, "clean", "rm -f ../$(APP)*.deb ../$(APP)*.changes ../$(APP)*.asc ../$(APP)*.dsc");
-	add_makefile_entry_to_file(filename, "clean", "rm -f rpmpackage/*.src.rpm");
+	add_makefile_entry_to_file(filename, "clean",
+							   "rm -f $(APP) \\#* \\.#* gnuplot* *.png debian/*.substvars debian/*.log");
+	add_makefile_entry_to_file(filename, "clean",
+							   "rm -rf deb.* debian/$(APP) rpmpackage/$(ARCH_TYPE)");
+	add_makefile_entry_to_file(filename, "clean",
+							   "rm -f ../$(APP)*.deb ../$(APP)*.changes ../$(APP)*.asc ../$(APP)*.dsc");
+	add_makefile_entry_to_file(filename, "clean",
+							   "rm -f rpmpackage/*.src.rpm");
 }
