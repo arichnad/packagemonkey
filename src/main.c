@@ -24,6 +24,7 @@
 #include "tests.h"
 #include "settings.h"
 #include "makefile.h"
+#include "license.h"
 #include "debian.h"
 #include "desktop.h"
 #include "rpm.h"
@@ -335,10 +336,12 @@ int main(int argc, char* argv[])
 		add_setting("project type", project_type);
 	}
 
+	save_license(directory);
 	save_debian();
 	save_makefile();
 	save_desktop();
-	
+	save_rpm();
+
 	return 0;
 }
 

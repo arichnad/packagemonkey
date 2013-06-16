@@ -16,8 +16,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RPM_H
-#define RPM_H
+#ifndef LICENSE_H
+#define LICENSE_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,7 @@
 #include "globals.h"
 #include "settings.h"
 
-int save_rpm();
+int valid_license(char * license);
+int save_license(char * directory);
 
 #endif
