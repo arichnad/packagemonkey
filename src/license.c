@@ -18,6 +18,650 @@
 
 #include "license.h"
 
+/* saves a LICENSE file for LGPL2 */
+static void save_license_lgpl2(char * filename)
+{
+	FILE * fp;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s","                  GNU LESSER GENERAL PUBLIC LICENSE\n");
+	fprintf(fp,"%s","                       Version 2.1, February 1999\n\n");
+
+	fprintf(fp,"%s"," Copyright (C) 1991, 1999 Free Software Foundation, Inc.\n");
+	fprintf(fp,"%s"," 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA\n");
+	fprintf(fp,"%s"," Everyone is permitted to copy and distribute verbatim copies\n");
+	fprintf(fp,"%s"," of this license document, but changing it is not allowed.\n\n");
+
+	fprintf(fp,"%s","[This is the first released version of the Lesser GPL.  It also counts\n");
+	fprintf(fp,"%s"," as the successor of the GNU Library Public License, version 2, hence\n");
+	fprintf(fp,"%s"," the version number 2.1.]\n\n");
+
+	fprintf(fp,"%s","                            Preamble\n\n");
+
+	fprintf(fp,"%s","  The licenses for most software are designed to take away your\n");
+	fprintf(fp,"%s","freedom to share and change it.  By contrast, the GNU General Public\n");
+	fprintf(fp,"%s","Licenses are intended to guarantee your freedom to share and change\n");
+	fprintf(fp,"%s","free software--to make sure the software is free for all its users.\n\n");
+
+	fprintf(fp,"%s","  This license, the Lesser General Public License, applies to some\n");
+	fprintf(fp,"%s","specially designated software packages--typically libraries--of the\n");
+	fprintf(fp,"%s","Free Software Foundation and other authors who decide to use it.  You\n");
+	fprintf(fp,"%s","can use it too, but we suggest you first think carefully about whether\n");
+	fprintf(fp,"%s","this license or the ordinary General Public License is the better\n");
+	fprintf(fp,"%s","strategy to use in any particular case, based on the explanations below.\n\n");
+
+	fprintf(fp,"%s","  When we speak of free software, we are referring to freedom of use,\n");
+	fprintf(fp,"%s","not price.  Our General Public Licenses are designed to make sure that\n");
+	fprintf(fp,"%s","you have the freedom to distribute copies of free software (and charge\n");
+	fprintf(fp,"%s","for this service if you wish); that you receive source code or can get\n");
+	fprintf(fp,"%s","it if you want it; that you can change the software and use pieces of\n");
+	fprintf(fp,"%s","it in new free programs; and that you are informed that you can do\n");
+	fprintf(fp,"%s","these things.\n\n");
+
+	fprintf(fp,"%s","  To protect your rights, we need to make restrictions that forbid\n");
+	fprintf(fp,"%s","distributors to deny you these rights or to ask you to surrender these\n");
+	fprintf(fp,"%s","rights.  These restrictions translate to certain responsibilities for\n");
+	fprintf(fp,"%s","you if you distribute copies of the library or if you modify it.\n\n");
+
+	fprintf(fp,"%s","  For example, if you distribute copies of the library, whether gratis\n");
+	fprintf(fp,"%s","or for a fee, you must give the recipients all the rights that we gave\n");
+	fprintf(fp,"%s","you.  You must make sure that they, too, receive or can get the source\n");
+	fprintf(fp,"%s","code.  If you link other code with the library, you must provide\n");
+	fprintf(fp,"%s","complete object files to the recipients, so that they can relink them\n");
+	fprintf(fp,"%s","with the library after making changes to the library and recompiling\n");
+	fprintf(fp,"%s","it.  And you must show them these terms so they know their rights.\n\n");
+
+	fprintf(fp,"%s","  We protect your rights with a two-step method: (1) we copyright the\n");
+	fprintf(fp,"%s","library, and (2) we offer you this license, which gives you legal\n");
+	fprintf(fp,"%s","permission to copy, distribute and/or modify the library.\n\n");
+
+	fprintf(fp,"%s","  To protect each distributor, we want to make it very clear that\n");
+	fprintf(fp,"%s","there is no warranty for the free library.  Also, if the library is\n");
+	fprintf(fp,"%s","modified by someone else and passed on, the recipients should know\n");
+	fprintf(fp,"%s","that what they have is not the original version, so that the original\n");
+	fprintf(fp,"%s","author's reputation will not be affected by problems that might be\n");
+	fprintf(fp,"%s","introduced by others.\n\n");
+
+	fprintf(fp,"%s","  Finally, software patents pose a constant threat to the existence of\n");
+	fprintf(fp,"%s","any free program.  We wish to make sure that a company cannot\n");
+	fprintf(fp,"%s","effectively restrict the users of a free program by obtaining a\n");
+	fprintf(fp,"%s","restrictive license from a patent holder.  Therefore, we insist that\n");
+	fprintf(fp,"%s","any patent license obtained for a version of the library must be\n");
+	fprintf(fp,"%s","consistent with the full freedom of use specified in this license.\n\n");
+
+	fprintf(fp,"%s","  Most GNU software, including some libraries, is covered by the\n");
+	fprintf(fp,"%s","ordinary GNU General Public License.  This license, the GNU Lesser\n");
+	fprintf(fp,"%s","General Public License, applies to certain designated libraries, and\n");
+	fprintf(fp,"%s","is quite different from the ordinary General Public License.  We use\n");
+	fprintf(fp,"%s","this license for certain libraries in order to permit linking those\n");
+	fprintf(fp,"%s","libraries into non-free programs.\n\n");
+
+	fprintf(fp,"%s","  When a program is linked with a library, whether statically or using\n");
+	fprintf(fp,"%s","a shared library, the combination of the two is legally speaking a\n");
+	fprintf(fp,"%s","combined work, a derivative of the original library.  The ordinary\n");
+	fprintf(fp,"%s","General Public License therefore permits such linking only if the\n");
+	fprintf(fp,"%s","entire combination fits its criteria of freedom.  The Lesser General\n");
+	fprintf(fp,"%s","Public License permits more lax criteria for linking other code with\n");
+	fprintf(fp,"%s","the library.\n\n");
+
+	fprintf(fp,"%s","  We call this license the \"Lesser\" General Public License because it\n");
+	fprintf(fp,"%s","does Less to protect the user's freedom than the ordinary General\n");
+	fprintf(fp,"%s","Public License.  It also provides other free software developers Less\n");
+	fprintf(fp,"%s","of an advantage over competing non-free programs.  These disadvantages\n");
+	fprintf(fp,"%s","are the reason we use the ordinary General Public License for many\n");
+	fprintf(fp,"%s","libraries.  However, the Lesser license provides advantages in certain\n");
+	fprintf(fp,"%s","special circumstances.\n\n");
+
+	fprintf(fp,"%s","  For example, on rare occasions, there may be a special need to\n");
+	fprintf(fp,"%s","encourage the widest possible use of a certain library, so that it becomes\n");
+	fprintf(fp,"%s","a de-facto standard.  To achieve this, non-free programs must be\n");
+	fprintf(fp,"%s","allowed to use the library.  A more frequent case is that a free\n");
+	fprintf(fp,"%s","library does the same job as widely used non-free libraries.  In this\n");
+	fprintf(fp,"%s","case, there is little to gain by limiting the free library to free\n");
+	fprintf(fp,"%s","software only, so we use the Lesser General Public License.\n\n");
+
+	fprintf(fp,"%s","  In other cases, permission to use a particular library in non-free\n");
+	fprintf(fp,"%s","programs enables a greater number of people to use a large body of\n");
+	fprintf(fp,"%s","free software.  For example, permission to use the GNU C Library in\n");
+	fprintf(fp,"%s","non-free programs enables many more people to use the whole GNU\n");
+	fprintf(fp,"%s","operating system, as well as its variant, the GNU/Linux operating\n");
+	fprintf(fp,"%s","system.\n\n");
+
+	fprintf(fp,"%s","  Although the Lesser General Public License is Less protective of the\n");
+	fprintf(fp,"%s","users' freedom, it does ensure that the user of a program that is\n");
+	fprintf(fp,"%s","linked with the Library has the freedom and the wherewithal to run\n");
+	fprintf(fp,"%s","that program using a modified version of the Library.\n\n");
+
+	fprintf(fp,"%s","  The precise terms and conditions for copying, distribution and\n");
+	fprintf(fp,"%s","modification follow.  Pay close attention to the difference between a\n");
+	fprintf(fp,"%s","\"work based on the library\" and a \"work that uses the library\".  The\n");
+	fprintf(fp,"%s","former contains code derived from the library, whereas the latter must\n");
+	fprintf(fp,"%s","be combined with the library in order to run.\n\n");
+
+	fprintf(fp,"%s","                  GNU LESSER GENERAL PUBLIC LICENSE\n");
+	fprintf(fp,"%s","   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n\n");
+
+	fprintf(fp,"%s","  0. This License Agreement applies to any software library or other\n");
+	fprintf(fp,"%s","program which contains a notice placed by the copyright holder or\n");
+	fprintf(fp,"%s","other authorized party saying it may be distributed under the terms of\n");
+	fprintf(fp,"%s","this Lesser General Public License (also called \"this License\").\n");
+	fprintf(fp,"%s","Each licensee is addressed as \"you\".\n\n");
+
+	fprintf(fp,"%s","  A \"library\" means a collection of software functions and/or data\n");
+	fprintf(fp,"%s","prepared so as to be conveniently linked with application programs\n");
+	fprintf(fp,"%s","(which use some of those functions and data) to form executables.\n\n");
+
+	fprintf(fp,"%s","  The \"Library\", below, refers to any such software library or work\n");
+	fprintf(fp,"%s","which has been distributed under these terms.  A \"work based on the\n");
+	fprintf(fp,"%s","Library\" means either the Library or any derivative work under\n");
+	fprintf(fp,"%s","copyright law: that is to say, a work containing the Library or a\n");
+	fprintf(fp,"%s","portion of it, either verbatim or with modifications and/or translated\n");
+	fprintf(fp,"%s","straightforwardly into another language.  (Hereinafter, translation is\n");
+	fprintf(fp,"%s","included without limitation in the term \"modification\".)\n\n");
+
+	fprintf(fp,"%s","  \"Source code\" for a work means the preferred form of the work for\n");
+	fprintf(fp,"%s","making modifications to it.  For a library, complete source code means\n");
+	fprintf(fp,"%s","all the source code for all modules it contains, plus any associated\n");
+	fprintf(fp,"%s","interface definition files, plus the scripts used to control compilation\n");
+	fprintf(fp,"%s","and installation of the library.\n\n");
+
+	fprintf(fp,"%s","  Activities other than copying, distribution and modification are not\n");
+	fprintf(fp,"%s","covered by this License; they are outside its scope.  The act of\n");
+	fprintf(fp,"%s","running a program using the Library is not restricted, and output from\n");
+	fprintf(fp,"%s","such a program is covered only if its contents constitute a work based\n");
+	fprintf(fp,"%s","on the Library (independent of the use of the Library in a tool for\n");
+	fprintf(fp,"%s","writing it).  Whether that is true depends on what the Library does\n");
+	fprintf(fp,"%s","and what the program that uses the Library does.\n\n");
+
+	fprintf(fp,"%s","  1. You may copy and distribute verbatim copies of the Library's\n");
+	fprintf(fp,"%s","complete source code as you receive it, in any medium, provided that\n");
+	fprintf(fp,"%s","you conspicuously and appropriately publish on each copy an\n");
+	fprintf(fp,"%s","appropriate copyright notice and disclaimer of warranty; keep intact\n");
+	fprintf(fp,"%s","all the notices that refer to this License and to the absence of any\n");
+	fprintf(fp,"%s","warranty; and distribute a copy of this License along with the\n");
+	fprintf(fp,"%s","Library.\n\n");
+
+	fprintf(fp,"%s","  You may charge a fee for the physical act of transferring a copy,\n");
+	fprintf(fp,"%s","and you may at your option offer warranty protection in exchange for a\n");
+	fprintf(fp,"%s","fee.\n\n");
+
+	fprintf(fp,"%s","  2. You may modify your copy or copies of the Library or any portion\n");
+	fprintf(fp,"%s","of it, thus forming a work based on the Library, and copy and\n");
+	fprintf(fp,"%s","distribute such modifications or work under the terms of Section 1\n");
+	fprintf(fp,"%s","above, provided that you also meet all of these conditions:\n\n");
+
+	fprintf(fp,"%s","    a) The modified work must itself be a software library.\n\n");
+
+	fprintf(fp,"%s","    b) You must cause the files modified to carry prominent notices\n");
+	fprintf(fp,"%s","    stating that you changed the files and the date of any change.\n\n");
+
+	fprintf(fp,"%s","    c) You must cause the whole of the work to be licensed at no\n");
+	fprintf(fp,"%s","    charge to all third parties under the terms of this License.\n\n");
+
+	fprintf(fp,"%s","    d) If a facility in the modified Library refers to a function or a\n");
+	fprintf(fp,"%s","    table of data to be supplied by an application program that uses\n");
+	fprintf(fp,"%s","    the facility, other than as an argument passed when the facility\n");
+	fprintf(fp,"%s","    is invoked, then you must make a good faith effort to ensure that,\n");
+	fprintf(fp,"%s","    in the event an application does not supply such function or\n");
+	fprintf(fp,"%s","    table, the facility still operates, and performs whatever part of\n");
+	fprintf(fp,"%s","    its purpose remains meaningful.\n\n");
+
+	fprintf(fp,"%s","    (For example, a function in a library to compute square roots has\n");
+	fprintf(fp,"%s","    a purpose that is entirely well-defined independent of the\n");
+	fprintf(fp,"%s","    application.  Therefore, Subsection 2d requires that any\n");
+	fprintf(fp,"%s","    application-supplied function or table used by this function must\n");
+	fprintf(fp,"%s","    be optional: if the application does not supply it, the square\n");
+	fprintf(fp,"%s","    root function must still compute square roots.)\n\n");
+
+	fprintf(fp,"%s","These requirements apply to the modified work as a whole.  If\n");
+	fprintf(fp,"%s","identifiable sections of that work are not derived from the Library,\n");
+	fprintf(fp,"%s","and can be reasonably considered independent and separate works in\n");
+	fprintf(fp,"%s","themselves, then this License, and its terms, do not apply to those\n");
+	fprintf(fp,"%s","sections when you distribute them as separate works.  But when you\n");
+	fprintf(fp,"%s","distribute the same sections as part of a whole which is a work based\n");
+	fprintf(fp,"%s","on the Library, the distribution of the whole must be on the terms of\n");
+	fprintf(fp,"%s","this License, whose permissions for other licensees extend to the\n");
+	fprintf(fp,"%s","entire whole, and thus to each and every part regardless of who wrote\n");
+	fprintf(fp,"%s","it.\n\n");
+
+	fprintf(fp,"%s","Thus, it is not the intent of this section to claim rights or contest\n");
+	fprintf(fp,"%s","your rights to work written entirely by you; rather, the intent is to\n");
+	fprintf(fp,"%s","exercise the right to control the distribution of derivative or\n");
+	fprintf(fp,"%s","collective works based on the Library.\n\n");
+
+	fprintf(fp,"%s","In addition, mere aggregation of another work not based on the Library\n");
+	fprintf(fp,"%s","with the Library (or with a work based on the Library) on a volume of\n");
+	fprintf(fp,"%s","a storage or distribution medium does not bring the other work under\n");
+	fprintf(fp,"%s","the scope of this License.\n\n");
+
+	fprintf(fp,"%s","  3. You may opt to apply the terms of the ordinary GNU General Public\n");
+	fprintf(fp,"%s","License instead of this License to a given copy of the Library.  To do\n");
+	fprintf(fp,"%s","this, you must alter all the notices that refer to this License, so\n");
+	fprintf(fp,"%s","that they refer to the ordinary GNU General Public License, version 2,\n");
+	fprintf(fp,"%s","instead of to this License.  (If a newer version than version 2 of the\n");
+	fprintf(fp,"%s","ordinary GNU General Public License has appeared, then you can specify\n");
+	fprintf(fp,"%s","that version instead if you wish.)  Do not make any other change in\n");
+	fprintf(fp,"%s","these notices.\n\n");
+
+	fprintf(fp,"%s","  Once this change is made in a given copy, it is irreversible for\n");
+	fprintf(fp,"%s","that copy, so the ordinary GNU General Public License applies to all\n");
+	fprintf(fp,"%s","subsequent copies and derivative works made from that copy.\n\n");
+
+	fprintf(fp,"%s","  This option is useful when you wish to copy part of the code of\n");
+	fprintf(fp,"%s","the Library into a program that is not a library.\n\n");
+
+	fprintf(fp,"%s","  4. You may copy and distribute the Library (or a portion or\n");
+	fprintf(fp,"%s","derivative of it, under Section 2) in object code or executable form\n");
+	fprintf(fp,"%s","under the terms of Sections 1 and 2 above provided that you accompany\n");
+	fprintf(fp,"%s","it with the complete corresponding machine-readable source code, which\n");
+	fprintf(fp,"%s","must be distributed under the terms of Sections 1 and 2 above on a\n");
+	fprintf(fp,"%s","medium customarily used for software interchange.\n\n");
+
+	fprintf(fp,"%s","  If distribution of object code is made by offering access to copy\n");
+	fprintf(fp,"%s","from a designated place, then offering equivalent access to copy the\n");
+	fprintf(fp,"%s","source code from the same place satisfies the requirement to\n");
+	fprintf(fp,"%s","distribute the source code, even though third parties are not\n");
+	fprintf(fp,"%s","compelled to copy the source along with the object code.\n\n");
+
+	fprintf(fp,"%s","  5. A program that contains no derivative of any portion of the\n");
+	fprintf(fp,"%s","Library, but is designed to work with the Library by being compiled or\n");
+	fprintf(fp,"%s","linked with it, is called a \"work that uses the Library\".  Such a\n");
+	fprintf(fp,"%s","work, in isolation, is not a derivative work of the Library, and\n");
+	fprintf(fp,"%s","therefore falls outside the scope of this License.\n\n");
+
+	fprintf(fp,"%s","  However, linking a \"work that uses the Library\" with the Library\n");
+	fprintf(fp,"%s","creates an executable that is a derivative of the Library (because it\n");
+	fprintf(fp,"%s","contains portions of the Library), rather than a \"work that uses the\n");
+	fprintf(fp,"%s","library\".  The executable is therefore covered by this License.\n");
+	fprintf(fp,"%s","Section 6 states terms for distribution of such executables.\n");
+
+	fprintf(fp,"%s","  When a \"work that uses the Library\" uses material from a header file\n");
+	fprintf(fp,"%s","that is part of the Library, the object code for the work may be a\n");
+	fprintf(fp,"%s","derivative work of the Library even though the source code is not.\n");
+	fprintf(fp,"%s","Whether this is true is especially significant if the work can be\n");
+	fprintf(fp,"%s","linked without the Library, or if the work is itself a library.  The\n");
+	fprintf(fp,"%s","threshold for this to be true is not precisely defined by law.\n\n");
+
+	fprintf(fp,"%s","  If such an object file uses only numerical parameters, data\n");
+	fprintf(fp,"%s","structure layouts and accessors, and small macros and small inline\n");
+	fprintf(fp,"%s","functions (ten lines or less in length), then the use of the object\n");
+	fprintf(fp,"%s","file is unrestricted, regardless of whether it is legally a derivative\n");
+	fprintf(fp,"%s","work.  (Executables containing this object code plus portions of the\n");
+	fprintf(fp,"%s","Library will still fall under Section 6.)\n\n");
+
+	fprintf(fp,"%s","  Otherwise, if the work is a derivative of the Library, you may\n");
+	fprintf(fp,"%s","distribute the object code for the work under the terms of Section 6.\n");
+	fprintf(fp,"%s","Any executables containing that work also fall under Section 6,\n");
+	fprintf(fp,"%s","whether or not they are linked directly with the Library itself.\n\n");
+
+	fprintf(fp,"%s","  6. As an exception to the Sections above, you may also combine or\n");
+	fprintf(fp,"%s","link a \"work that uses the Library\" with the Library to produce a\n");
+	fprintf(fp,"%s","work containing portions of the Library, and distribute that work\n");
+	fprintf(fp,"%s","under terms of your choice, provided that the terms permit\n");
+	fprintf(fp,"%s","modification of the work for the customer's own use and reverse\n");
+	fprintf(fp,"%s","engineering for debugging such modifications.\n\n");
+
+	fprintf(fp,"%s","  You must give prominent notice with each copy of the work that the\n");
+	fprintf(fp,"%s","Library is used in it and that the Library and its use are covered by\n");
+	fprintf(fp,"%s","this License.  You must supply a copy of this License.  If the work\n");
+	fprintf(fp,"%s","during execution displays copyright notices, you must include the\n");
+	fprintf(fp,"%s","copyright notice for the Library among them, as well as a reference\n");
+	fprintf(fp,"%s","directing the user to the copy of this License.  Also, you must do one\n");
+	fprintf(fp,"%s","of these things:\n\n");
+
+	fprintf(fp,"%s","    a) Accompany the work with the complete corresponding\n");
+	fprintf(fp,"%s","    machine-readable source code for the Library including whatever\n");
+	fprintf(fp,"%s","    changes were used in the work (which must be distributed under\n");
+	fprintf(fp,"%s","    Sections 1 and 2 above); and, if the work is an executable linked\n");
+	fprintf(fp,"%s","    with the Library, with the complete machine-readable \"work that\n");
+	fprintf(fp,"%s","    uses the Library\", as object code and/or source code, so that the\n");
+	fprintf(fp,"%s","    user can modify the Library and then relink to produce a modified\n");
+	fprintf(fp,"%s","    executable containing the modified Library.  (It is understood\n");
+	fprintf(fp,"%s","    that the user who changes the contents of definitions files in the\n");
+	fprintf(fp,"%s","    Library will not necessarily be able to recompile the application\n");
+	fprintf(fp,"%s","    to use the modified definitions.)\n\n");
+
+	fprintf(fp,"%s","    b) Use a suitable shared library mechanism for linking with the\n");
+	fprintf(fp,"%s","    Library.  A suitable mechanism is one that (1) uses at run time a\n");
+	fprintf(fp,"%s","    copy of the library already present on the user's computer system,\n");
+	fprintf(fp,"%s","    rather than copying library functions into the executable, and (2)\n");
+	fprintf(fp,"%s","    will operate properly with a modified version of the library, if\n");
+	fprintf(fp,"%s","    the user installs one, as long as the modified version is\n");
+	fprintf(fp,"%s","    interface-compatible with the version that the work was made with.\n\n");
+
+	fprintf(fp,"%s","    c) Accompany the work with a written offer, valid for at\n");
+	fprintf(fp,"%s","    least three years, to give the same user the materials\n");
+	fprintf(fp,"%s","    specified in Subsection 6a, above, for a charge no more\n");
+	fprintf(fp,"%s","    than the cost of performing this distribution.\n\n");
+
+	fprintf(fp,"%s","    d) If distribution of the work is made by offering access to copy\n");
+	fprintf(fp,"%s","    from a designated place, offer equivalent access to copy the above\n");
+	fprintf(fp,"%s","    specified materials from the same place.\n\n");
+
+	fprintf(fp,"%s","    e) Verify that the user has already received a copy of these\n");
+	fprintf(fp,"%s","    materials or that you have already sent this user a copy.\n\n");
+
+	fprintf(fp,"%s","  For an executable, the required form of the \"work that uses the\n");
+	fprintf(fp,"%s","Library\" must include any data and utility programs needed for\n");
+	fprintf(fp,"%s","reproducing the executable from it.  However, as a special exception,\n");
+	fprintf(fp,"%s","the materials to be distributed need not include anything that is\n");
+	fprintf(fp,"%s","normally distributed (in either source or binary form) with the major\n");
+	fprintf(fp,"%s","components (compiler, kernel, and so on) of the operating system on\n");
+	fprintf(fp,"%s","which the executable runs, unless that component itself accompanies\n");
+	fprintf(fp,"%s","the executable.\n\n");
+
+	fprintf(fp,"%s","  It may happen that this requirement contradicts the license\n");
+	fprintf(fp,"%s","restrictions of other proprietary libraries that do not normally\n");
+	fprintf(fp,"%s","accompany the operating system.  Such a contradiction means you cannot\n");
+	fprintf(fp,"%s","use both them and the Library together in an executable that you\n");
+	fprintf(fp,"%s","distribute.\n\n");
+
+	fprintf(fp,"%s","  7. You may place library facilities that are a work based on the\n");
+	fprintf(fp,"%s","Library side-by-side in a single library together with other library\n");
+	fprintf(fp,"%s","facilities not covered by this License, and distribute such a combined\n");
+	fprintf(fp,"%s","library, provided that the separate distribution of the work based on\n");
+	fprintf(fp,"%s","the Library and of the other library facilities is otherwise\n");
+	fprintf(fp,"%s","permitted, and provided that you do these two things:\n\n");
+
+	fprintf(fp,"%s","    a) Accompany the combined library with a copy of the same work\n");
+	fprintf(fp,"%s","    based on the Library, uncombined with any other library\n");
+	fprintf(fp,"%s","    facilities.  This must be distributed under the terms of the\n");
+	fprintf(fp,"%s","    Sections above.\n\n");
+
+	fprintf(fp,"%s","    b) Give prominent notice with the combined library of the fact\n");
+	fprintf(fp,"%s","    that part of it is a work based on the Library, and explaining\n");
+	fprintf(fp,"%s","    where to find the accompanying uncombined form of the same work.\n\n");
+
+	fprintf(fp,"%s","  8. You may not copy, modify, sublicense, link with, or distribute\n");
+	fprintf(fp,"%s","the Library except as expressly provided under this License.  Any\n");
+	fprintf(fp,"%s","attempt otherwise to copy, modify, sublicense, link with, or\n");
+	fprintf(fp,"%s","distribute the Library is void, and will automatically terminate your\n");
+	fprintf(fp,"%s","rights under this License.  However, parties who have received copies,\n");
+	fprintf(fp,"%s","or rights, from you under this License will not have their licenses\n");
+	fprintf(fp,"%s","terminated so long as such parties remain in full compliance.\n\n");
+
+	fprintf(fp,"%s","  9. You are not required to accept this License, since you have not\n");
+	fprintf(fp,"%s","signed it.  However, nothing else grants you permission to modify or\n");
+	fprintf(fp,"%s","distribute the Library or its derivative works.  These actions are\n");
+	fprintf(fp,"%s","prohibited by law if you do not accept this License.  Therefore, by\n");
+	fprintf(fp,"%s","modifying or distributing the Library (or any work based on the\n");
+	fprintf(fp,"%s","Library), you indicate your acceptance of this License to do so, and\n");
+	fprintf(fp,"%s","all its terms and conditions for copying, distributing or modifying\n");
+	fprintf(fp,"%s","the Library or works based on it.\n\n");
+
+	fprintf(fp,"%s","  10. Each time you redistribute the Library (or any work based on the\n");
+	fprintf(fp,"%s","Library), the recipient automatically receives a license from the\n");
+	fprintf(fp,"%s","original licensor to copy, distribute, link with or modify the Library\n");
+	fprintf(fp,"%s","subject to these terms and conditions.  You may not impose any further\n");
+	fprintf(fp,"%s","restrictions on the recipients' exercise of the rights granted herein.\n");
+	fprintf(fp,"%s","You are not responsible for enforcing compliance by third parties with\n");
+	fprintf(fp,"%s","this License.\n\n");
+
+	fprintf(fp,"%s","  11. If, as a consequence of a court judgment or allegation of patent\n");
+	fprintf(fp,"%s","infringement or for any other reason (not limited to patent issues),\n");
+	fprintf(fp,"%s","conditions are imposed on you (whether by court order, agreement or\n");
+	fprintf(fp,"%s","otherwise) that contradict the conditions of this License, they do not\n");
+	fprintf(fp,"%s","excuse you from the conditions of this License.  If you cannot\n");
+	fprintf(fp,"%s","distribute so as to satisfy simultaneously your obligations under this\n");
+	fprintf(fp,"%s","License and any other pertinent obligations, then as a consequence you\n");
+	fprintf(fp,"%s","may not distribute the Library at all.  For example, if a patent\n");
+	fprintf(fp,"%s","license would not permit royalty-free redistribution of the Library by\n");
+	fprintf(fp,"%s","all those who receive copies directly or indirectly through you, then\n");
+	fprintf(fp,"%s","the only way you could satisfy both it and this License would be to\n");
+	fprintf(fp,"%s","refrain entirely from distribution of the Library.\n\n");
+
+	fprintf(fp,"%s","If any portion of this section is held invalid or unenforceable under any\n");
+	fprintf(fp,"%s","particular circumstance, the balance of the section is intended to apply,\n");
+	fprintf(fp,"%s","and the section as a whole is intended to apply in other circumstances.\n\n");
+
+	fprintf(fp,"%s","It is not the purpose of this section to induce you to infringe any\n");
+	fprintf(fp,"%s","patents or other property right claims or to contest validity of any\n");
+	fprintf(fp,"%s","such claims; this section has the sole purpose of protecting the\n");
+	fprintf(fp,"%s","integrity of the free software distribution system which is\n");
+	fprintf(fp,"%s","implemented by public license practices.  Many people have made\n");
+	fprintf(fp,"%s","generous contributions to the wide range of software distributed\n");
+	fprintf(fp,"%s","through that system in reliance on consistent application of that\n");
+	fprintf(fp,"%s","system; it is up to the author/donor to decide if he or she is willing\n");
+	fprintf(fp,"%s","to distribute software through any other system and a licensee cannot\n");
+	fprintf(fp,"%s","impose that choice.\n\n");
+
+	fprintf(fp,"%s","This section is intended to make thoroughly clear what is believed to\n");
+	fprintf(fp,"%s","be a consequence of the rest of this License.\n\n");
+
+	fprintf(fp,"%s","  12. If the distribution and/or use of the Library is restricted in\n");
+	fprintf(fp,"%s","certain countries either by patents or by copyrighted interfaces, the\n");
+	fprintf(fp,"%s","original copyright holder who places the Library under this License may add\n");
+	fprintf(fp,"%s","an explicit geographical distribution limitation excluding those countries,\n");
+	fprintf(fp,"%s","so that distribution is permitted only in or among countries not thus\n");
+	fprintf(fp,"%s","excluded.  In such case, this License incorporates the limitation as if\n");
+	fprintf(fp,"%s","written in the body of this License.\n\n");
+
+	fprintf(fp,"%s","  13. The Free Software Foundation may publish revised and/or new\n");
+	fprintf(fp,"%s","versions of the Lesser General Public License from time to time.\n");
+	fprintf(fp,"%s","Such new versions will be similar in spirit to the present version,\n");
+	fprintf(fp,"%s","but may differ in detail to address new problems or concerns.\n\n");
+
+	fprintf(fp,"%s","Each version is given a distinguishing version number.  If the Library\n");
+	fprintf(fp,"%s","specifies a version number of this License which applies to it and\n");
+	fprintf(fp,"%s","\"any later version\", you have the option of following the terms and\n");
+	fprintf(fp,"%s","conditions either of that version or of any later version published by\n");
+	fprintf(fp,"%s","the Free Software Foundation.  If the Library does not specify a\n");
+	fprintf(fp,"%s","license version number, you may choose any version ever published by\n");
+	fprintf(fp,"%s","the Free Software Foundation.\n\n");
+
+	fprintf(fp,"%s","  14. If you wish to incorporate parts of the Library into other free\n");
+	fprintf(fp,"%s","programs whose distribution conditions are incompatible with these,\n");
+	fprintf(fp,"%s","write to the author to ask for permission.  For software which is\n");
+	fprintf(fp,"%s","copyrighted by the Free Software Foundation, write to the Free\n");
+	fprintf(fp,"%s","Software Foundation; we sometimes make exceptions for this.  Our\n");
+	fprintf(fp,"%s","decision will be guided by the two goals of preserving the free status\n");
+	fprintf(fp,"%s","of all derivatives of our free software and of promoting the sharing\n");
+	fprintf(fp,"%s","and reuse of software generally.\n\n");
+
+	fprintf(fp,"%s","                            NO WARRANTY\n\n");
+
+	fprintf(fp,"%s","  15. BECAUSE THE LIBRARY IS LICENSED FREE OF CHARGE, THERE IS NO\n");
+	fprintf(fp,"%s","WARRANTY FOR THE LIBRARY, TO THE EXTENT PERMITTED BY APPLICABLE LAW.\n");
+	fprintf(fp,"%s","EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR\n");
+	fprintf(fp,"%s","OTHER PARTIES PROVIDE THE LIBRARY \"AS IS\" WITHOUT WARRANTY OF ANY\n");
+	fprintf(fp,"%s","KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE\n");
+	fprintf(fp,"%s","IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n");
+	fprintf(fp,"%s","PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE\n");
+	fprintf(fp,"%s","LIBRARY IS WITH YOU.  SHOULD THE LIBRARY PROVE DEFECTIVE, YOU ASSUME\n");
+	fprintf(fp,"%s","THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n\n");
+
+	fprintf(fp,"%s","  16. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN\n");
+	fprintf(fp,"%s","WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY\n");
+	fprintf(fp,"%s","AND/OR REDISTRIBUTE THE LIBRARY AS PERMITTED ABOVE, BE LIABLE TO YOU\n");
+	fprintf(fp,"%s","FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR\n");
+	fprintf(fp,"%s","CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE\n");
+	fprintf(fp,"%s","LIBRARY (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING\n");
+	fprintf(fp,"%s","RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A\n");
+	fprintf(fp,"%s","FAILURE OF THE LIBRARY TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF\n");
+	fprintf(fp,"%s","SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH\n");
+	fprintf(fp,"%s","DAMAGES.\n");
+
+	fclose(fp);
+}
+
+/* saves a LICENSE file for LGPL3 */
+static void save_license_lgpl3(char * filename)
+{
+	FILE * fp;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s","                   GNU LESSER GENERAL PUBLIC LICENSE\n");
+	fprintf(fp,"%s","                       Version 3, 29 June 2007\n\n");
+
+	fprintf(fp,"%s"," Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n");
+	fprintf(fp,"%s"," Everyone is permitted to copy and distribute verbatim copies\n");
+	fprintf(fp,"%s"," of this license document, but changing it is not allowed.\n\n");
+
+	fprintf(fp,"%s","  This version of the GNU Lesser General Public License incorporates\n");
+	fprintf(fp,"%s","the terms and conditions of version 3 of the GNU General Public\n");
+	fprintf(fp,"%s","License, supplemented by the additional permissions listed below.\n\n");
+
+	fprintf(fp,"%s","  0. Additional Definitions.\n\n");
+
+	fprintf(fp,"%s","  As used herein, \"this License\" refers to version 3 of the GNU Lesser\n");
+	fprintf(fp,"%s","General Public License, and the \"GNU GPL\" refers to version 3 of the GNU\n");
+	fprintf(fp,"%s","General Public License.\n\n");
+
+	fprintf(fp,"%s","  \"The Library\" refers to a covered work governed by this License,\n");
+	fprintf(fp,"%s","other than an Application or a Combined Work as defined below.\n\n");
+
+	fprintf(fp,"%s","  An \"Application\" is any work that makes use of an interface provided\n");
+	fprintf(fp,"%s","by the Library, but which is not otherwise based on the Library.\n");
+	fprintf(fp,"%s","Defining a subclass of a class defined by the Library is deemed a mode\n");
+	fprintf(fp,"%s","of using an interface provided by the Library.\n\n");
+
+	fprintf(fp,"%s","  A \"Combined Work\" is a work produced by combining or linking an\n");
+	fprintf(fp,"%s","Application with the Library.  The particular version of the Library\n");
+	fprintf(fp,"%s","with which the Combined Work was made is also called the \"Linked\n");
+	fprintf(fp,"%s","Version\".\n\n");
+
+	fprintf(fp,"%s","  The \"Minimal Corresponding Source\" for a Combined Work means the\n");
+	fprintf(fp,"%s","Corresponding Source for the Combined Work, excluding any source code\n");
+	fprintf(fp,"%s","for portions of the Combined Work that, considered in isolation, are\n");
+	fprintf(fp,"%s","based on the Application, and not on the Linked Version.\n\n");
+
+	fprintf(fp,"%s","  The \"Corresponding Application Code\" for a Combined Work means the\n");
+	fprintf(fp,"%s","object code and/or source code for the Application, including any data\n");
+	fprintf(fp,"%s","and utility programs needed for reproducing the Combined Work from the\n");
+	fprintf(fp,"%s","Application, but excluding the System Libraries of the Combined Work.\n\n");
+
+	fprintf(fp,"%s","  1. Exception to Section 3 of the GNU GPL.\n\n");
+
+	fprintf(fp,"%s","  You may convey a covered work under sections 3 and 4 of this License\n");
+	fprintf(fp,"%s","without being bound by section 3 of the GNU GPL.\n\n");
+
+	fprintf(fp,"%s","  2. Conveying Modified Versions.\n\n");
+
+	fprintf(fp,"%s","  If you modify a copy of the Library, and, in your modifications, a\n");
+	fprintf(fp,"%s","facility refers to a function or data to be supplied by an Application\n");
+	fprintf(fp,"%s","that uses the facility (other than as an argument passed when the\n");
+	fprintf(fp,"%s","facility is invoked), then you may convey a copy of the modified\n");
+	fprintf(fp,"%s","version:\n\n");
+
+	fprintf(fp,"%s","   a) under this License, provided that you make a good faith effort to\n");
+	fprintf(fp,"%s","   ensure that, in the event an Application does not supply the\n");
+	fprintf(fp,"%s","   function or data, the facility still operates, and performs\n");
+	fprintf(fp,"%s","   whatever part of its purpose remains meaningful, or\n\n");
+
+	fprintf(fp,"%s","   b) under the GNU GPL, with none of the additional permissions of\n");
+	fprintf(fp,"%s","   this License applicable to that copy.\n\n");
+
+	fprintf(fp,"%s","  3. Object Code Incorporating Material from Library Header Files.\n\n");
+
+	fprintf(fp,"%s","  The object code form of an Application may incorporate material from\n");
+	fprintf(fp,"%s","a header file that is part of the Library.  You may convey such object\n");
+	fprintf(fp,"%s","code under terms of your choice, provided that, if the incorporated\n");
+	fprintf(fp,"%s","material is not limited to numerical parameters, data structure\n");
+	fprintf(fp,"%s","layouts and accessors, or small macros, inline functions and templates\n");
+	fprintf(fp,"%s","(ten or fewer lines in length), you do both of the following:\n\n");
+
+	fprintf(fp,"%s","   a) Give prominent notice with each copy of the object code that the\n");
+	fprintf(fp,"%s","   Library is used in it and that the Library and its use are\n");
+	fprintf(fp,"%s","   covered by this License.\n\n");
+
+	fprintf(fp,"%s","   b) Accompany the object code with a copy of the GNU GPL and this license\n");
+	fprintf(fp,"%s","   document.\n\n");
+
+	fprintf(fp,"%s","  4. Combined Works.\n\n");
+
+	fprintf(fp,"%s","  You may convey a Combined Work under terms of your choice that,\n");
+	fprintf(fp,"%s","taken together, effectively do not restrict modification of the\n");
+	fprintf(fp,"%s","portions of the Library contained in the Combined Work and reverse\n");
+	fprintf(fp,"%s","engineering for debugging such modifications, if you also do each of\n");
+	fprintf(fp,"%s","the following:\n\n");
+
+	fprintf(fp,"%s","   a) Give prominent notice with each copy of the Combined Work that\n");
+	fprintf(fp,"%s","   the Library is used in it and that the Library and its use are\n");
+	fprintf(fp,"%s","   covered by this License.\n\n");
+
+	fprintf(fp,"%s","   b) Accompany the Combined Work with a copy of the GNU GPL and this license\n");
+	fprintf(fp,"%s","   document.\n\n");
+
+	fprintf(fp,"%s","   c) For a Combined Work that displays copyright notices during\n");
+	fprintf(fp,"%s","   execution, include the copyright notice for the Library among\n");
+	fprintf(fp,"%s","   these notices, as well as a reference directing the user to the\n");
+	fprintf(fp,"%s","   copies of the GNU GPL and this license document.\n\n");
+
+	fprintf(fp,"%s","   d) Do one of the following:\n\n");
+
+	fprintf(fp,"%s","       0) Convey the Minimal Corresponding Source under the terms of this\n");
+	fprintf(fp,"%s","       License, and the Corresponding Application Code in a form\n");
+	fprintf(fp,"%s","       suitable for, and under terms that permit, the user to\n");
+	fprintf(fp,"%s","       recombine or relink the Application with a modified version of\n");
+	fprintf(fp,"%s","       the Linked Version to produce a modified Combined Work, in the\n");
+	fprintf(fp,"%s","       manner specified by section 6 of the GNU GPL for conveying\n");
+	fprintf(fp,"%s","       Corresponding Source.\n\n");
+
+	fprintf(fp,"%s","       1) Use a suitable shared library mechanism for linking with the\n");
+	fprintf(fp,"%s","       Library.  A suitable mechanism is one that (a) uses at run time\n");
+	fprintf(fp,"%s","       a copy of the Library already present on the user's computer\n");
+	fprintf(fp,"%s","       system, and (b) will operate properly with a modified version\n");
+	fprintf(fp,"%s","       of the Library that is interface-compatible with the Linked\n");
+	fprintf(fp,"%s","       Version.\n\n");
+
+	fprintf(fp,"%s","   e) Provide Installation Information, but only if you would otherwise\n");
+	fprintf(fp,"%s","   be required to provide such information under section 6 of the\n");
+	fprintf(fp,"%s","   GNU GPL, and only to the extent that such information is\n");
+	fprintf(fp,"%s","   necessary to install and execute a modified version of the\n");
+	fprintf(fp,"%s","   Combined Work produced by recombining or relinking the\n");
+	fprintf(fp,"%s","   Application with a modified version of the Linked Version. (If\n");
+	fprintf(fp,"%s","   you use option 4d0, the Installation Information must accompany\n");
+	fprintf(fp,"%s","   the Minimal Corresponding Source and Corresponding Application\n");
+	fprintf(fp,"%s","   Code. If you use option 4d1, you must provide the Installation\n");
+	fprintf(fp,"%s","   Information in the manner specified by section 6 of the GNU GPL\n");
+	fprintf(fp,"%s","   for conveying Corresponding Source.)\n\n");
+
+	fprintf(fp,"%s","  5. Combined Libraries.\n\n");
+
+	fprintf(fp,"%s","  You may place library facilities that are a work based on the\n");
+	fprintf(fp,"%s","Library side by side in a single library together with other library\n");
+	fprintf(fp,"%s","facilities that are not Applications and are not covered by this\n");
+	fprintf(fp,"%s","License, and convey such a combined library under terms of your\n");
+	fprintf(fp,"%s","choice, if you do both of the following:\n\n");
+
+	fprintf(fp,"%s","   a) Accompany the combined library with a copy of the same work based\n");
+	fprintf(fp,"%s","   on the Library, uncombined with any other library facilities,\n");
+	fprintf(fp,"%s","   conveyed under the terms of this License.\n\n");
+
+	fprintf(fp,"%s","   b) Give prominent notice with the combined library that part of it\n");
+	fprintf(fp,"%s","   is a work based on the Library, and explaining where to find the\n");
+	fprintf(fp,"%s","   accompanying uncombined form of the same work.\n\n");
+
+	fprintf(fp,"%s","  6. Revised Versions of the GNU Lesser General Public License.\n\n");
+
+	fprintf(fp,"%s","  The Free Software Foundation may publish revised and/or new versions\n");
+	fprintf(fp,"%s","of the GNU Lesser General Public License from time to time. Such new\n");
+	fprintf(fp,"%s","versions will be similar in spirit to the present version, but may\n");
+	fprintf(fp,"%s","differ in detail to address new problems or concerns.\n\n");
+
+	fprintf(fp,"%s","  Each version is given a distinguishing version number. If the\n");
+	fprintf(fp,"%s","Library as you received it specifies that a certain numbered version\n");
+	fprintf(fp,"%s","of the GNU Lesser General Public License \"or any later version\"\n");
+	fprintf(fp,"%s","applies to it, you have the option of following the terms and\n");
+	fprintf(fp,"%s","conditions either of that published version or of any later version\n");
+	fprintf(fp,"%s","published by the Free Software Foundation. If the Library as you\n");
+	fprintf(fp,"%s","received it does not specify a version number of the GNU Lesser\n");
+	fprintf(fp,"%s","General Public License, you may choose any version of the GNU Lesser\n");
+	fprintf(fp,"%s","General Public License ever published by the Free Software Foundation.\n\n");
+
+	fprintf(fp,"%s","  If the Library as you received it specifies that a proxy can decide\n");
+	fprintf(fp,"%s","whether future versions of the GNU Lesser General Public License shall\n");
+	fprintf(fp,"%s","apply, that proxy's public statement of acceptance of any version is\n");
+	fprintf(fp,"%s","permanent authorization for you to choose that version for the\n");
+	fprintf(fp,"%s","Library.\n");
+
+	fclose(fp);
+}
+
 /* saves a LICENSE file for Mozilla */
 static void save_license_mozilla(char * filename)
 {
@@ -1477,7 +2121,9 @@ int valid_license(char * license)
 
 	/* check against a list of known licenses */
 	if ((strcmp(license,"gpl2")==0) ||
+		(strcmp(license,"lgpl2")==0) ||
 		(strcmp(license,"gpl3")==0) ||
+		(strcmp(license,"lgpl3")==0) ||
 		(strcmp(license,"mit")==0) ||
 		(strcmp(license,"bsd")==0) ||
 		(strcmp(license,"apache")==0) ||
@@ -1512,8 +2158,16 @@ int save_license(char * directory)
 		save_license_gpl2(filename);
 		return 0;
 	}
+	if (strcmp(license,"lgpl2")==0) {
+		save_license_lgpl2(filename);
+		return 0;
+	}
 	if (strcmp(license,"gpl3")==0) {
 		save_license_gpl3(filename);
+		return 0;
+	}
+	if (strcmp(license,"lgpl3")==0) {
+		save_license_lgpl3(filename);
 		return 0;
 	}
 	if (strcmp(license,"mit")==0) {

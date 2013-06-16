@@ -30,7 +30,8 @@ void show_help()
 	printf(" -b  --binary <filename>    " \
 		   "Set filename for pre-built binary to be packaged\n");
 	printf(" -l  --license <type>       " \
-		   "The license type (gpl2|gpl3|mit|bsd|apache|mozilla)\n");
+		   "The license type (gpl2|gpl3|lgpl2|lgpl3|mit|" \
+		   "bsd|apache|mozilla)\n");
 	printf(" -e  --email <address>      " \
 		   "Set full name and email address\n");
 	printf("     --brief <description>  " \

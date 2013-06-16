@@ -413,6 +413,133 @@ static int save_copyright_gpl(char * filename, float version)
 	return 0;
 }
 
+/* LGPL version 2 copyright file */
+static int save_copyright_lgpl2(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: LGPL-2.0+\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: LGPL-2.0+\n\n");
+
+	fprintf(fp,"%s","License: LGPL-2.0+\n");
+
+	fprintf(fp,"%s"," This package is free software; you can redistribute it and/or\n");
+	fprintf(fp,"%s"," modify it under the terms of the GNU Lesser General Public\n");
+	fprintf(fp,"%s"," License as published by the Free Software Foundation; either\n");
+	fprintf(fp,"%s"," version 2 of the License, or (at your option) any later version.\n .\n");
+
+	fprintf(fp,"%s"," This package is distributed in the hope that it will be useful,\n");
+	fprintf(fp,"%s"," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	fprintf(fp,"%s"," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n");
+	fprintf(fp,"%s"," Lesser General Public License for more details.\n .\n");
+
+	fprintf(fp,"%s"," You should have received a copy of the GNU General Public License\n");
+	fprintf(fp,"%s"," along with this program. If not, see <http://www.gnu.org/licenses/>.\n .\n");
+
+	fprintf(fp,"%s"," On Debian systems, the complete text of the GNU Lesser General\n");
+	fprintf(fp,"%s"," Public License can be found in \"/usr/share/common-licenses/LGPL-2\".\n");
+
+	fclose(fp);
+	return 0;
+}
+
+/* LGPL version 3 copyright file */
+static int save_copyright_lgpl3(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: LGPL-3.0+\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: LGPL-3.0+\n\n");
+
+	fprintf(fp,"%s","License: LGPL-3.0+\n");
+	fprintf(fp,"%s"," This package is free software; you can redistribute it and/or\n");
+	fprintf(fp,"%s"," modify it under the terms of the GNU Lesser General Public\n");
+	fprintf(fp,"%s"," License as published by the Free Software Foundation; either\n");
+	fprintf(fp,"%s"," version 3 of the License, or (at your option) any later version.\n .\n");
+
+	fprintf(fp,"%s"," This package is distributed in the hope that it will be useful,\n");
+	fprintf(fp,"%s"," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	fprintf(fp,"%s"," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU\n");
+	fprintf(fp,"%s"," Lesser General Public License for more details.\n .\n");
+
+	fprintf(fp,"%s"," You should have received a copy of the GNU General Public License\n");
+	fprintf(fp,"%s"," along with this program. If not, see <http://www.gnu.org/licenses/>.\n .\n");
+
+	fprintf(fp,"%s"," On Debian systems, the complete text of the GNU Lesser General\n");
+	fprintf(fp,"%s"," Public License can be found in \"/usr/share/common-licenses/LGPL-3\".\n");
+
+	fclose(fp);
+	return 0;
+}
+
 /* BSD version of the copyright file */
 static int save_copyright_bsd(char * filename)
 {
@@ -698,10 +825,10 @@ static int save_copyright_mozilla(char * filename)
 	fprintf(fp,"License: MPL-2.0\n\n");
 
 	fprintf(fp,"License: MPL-2.0\n");
-	fprintf(fp,"This Source Code Form is subject to the terms\n");
-	fprintf(fp,"of the Mozilla Public License, v. 2.0. If a copy\n");
-	fprintf(fp,"of the MPL was not distributed with this file,\n");
-	fprintf(fp,"You can obtain one at http://mozilla.org/MPL/2.0/.\n");
+	fprintf(fp," This Source Code Form is subject to the terms\n");
+	fprintf(fp," of the Mozilla Public License, v. 2.0. If a copy\n");
+	fprintf(fp," of the MPL was not distributed with this file,\n");
+	fprintf(fp," You can obtain one at http://mozilla.org/MPL/2.0/.\n");
 	fclose(fp);
 	return 0;
 }
@@ -730,9 +857,19 @@ static int save_copyright(char * directory)
 		return save_copyright_gpl(filename, 2.0f);
 	}
 
+	/* LGPL version 2 */
+	if (strstr(license,"lgpl2") != NULL) {
+		return save_copyright_lgpl2(filename);
+	}
+
 	/* GPL version 3 */
 	if (strstr(license,"gpl3") != NULL) {
 		return save_copyright_gpl(filename, 3.0f);
+	}
+
+	/* LGPL version 3 */
+	if (strstr(license,"lgpl3") != NULL) {
+		return save_copyright_lgpl3(filename);
 	}
 
 	/* BSD */
