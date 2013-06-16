@@ -243,3 +243,66 @@ int valid_gpg(char * email_address)
 
 	return 1;
 }
+
+/* attempts to detect the type of project */
+void detect_project_type(char * directory, char * project_type)
+{
+	char commandstr[BLOCK_SIZE];
+	char temp_filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+	int i, j, ctr=0;
+	FILE * fp;
+	const int no_of_types = 7;
+	const char * proj_type[] = {
+		"c","cpp","py","rbbas","rbfrm",
+		"vala","java"
+	};
+
+	sprintf(temp_filename,"%s%cpm_temp_result",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+
+	project_type[0] = 0;
+
+	/* for each type of file extension */
+	for (ctr = 0; ctr < 2; ctr++) {
+		for (i = 0; i < no_of_types; i++) {
+
+			if (ctr == 0) {
+				sprintf(commandstr,"ls %s%c*.%s > %s 2>&1",
+						directory, DIRECTORY_SEPARATOR, proj_type[i],
+						temp_filename);
+			}
+			else {
+				sprintf(commandstr,"ls %s%csrc%c*.%s > %s 2>&1",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR, proj_type[i],
+						temp_filename);
+			}
+
+			j = system(commandstr);
+
+			if (file_exists(temp_filename) == 0) continue;
+			fp = fopen(temp_filename,"r");
+			if (!fp) continue;
+		
+			while (!feof(fp)) {
+				if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+					if (strlen(linestr) == 0) continue;
+					for (j = 0; j < strlen(linestr); j++) {
+						if (linestr[j] == ':') {
+							break;
+						}
+					}
+					if (j == strlen(linestr)) {
+						sprintf(project_type,"%s",proj_type[i]);
+						break;
+					}
+				}
+			}
+
+			fclose(fp);
+			if (strlen(project_type) > 0) break;
+		}
+		if (strlen(project_type) > 0) break;
+	}
+}

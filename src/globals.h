@@ -59,5 +59,6 @@ int valid_license(char * license);
 int valid_email(char * email_address);
 int valid_gpg(char * email_address);
 void string_to_lower(char * str, char * result);
+void detect_project_type(char * directory, char * project_type);
 
 #endif

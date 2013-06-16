@@ -18,6 +18,47 @@
 
 #include "tests.h"
 
+static int test_detect_project()
+{
+	char commandstr[BLOCK_SIZE];
+	char directory[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	int retval, i;
+
+	const char * proj_type[] = {
+		"c","cpp","py","vala"
+	};
+
+	printf("test_detect_project...");
+
+	sprintf(directory,"%s%ctemp_5728",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+	if (directory_exists(directory) == 0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR, directory);
+		retval = system(commandstr);
+	}
+
+	for (i = 0; i < 4; i++) {
+		sprintf(commandstr,"%s %s%c*",
+				COMMAND_DELETE, directory, DIRECTORY_SEPARATOR);
+		retval = system(commandstr);
+
+		sprintf(commandstr,"touch %s%ctest.%s",
+				directory,
+				DIRECTORY_SEPARATOR, proj_type[i]);
+		retval = system(commandstr);
+
+		project_type[0]=0;
+		detect_project_type(directory, project_type);
+		assert(strlen(project_type) > 0);
+		assert(strcmp(project_type, proj_type[i]) == 0);
+	}
+
+	printf("Ok\n");
+
+	return retval;
+}
+
 static void test_makefile()
 {
 	FILE * fp;
@@ -176,4 +217,5 @@ void run_tests()
 	test_email();
 	test_categories();
 	test_makefile();
+	test_detect_project();
 }

@@ -35,6 +35,7 @@ int main(int argc, char* argv[])
 	int working_directory_specified = 0;
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
@@ -326,6 +327,12 @@ int main(int argc, char* argv[])
 		printf("%s is not a valid additional category\n\n",additional_category);
 		show_categories_additional();
 		return -1;
+	}
+
+	/* detect the type of project */
+	detect_project_type(directory, project_type);
+	if (strlen(project_type) > 0) {
+		add_setting("project type", project_type);
 	}
 
 	save_debian();
