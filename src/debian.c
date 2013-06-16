@@ -19,7 +19,8 @@
 #include "debian.h"
 
 char * monthname[] = {
-	"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
+	"Jan","Feb","Mar","Apr","May","Jun",
+	"Jul","Aug","Sep","Oct","Nov","Dec"
 };
 
 char * sections_squeeze[] = {
@@ -50,7 +51,8 @@ char * sections_wheezy[] = {
 	"x11","xfce","zope"
 };
 
-/* returns the version of Debian for which the package will be created */
+/* returns the version of Debian for which the package
+   will be created */
 static float get_debian_version()
 {
 	char str[BLOCK_SIZE];
@@ -63,7 +65,8 @@ static float get_debian_version()
 	return DEFAULT_DEBIAN_VERSION;
 }
 
-/* returns the Debian packaging standard based upon the OS version number */
+/* returns the Debian packaging standard based upon the
+   OS version number */
 static void get_debian_standard(char * standard)
 {
 	float debian_version = get_debian_version();
@@ -87,7 +90,8 @@ static void get_debhelper_version(char * debhelper_version)
 	sprintf(debhelper_version, "%s", "9.0.0");
 }
 
-/* returns the possible section names for the given Debian version */
+/* returns the possible section names for the given
+   Debian version */
 static int get_sections(char *** sections)
 {
 	float debian_version = get_debian_version();
@@ -132,7 +136,8 @@ int debian_valid_section(char * section)
 			}
 		}
 		else {
-			printf("Sections should only contain lower case letters or hyphens, with no spaces\n");
+			printf("Sections should only contain lower " \
+				   "case letters or hyphens, with no spaces\n");
 			return 0;
 		}
 	}
@@ -144,8 +149,10 @@ int debian_valid_section(char * section)
 			subsection[i] = section[i];
 		}
 		subsection[i] = 0;
-		if (match_string(subsection, sections, no_of_sections) == 0) {
-			printf("%s is not a permissable subsection name\n", subsection);
+		if (match_string(subsection, sections, \
+						 no_of_sections) == 0) {
+			printf("%s is not a permissable subsection name\n",
+				   subsection);
 			return 0;
 		}
 
@@ -154,14 +161,18 @@ int debian_valid_section(char * section)
 			subsection[i-(j+1)] = section[i];
 		}
 		subsection[i-(j+1)] = 0;
-		if (match_string(subsection, sections, no_of_sections) == 0) {
-			printf("%s is not a permissable subsection name\n",subsection);
+		if (match_string(subsection, sections, \
+						 no_of_sections) == 0) {
+			printf("%s is not a permissable subsection name\n",
+				   subsection);
 			return 0;
 		}
 	}
 	else {
-		if (match_string(section, sections, no_of_sections) == 0) {
-			printf("%s is not a permissable subsection name\n",section);
+		if (match_string(section, sections, \
+						 no_of_sections) == 0) {
+			printf("%s is not a permissable subsection name\n",
+				   section);
 			return 0;
 		}
 	}
@@ -183,7 +194,8 @@ static void save_compat()
 	get_debhelper_version(dh_version);
 
 	get_setting("directory", directory);
-	sprintf(filename,"%s%cdebian%ccompat", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cdebian%ccompat", directory,
+			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
 	fp = fopen(filename,"w");
 	if (!fp) return;
@@ -231,7 +243,8 @@ static void save_control()
 
 	/* get the variables */
 	get_setting("directory", directory);
-	sprintf(filename,"%s%cdebian%ccontrol", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cdebian%ccontrol", directory,
+			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 	get_setting("email", email_address);
 	get_setting("project", project_name);
 	get_setting("homepage",homepage);
@@ -352,34 +365,48 @@ static int save_copyright_gpl(char * filename, float version)
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
-	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
 	fprintf(fp,"Upstream-Name: %s\n",project_name);
 	fprintf(fp,"Source: %s\n\n",vcs_browser);
 
 	fprintf(fp,"Files: *\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: GPL-%.1f+\n\n",version);
 
 	fprintf(fp,"Files: debian/*\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: GPL-%.1f+\n\n",version);
 
 	fprintf(fp,"License: GPL-%.1f+\n",version);
-	fprintf(fp," This program is free software: you can redistribute it and/or modify\n");
-	fprintf(fp," it under the terms of the GNU General Public License as published by\n");
-	fprintf(fp," the Free Software Foundation, either version %d of the License, or\n",(int)version);
+	fprintf(fp," This program is free software: you " \
+			"can redistribute it and/or modify\n");
+	fprintf(fp," it under the terms of the GNU General " \
+			"Public License as published by\n");
+	fprintf(fp," the Free Software Foundation, either " \
+			"version %d of the License, or\n",(int)version);
 	fprintf(fp," (at your option) any later version.\n .\n");
 
-	fprintf(fp," This package is distributed in the hope that it will be useful,\n");
-	fprintf(fp," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-	fprintf(fp," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-	fprintf(fp," GNU General Public License for more details.\n .\n");
+	fprintf(fp," This package is distributed in the hope " \
+			"that it will be useful,\n");
+	fprintf(fp," but WITHOUT ANY WARRANTY; without even " \
+			"the implied warranty of\n");
+	fprintf(fp," MERCHANTABILITY or FITNESS FOR A " \
+			"PARTICULAR PURPOSE.  See the\n");
+	fprintf(fp," GNU General Public License for more " \
+			"details.\n .\n");
 
-	fprintf(fp," You should have received a copy of the GNU General Public License\n");
-	fprintf(fp," along with this program. If not, see <http://www.gnu.org/licenses/>.\n .\n");
+	fprintf(fp," You should have received a copy of the " \
+			"GNU General Public License\n");
+	fprintf(fp," along with this program. If not, see " \
+			"<http://www.gnu.org/licenses/>.\n .\n");
 
-	fprintf(fp," On Debian systems, the complete text of the GNU General\n");
-	fprintf(fp," Public License version %d can be found in \"/usr/share/common-licenses/GPL-%d\".\n",
+	fprintf(fp," On Debian systems, the complete text of " \
+			"the GNU General\n");
+	fprintf(fp," Public License version %d can be found " \
+			"in \"/usr/share/common-licenses/GPL-%d\".\n",
 			(int)version,(int)version);
 
 	fclose(fp);
@@ -413,42 +440,66 @@ static int save_copyright_bsd(char * filename)
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
-	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
 	fprintf(fp,"Upstream-Name: %s\n",project_name);
 	fprintf(fp,"Source: %s\n\n",vcs_browser);
 
 	fprintf(fp,"Files: *\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: BSD-3-Clause\n\n");
 
 	fprintf(fp,"Files: debian/*\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: BSD-3-Clause\n\n");
 
 	fprintf(fp,"License: BSD-3-Clause\n");
-	fprintf(fp," Redistribution and use in source and binary forms, with or without\n");
-	fprintf(fp," modification, are permitted provided that the following conditions\n");
+	fprintf(fp," Redistribution and use in source and " \
+			"binary forms, with or without\n");
+	fprintf(fp," modification, are permitted provided " \
+			"that the following conditions\n");
 	fprintf(fp," are met:\n");
-	fprintf(fp," 1. Redistributions of source code must retain the above copyright\n");
-	fprintf(fp,"    notice, this list of conditions and the following disclaimer.\n");
-	fprintf(fp," 2. Redistributions in binary form must reproduce the above copyright\n");
-	fprintf(fp,"    notice, this list of conditions and the following disclaimer in the\n");
-	fprintf(fp,"    documentation and/or other materials provided with the distribution.\n");
-	fprintf(fp," 3. Neither the name of the University nor the names of its contributors\n");
-	fprintf(fp,"    may be used to endorse or promote products derived from this software\n");
-	fprintf(fp,"    without specific prior written permission.\n .\n");
+	fprintf(fp," 1. Redistributions of source code must " \
+			"retain the above copyright\n");
+	fprintf(fp,"    notice, this list of conditions and " \
+			"the following disclaimer.\n");
+	fprintf(fp," 2. Redistributions in binary form must " \
+			"reproduce the above copyright\n");
+	fprintf(fp,"    notice, this list of conditions and " \
+			"the following disclaimer in the\n");
+	fprintf(fp,"    documentation and/or other materials " \
+			"provided with the distribution.\n");
+	fprintf(fp," 3. Neither the name of the University " \
+			"nor the names of its contributors\n");
+	fprintf(fp,"    may be used to endorse or promote " \
+			"products derived from this software\n");
+	fprintf(fp,"    without specific prior written " \
+			"permission.\n .\n");
 
-	fprintf(fp," THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n");
-	fprintf(fp," ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n");
-	fprintf(fp," LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n");
-	fprintf(fp," A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE HOLDERS OR\n");
-	fprintf(fp," CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,\n");
-	fprintf(fp," EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\n");
-	fprintf(fp," PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\n");
-	fprintf(fp," PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF\n");
-	fprintf(fp," LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING\n");
-	fprintf(fp," NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS\n");
-	fprintf(fp," SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n");
+	fprintf(fp," THIS SOFTWARE IS PROVIDED BY THE " \
+			"COPYRIGHT HOLDERS AND CONTRIBUTORS\n");
+	fprintf(fp," ``AS IS'' AND ANY EXPRESS OR IMPLIED " \
+			"WARRANTIES, INCLUDING, BUT NOT\n");
+	fprintf(fp," LIMITED TO, THE IMPLIED WARRANTIES OF " \
+			"MERCHANTABILITY AND FITNESS FOR\n");
+	fprintf(fp," A PARTICULAR PURPOSE ARE DISCLAIMED. " \
+			"IN NO EVENT SHALL THE HOLDERS OR\n");
+	fprintf(fp," CONTRIBUTORS BE LIABLE FOR ANY DIRECT, " \
+			"INDIRECT, INCIDENTAL, SPECIAL,\n");
+	fprintf(fp," EXEMPLARY, OR CONSEQUENTIAL DAMAGES " \
+			"(INCLUDING, BUT NOT LIMITED TO,\n");
+	fprintf(fp," PROCUREMENT OF SUBSTITUTE GOODS OR " \
+			"SERVICES; LOSS OF USE, DATA, OR\n");
+	fprintf(fp," PROFITS; OR BUSINESS INTERRUPTION) " \
+			"HOWEVER CAUSED AND ON ANY THEORY OF\n");
+	fprintf(fp," LIABILITY, WHETHER IN CONTRACT, STRICT " \
+			"LIABILITY, OR TORT (INCLUDING\n");
+	fprintf(fp," NEGLIGENCE OR OTHERWISE) ARISING IN ANY " \
+			"WAY OUT OF THE USE OF THIS\n");
+	fprintf(fp," SOFTWARE, EVEN IF ADVISED OF THE " \
+			"POSSIBILITY OF SUCH DAMAGE.\n");
 
 	fclose(fp);
 	return 0;
@@ -481,36 +532,54 @@ static int save_copyright_mit(char * filename)
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
-	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
 	fprintf(fp,"Upstream-Name: %s\n",project_name);
 	fprintf(fp,"Source: %s\n\n",vcs_browser);
 
 	fprintf(fp,"Files: *\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: MIT\n\n");
 
 	fprintf(fp,"Files: debian/*\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: MIT\n\n");
 
 	fprintf(fp,"License: MIT\n");
-	fprintf(fp," Permission is hereby granted, free of charge, to any person obtaining a\n");
-	fprintf(fp," copy of this software and associated documentation files (the \"Software\"),\n");
-	fprintf(fp," to deal in the Software without restriction, including without limitation\n");
-	fprintf(fp," the rights to use, copy, modify, merge, publish, distribute, sublicense,\n");
-	fprintf(fp," and/or sell copies of the Software, and to permit persons to whom the\n");
-	fprintf(fp," Software is furnished to do so, subject to the following conditions:\n .\n");
+	fprintf(fp," Permission is hereby granted, free of " \
+			"charge, to any person obtaining a\n");
+	fprintf(fp," copy of this software and associated " \
+			"documentation files (the \"Software\"),\n");
+	fprintf(fp," to deal in the Software without " \
+			"restriction, including without limitation\n");
+	fprintf(fp," the rights to use, copy, modify, merge, " \
+			"publish, distribute, sublicense,\n");
+	fprintf(fp," and/or sell copies of the Software, and " \
+			"to permit persons to whom the\n");
+	fprintf(fp," Software is furnished to do so, subject " \
+			"to the following conditions:\n .\n");
 
-	fprintf(fp," The above copyright notice and this permission notice shall be included\n");
-	fprintf(fp," in all copies or substantial portions of the Software.\n .\n");
+	fprintf(fp," The above copyright notice and this " \
+			"permission notice shall be included\n");
+	fprintf(fp," in all copies or substantial portions " \
+			"of the Software.\n .\n");
 
-	fprintf(fp," THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n");
-	fprintf(fp," OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n");
-	fprintf(fp," MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n");
-	fprintf(fp," IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\n");
-	fprintf(fp," CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, \n");
-	fprintf(fp," TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE \n");
-	fprintf(fp," SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n");
+	fprintf(fp," THE SOFTWARE IS PROVIDED \"AS IS\", " \
+			"WITHOUT WARRANTY OF ANY KIND, EXPRESS\n");
+	fprintf(fp," OR IMPLIED, INCLUDING BUT NOT LIMITED " \
+			"TO THE WARRANTIES OF\n");
+	fprintf(fp," MERCHANTABILITY, FITNESS FOR A PARTICULAR " \
+			"PURPOSE AND NONINFRINGEMENT.\n");
+	fprintf(fp," IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT " \
+			"HOLDERS BE LIABLE FOR ANY\n");
+	fprintf(fp," CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER " \
+			"IN AN ACTION OF CONTRACT, \n");
+	fprintf(fp," TORT OR OTHERWISE, ARISING FROM, OUT OF OR " \
+			"IN CONNECTION WITH THE \n");
+	fprintf(fp," SOFTWARE OR THE USE OR OTHER DEALINGS IN " \
+			"THE SOFTWARE.\n");
 
 	fclose(fp);
 	return 0;
@@ -543,34 +612,96 @@ static int save_copyright_apache(char * filename)
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
-	fprintf(fp,"Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
 	fprintf(fp,"Upstream-Name: %s\n",project_name);
 	fprintf(fp,"Source: %s\n\n",vcs_browser);
 
 	fprintf(fp,"Files: *\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: Apache-2.0\n\n");
 
 	fprintf(fp,"Files: debian/*\n");
-	fprintf(fp,"Copyright: Copyright %d %s\n",year,email_address);
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
 	fprintf(fp,"License: Apache-2.0\n\n");
 
 	fprintf(fp,"License: Apache-2.0\n");
-	fprintf(fp," Licensed under the Apache License, Version 2.0 (the \"License\");\n");
-	fprintf(fp," you may not use this file except in compliance with the License.\n");
+	fprintf(fp," Licensed under the Apache License, " \
+			"Version 2.0 (the \"License\");\n");
+	fprintf(fp," you may not use this file except in " \
+			"compliance with the License.\n");
 	fprintf(fp," You may obtain a copy of the License at\n .\n");
 
 	fprintf(fp," http://www.apache.org/licenses/LICENSE-2.0\n .\n");
 
-	fprintf(fp," Unless required by applicable law or agreed to in writing, software\n");
-	fprintf(fp," distributed under the License is distributed on an \"AS IS\" BASIS,\n");
-	fprintf(fp," WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n");
-	fprintf(fp," See the License for the specific language governing permissions and\n");
+	fprintf(fp," Unless required by applicable law or " \
+			"agreed to in writing, software\n");
+	fprintf(fp," distributed under the License is " \
+			"distributed on an \"AS IS\" BASIS,\n");
+	fprintf(fp," WITHOUT WARRANTIES OR CONDITIONS OF " \
+			"ANY KIND, either express or implied.\n");
+	fprintf(fp," See the License for the specific " \
+			"language governing permissions and\n");
 	fprintf(fp," limitations under the License.\n .\n");
 
-	fprintf(fp," On Debian systems, the complete text of the Apache version 2.0 license\n");
-	fprintf(fp," can be found in \"/usr/share/common-licenses/Apache-2.0\".\n");
+	fprintf(fp," On Debian systems, the complete text " \
+			"of the Apache version 2.0 license\n");
+	fprintf(fp," can be found in \"/usr/share/common-" \
+			"licenses/Apache-2.0\".\n");
 
+	fclose(fp);
+	return 0;
+}
+
+/* Mozilla version of the copyright file */
+static int save_copyright_mozilla(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"License: MPL-2.0\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"License: MPL-2.0\n\n");
+
+	fprintf(fp,"License: MPL-2.0\n");
+	fprintf(fp,"This Source Code Form is subject to the terms\n");
+	fprintf(fp,"of the Mozilla Public License, v. 2.0. If a copy\n");
+	fprintf(fp,"of the MPL was not distributed with this file,\n");
+	fprintf(fp,"You can obtain one at http://mozilla.org/MPL/2.0/.\n");
 	fclose(fp);
 	return 0;
 }
@@ -618,6 +749,12 @@ static int save_copyright(char * directory)
 	if (strstr(license,"apache") != NULL) {
 		return save_copyright_apache(filename);
 	}
+
+	/* Mozilla */
+	if ((strstr(license,"mozilla") != NULL) ||
+		(strstr(license,"mpl") != NULL)) {
+		return save_copyright_mozilla(filename);
+	}
 	return 0;
 }
 
@@ -647,21 +784,29 @@ static int save_rules(char * directory)
 	fprintf(fp,"application = $(CURDIR)/$(APP)\n");
 	fprintf(fp,"DEST_APP = $(CURDIR)/debian/$(APP)/usr/bin\n\n");
 
-	fprintf(fp,"CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)\n");
-	fprintf(fp,"CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)\n");
-	fprintf(fp,"CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS)\n");
-	fprintf(fp,"LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS)\n\n");
+	fprintf(fp,"CPPFLAGS:=$(shell dpkg-buildflags " \
+			"--get CPPFLAGS)\n");
+	fprintf(fp,"CFLAGS:=$(shell dpkg-buildflags " \
+			"--get CFLAGS)\n");
+	fprintf(fp,"CXXFLAGS:=$(shell dpkg-buildflags " \
+			"--get CXXFLAGS)\n");
+	fprintf(fp,"LDFLAGS:=$(shell dpkg-buildflags " \
+			"--get LDFLAGS)\n\n");
 
 	fprintf(fp,"build: build-stamp\n");
 	if ((strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0) ||
 		(strcmp(project_type,"C++")==0)) {
-		fprintf(fp,"	g++ -Wall -pedantic -O3 $(CFLAGS) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o ${APP} src/*.cpp -Isrc\n");
+		fprintf(fp,"	g++ -Wall -pedantic -O3 " \
+				"$(CFLAGS) $(LDFLAGS) $(CPPFLAGS) " \
+				"$(CXXFLAGS) -o ${APP} src/*.cpp -Isrc\n");
 	}
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0)) {
-		fprintf(fp,"	gcc -Wall -ansi -pedantic -O3 $(CFLAGS) $(LDFLAGS) $(CPPFLAGS) $(CXXFLAGS) -o $(APP) src/*.c -Isrc\n");
+		fprintf(fp,"	gcc -Wall -ansi -pedantic -O3 " \
+				"$(CFLAGS) $(LDFLAGS) $(CPPFLAGS) " \
+				"$(CXXFLAGS) -o $(APP) src/*.c -Isrc\n");
 	}
 	fprintf(fp,"build-arch: build-stamp\n");
 	fprintf(fp,"build-indep: build-stamp\n");
@@ -682,7 +827,8 @@ static int save_rules(char * directory)
 	fprintf(fp,"		 dh_installdirs\n\n");
 
 	fprintf(fp,"		 mkdir -m 755 -p $(DEST_APP)\n");
-	fprintf(fp,"		 install -m 755 --strip $(application) $(DEST_APP)\n\n");
+	fprintf(fp,"		 install -m 755 --strip " \
+			"$(application) $(DEST_APP)\n\n");
 
 	fprintf(fp,"binary-indep: build install\n");
 	fprintf(fp,"			  dh_shlibdeps\n");
@@ -703,7 +849,8 @@ static int save_rules(char * directory)
 	fprintf(fp,"binary-arch: build install\n\n");
 
 	fprintf(fp,"binary: binary-indep binary-arch\n");
-	fprintf(fp,".PHONY: build clean binary-indep binary-arch binary install\n");
+	fprintf(fp,".PHONY: build clean binary-indep " \
+			"binary-arch binary install\n");
 
 	fclose(fp);
 
@@ -761,7 +908,8 @@ static void save_manpages(char * directory)
 			project_name);
 	fp = fopen(filename,"w");
 	if (!fp) return;
-	fprintf(fp,".TH %s 1 \"%02d %s %d\" \"\" \"User's Manual\"\n\n",
+	fprintf(fp,".TH %s 1 \"%02d %s %d\" \"\" " \
+			"\"User's Manual\"\n\n",
 			project_name, day, monthname[month], year);
 
 	fprintf(fp,".SH \"NAME\"\n");
@@ -828,24 +976,28 @@ static void save_changelog(char * directory)
 	fp = fopen(filename,"w");
 	if (!fp) return;
 
-	fprintf(fp,"%s (%s-1) stable; urgency=medium\n\n",project_name,VERSION);
+	fprintf(fp,"%s (%s-1) stable; urgency=medium\n\n",
+			project_name,VERSION);
 	fprintf(fp,"  * Initial release\n\n");
 	fprintf(fp," -- %s  %s, %02d %s %d %02d:%02d:00 +0100\n",
-			email_address, dayname[weekday], day, monthname[month], year,
+			email_address, dayname[weekday],
+			day, monthname[month], year,
 			hour, min);
 
 	fclose(fp);
 }
 
 
-/* file containing list of binaries to be included in the source */
+/* file containing list of binaries to be included
+   in the source */
 static void save_include_binary(char * directory)
 {
 	FILE * fp;
 	char project_name[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 
-	sprintf(filename,"%s%cinclude-binaries",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cinclude-binaries",directory,
+			DIRECTORY_SEPARATOR);
 
 	if (file_exists(filename) != 0) return;
 
@@ -865,7 +1017,8 @@ static void save_format(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 
-	sprintf(filename,"%s%cformat",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cformat",directory,
+			DIRECTORY_SEPARATOR);
 
 	if (file_exists(filename) != 0) return;
 
@@ -904,7 +1057,8 @@ static void save_readme(char * directory)
 	char project_name[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 
-	sprintf(filename,"%s%cREADME.md",directory,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%cREADME.md",
+			directory,DIRECTORY_SEPARATOR);
 
 	if (file_exists(filename) != 0) return;
 
@@ -957,11 +1111,15 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"    ARCH_TYPE=\"i386\"\n");
 	fprintf(fp,"fi\n\n");
 
-	fprintf(fp,"#update version numbers automatically - so you don't have to\n");
-	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile rpm.sh\n");
-	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
+	fprintf(fp,"#update version numbers automatically - " \
+			"so you don't have to\n");
+	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/" \
+			"VERSION='${VERSION}'/g' Makefile rpm.sh\n");
+	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/" \
+			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
 
-	fprintf(fp,"# change the parent directory name to debian format\n");
+	fprintf(fp,"# change the parent directory name " \
+			"to debian format\n");
 	fprintf(fp,"mv ../${APP} ../${DIR}\n\n");
 
 	fprintf(fp,"# Create a source archive\n");
@@ -972,7 +1130,8 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"dpkg-buildpackage -F\n\n");
 
 	fprintf(fp,"# sign files\n");
-	fprintf(fp,"gpg -ba ../${APP}_${VERSION}-1_${ARCH_TYPE}.deb\n");
+	fprintf(fp,"gpg -ba ../${APP}_${VERSION}-1_$" \
+			"{ARCH_TYPE}.deb\n");
 	fprintf(fp,"gpg -ba ../${APP}_${VERSION}.orig.tar.gz\n\n");
 
 	fprintf(fp,"# restore the parent directory name\n");

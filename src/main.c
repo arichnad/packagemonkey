@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
 	char email_address[BLOCK_SIZE];
 	char main_category[BLOCK_SIZE];
 	char additional_category[BLOCK_SIZE];
+	char description_brief[BLOCK_SIZE];
+	char description[BLOCK_SIZE];
 
 	if (argc <= 1) {
 		show_help();
@@ -95,6 +97,12 @@ int main(int argc, char* argv[])
 		if (strcmp(argv[i],"--brief")==0) {
 			i++;
 			if (i < argc) {
+				if (strlen(argv[i]) > 66) {
+					printf("The brief description should " \
+						   "be less than 66 characters in " \
+						   "length\n");
+					return -1;
+				}
 				add_setting("description brief",argv[i]);
 			}
 			else {
@@ -186,16 +194,6 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No Debian section given\n");
-			}
-		}
-		/* Project type */
-		if (strcmp(argv[i],"--type")==0) {
-			i++;
-			if (i < argc) {
-				add_setting("project type",argv[i]);
-			}
-			else {
-				printf("No project type given\n");
 			}
 		}
 		/* Set desktop file categories */
@@ -291,41 +289,52 @@ int main(int argc, char* argv[])
 	/* check that the email address is valid */
 	get_setting("email", email_address);
 	if (strlen(email_address) == 0) {
-		printf("Please specify an email address using the --email option\n");
+		printf("Please specify an email address using " \
+			   "the --email option\n");
 		return -1;
 	}
 	if (valid_email(email_address) == 0) {
-		printf("%s is not a valid email.  Use the format:\n\n  name <user@domain_name>\n\n", email_address);
+		printf("%s is not a valid email.  Use the " \
+			   "format:\n\n  name <user@domain_name>\n\n",
+			   email_address);
 		return -1;
 	}
 	if (valid_gpg(email_address) == 0) {
-		printf("WARNING: The email address %s does not appear to be a GPG key.\n", email_address);
-		printf("Run 'gpg --list-keys' to see the keys on your system.\n");
-		printf("You will not be able to sign Debian packages without a GPG key.\n");
+		printf("WARNING: The email address %s does not " \
+			   "appear to be a GPG key.\n", email_address);
+		printf("Run 'gpg --list-keys' to see the keys on " \
+			   "your system.\n");
+		printf("You will not be able to sign Debian " \
+			   "packages without a GPG key.\n");
 	}
 
 	/* check that a homepage has been given */
 	get_setting("homepage", homepage);
 	if (strlen(homepage) == 0) {
-		printf("Please specify a project homepage URL using the --homepage option\n");
+		printf("Please specify a project homepage URL " \
+			   "using the --homepage option\n");
 		return -1;
 	}
 
 	get_setting("categories", categories);
-	parse_desktop_category(categories, main_category, additional_category);
+	parse_desktop_category(categories, main_category,
+						   additional_category);
 	if (strlen(main_category)==0) {
-		printf("No desktop file main category defined.  Use the --categories option to do this.\n\n");
+		printf("No desktop file main category defined.  " \
+			   "Use the --categories option to do this.\n\n");
 		show_categories_main();
 		return -1;
 	}
 	if (valid_main_category(main_category) == -1) {
-		printf("%s is not a valid main category\n\n",main_category);
+		printf("%s is not a valid main category\n\n",
+			   main_category);
 		show_categories_main();
 		return -1;
 	}
 	if ((strlen(additional_category) > 0) &&
 		(valid_main_category(additional_category) == -1)) {
-		printf("%s is not a valid additional category\n\n",additional_category);
+		printf("%s is not a valid additional category\n\n",
+			   additional_category);
 		show_categories_additional();
 		return -1;
 	}
@@ -334,6 +343,22 @@ int main(int argc, char* argv[])
 	detect_project_type(directory, project_type);
 	if (strlen(project_type) > 0) {
 		add_setting("project type", project_type);
+	}
+
+	/* check that a brief description as given */
+	get_setting("description brief",description_brief);
+	if (strlen(description_brief) == 0) {
+		printf("A brief, less than 66 characters, description " \
+			   "should be given using the --brief option\n");
+		return -1;
+	}
+
+	/* check that a description as given */
+	get_setting("description",description);
+	if (strlen(description) == 0) {
+		printf("A description of the project should be " \
+			   "given using the --desc option\n");
+		return -1;
 	}
 
 	save_license(directory);

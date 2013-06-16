@@ -1481,7 +1481,8 @@ int valid_license(char * license)
 		(strcmp(license,"mit")==0) ||
 		(strcmp(license,"bsd")==0) ||
 		(strcmp(license,"apache")==0) ||
-		(strcmp(license,"mozilla")==0)) {
+		(strcmp(license,"mozilla")==0) ||
+		(strcmp(license,"mpl")==0)) {
 		return 1;
 	}
 	return 0;
@@ -1527,7 +1528,8 @@ int save_license(char * directory)
 		save_license_apache(filename);
 		return 0;
 	}
-	if (strcmp(license,"mozilla")==0) {
+	if ((strcmp(license,"mozilla")==0) ||
+		(strcmp(license,"mpl")==0)) {
 		save_license_mozilla(filename);
 		return 0;
 	}

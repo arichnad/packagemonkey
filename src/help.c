@@ -20,21 +20,37 @@
 
 void show_help()
 {
-	printf("%s v%s - because packaging is harder than it needs to be\n\n", PROJECT_NAME, VERSION);
-	printf(" -d  --dir <directory>      Set the working directory\n");
-	printf(" -s  --scripts <directory>  Set directory containing scripts to be packaged\n");
-	printf(" -b  --binary <filename>    Set filename for pre-built binary to be packaged\n");
-	printf(" -l  --license <type>       The license type (gpl2|gpl3|mit|bsd|apache|mozilla)\n");
-	printf(" -e  --email <address>      Set full name and email address\n");
-	printf("     --type <c|c++>         Specify the type of project\n");
-	printf("     --brief <description>  A brief one line description of the project\n");
-	printf("     --desc <description>   A full description of the project\n");
-	printf("     --homepage <url>       URL of the project home page\n");
-	printf("     --section <sections>   Debian sections\n");
-	printf("     --list-sections        List the possible Debian sections\n");
-	printf("     --list-desktop         List the possible desktop file categories\n");
-	printf("     --debian <version>     Set the Debian version\n");
-	printf(" -t  --tests                Run unit tests\n");
-	printf(" -v  --version              Show version number\n");
-	printf(" -h  --help                 Show help\n");
+	printf("%s v%s - because packaging is harder than " \
+		   "it needs to be\n\n", PROJECT_NAME, VERSION);
+
+	printf(" -d  --dir <directory>      " \
+		   "Set the working directory\n");
+	printf(" -s  --scripts <directory>  " \
+		   "Set directory containing scripts to be packaged\n");
+	printf(" -b  --binary <filename>    " \
+		   "Set filename for pre-built binary to be packaged\n");
+	printf(" -l  --license <type>       " \
+		   "The license type (gpl2|gpl3|mit|bsd|apache|mozilla)\n");
+	printf(" -e  --email <address>      " \
+		   "Set full name and email address\n");
+	printf("     --brief <description>  " \
+		   "A brief one line description of the project\n");
+	printf("     --desc <description>   " \
+		   "A full description of the project\n");
+	printf("     --homepage <url>       " \
+		   "URL of the project home page\n");
+	printf("     --section <sections>   " \
+		   "Debian sections\n");
+	printf("     --list-sections        " \
+		   "List the possible Debian sections\n");
+	printf("     --list-desktop         " \
+		   "List the possible desktop file categories\n");
+	printf("     --debian <version>     " \
+		   "Set the Debian version\n");
+	printf(" -t  --tests                " \
+		   "Run unit tests\n");
+	printf(" -v  --version              " \
+		   "Show version number\n");
+	printf(" -h  --help                 " \
+		   "Show help\n");
 }
