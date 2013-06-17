@@ -166,7 +166,9 @@ int get_makefile_entry(char * section, char * entry)
 }
 
 /* replace the VERSION variable number within a makefile */
-static int replace_makefile_version(char * makefilename, char * project_version)
+static int replace_makefile_version(char * makefilename,
+									char * project_name,
+									char * project_version)
 {
 	char linestr[BLOCK_SIZE];
 	char new_filename[BLOCK_SIZE];
@@ -189,7 +191,12 @@ static int replace_makefile_version(char * makefilename, char * project_version)
 				fprintf(fp_new,"VERSION=%s\n",project_version);
 			}
 			else {
-				fprintf(fp_new,"%s",linestr);
+				if (strncmp(linestr,"APP=",4)==0) {
+					fprintf(fp_new,"APP=%s\n",project_name);
+				}
+				else {
+					fprintf(fp_new,"%s",linestr);
+				}
 			}
 		}
 	}
@@ -358,12 +365,16 @@ void save_makefile()
 	char svg_filename[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
 
 	/* get the project directory */
 	get_setting("directory",directory);
 
 	/* the type of project */
 	get_setting("project type",project_type);
+
+	/* the project name */
+	get_setting("project name",project_name);
 
 	/* the project version */
 	get_setting("version",project_version);
@@ -449,5 +460,5 @@ void save_makefile()
 	add_makefile_entry_to_file(filename, "clean",
 							   "rm -f rpmpackage/*.src.rpm");
 
-	replace_makefile_version(filename, project_version);
+	replace_makefile_version(filename, project_name, project_version);
 }
