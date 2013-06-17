@@ -30,6 +30,30 @@
 #include "rpm.h"
 #include "help.h"
 
+int validate_description(char * description)
+{
+	int retval = valid_description(description);
+	switch(retval) {
+	case -1: {
+		printf("A description of the project should be " \
+			   "given using the --desc option\n");
+		return -1;
+	}
+	case -2: {
+		printf("The description should not begin with an " \
+			   "indefinite or definite article such as \"A\", " \
+			   "\"An\", \"This\" or \"The\"\n");
+		return -1;
+	}
+	case -3: {
+		printf("The description should not begin with a " \
+			   "space or tab character\n");
+		return -1;
+	}
+	}
+	return 0;
+}
+
 int main(int argc, char* argv[])
 {
 	int i;
@@ -364,17 +388,15 @@ int main(int argc, char* argv[])
 
 	/* check that a brief description as given */
 	get_setting("description brief",description_brief);
-	if (strlen(description_brief) == 0) {
-		printf("A brief, less than 66 characters, description " \
-			   "should be given using the --brief option\n");
+	if (validate_description(description_brief) < 0) {
+		printf("Brief description: %s\n", description_brief);
 		return -1;
 	}
 
 	/* check that a description as given */
 	get_setting("description",description);
-	if (strlen(description) == 0) {
-		printf("A description of the project should be " \
-			   "given using the --desc option\n");
+	if (validate_description(description) < 0) {
+		printf("Description: %s\n", description);
 		return -1;
 	}
 

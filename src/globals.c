@@ -285,3 +285,36 @@ void detect_project_type(char * directory, char * project_type)
 		if (strlen(project_type) > 0) break;
 	}
 }
+
+/* returns 1 if the given description is valid */
+int valid_description(char * description)
+{
+	int i;
+	const int no_of_articles = 4;
+	const char * article[] = {
+		"A","An","This","The"
+	};
+	char str[BLOCK_SIZE];
+
+	/* non-zero length */
+	if (strlen(description) == 0) return -1;
+
+	/* first character should be upper case */
+	description[0] = toupper(description[0]);
+
+	/* should not begin with an indefinite article */
+	for (i = 0; i < no_of_articles; i++) {
+		if (strlen(description) > strlen(article[i])+1) {
+			sprintf(str,"%s ",article[i]);
+			if (strncmp(description, str, strlen(str))==0) return -2;
+		}
+	}
+
+	/* should not begin with a space or tab */
+	if ((description[0] == ' ') ||
+		(description[0] == '\t')) {
+		return -3;
+	}
+
+	return 1;
+}
