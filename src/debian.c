@@ -1071,6 +1071,7 @@ static void save_changelog(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_version[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -1096,13 +1097,14 @@ static void save_changelog(char * directory)
 	min = timeinfo->tm_min;
 
 	get_setting("project name",project_name);
+	get_setting("version",project_version);
 	get_setting("email",email_address);
 
 	fp = fopen(filename,"w");
 	if (!fp) return;
 
 	fprintf(fp,"%s (%s-1) stable; urgency=medium\n\n",
-			project_name,VERSION);
+			project_name,project_version);
 	fprintf(fp,"  * Initial release\n\n");
 	fprintf(fp," -- %s  %s, %02d %s %d %02d:%02d:00 +0100\n",
 			email_address, dayname[weekday],

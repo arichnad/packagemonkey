@@ -165,6 +165,46 @@ int get_makefile_entry(char * section, char * entry)
 	return get_makefile_entry_from_file(filename, section, entry);
 }
 
+/* replace the VERSION variable number within a makefile */
+static int replace_makefile_version(char * makefilename, char * project_version)
+{
+	char linestr[BLOCK_SIZE];
+	char new_filename[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	FILE * fp, * fp_new;
+	int retval=0;
+
+	sprintf(new_filename,"%s.new", makefilename);
+
+	fp_new = fopen(new_filename,"w");
+	if (!fp_new) return -1;
+	
+	fp = fopen(makefilename,"r");
+	if (!fp) return -1;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			if (strncmp(linestr,"VERSION=",8)==0) {
+				fprintf(fp_new,"VERSION=%s\n",project_version);
+			}
+			else {
+				fprintf(fp_new,"%s",linestr);
+			}
+		}
+	}
+
+	fclose(fp);
+	fclose(fp_new);
+
+	sprintf(commandstr,"%s %s %s",COMMAND_COPY,
+			new_filename,makefilename);
+	retval = system(commandstr);
+	sprintf(commandstr,"%s %s",COMMAND_DELETE,new_filename);
+	retval = system(commandstr);
+	return retval;
+}
+
 /* adds an entry into a makefile */
 int add_makefile_entry_to_file(char * makefilename,
 							   char * section, char * entry)
@@ -317,12 +357,16 @@ void save_makefile()
 	char filename[BLOCK_SIZE];
 	char svg_filename[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
+	char project_version[BLOCK_SIZE];
 
 	/* get the project directory */
 	get_setting("directory",directory);
 
 	/* the type of project */
 	get_setting("project type",project_type);
+
+	/* the project version */
+	get_setting("version",project_version);
 
 	/* path and filename */
 	sprintf(filename,"%s%cMakefile",directory,
@@ -404,4 +448,6 @@ void save_makefile()
 							   "rm -f ../$(APP)*.deb ../$(APP)*.changes ../$(APP)*.asc ../$(APP)*.dsc");
 	add_makefile_entry_to_file(filename, "clean",
 							   "rm -f rpmpackage/*.src.rpm");
+
+	replace_makefile_version(filename, project_version);
 }
