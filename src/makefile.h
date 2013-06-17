@@ -28,7 +28,8 @@
 #include "settings.h"
 
 void save_makefile_as(char * filename);
-void save_makefile();
+void save_makefile(int no_of_binaries, char ** binaries,
+				   int no_of_libraries, char ** libraries);
 int get_makefile_entry_from_file(char * makefilename, char * section, char * entry);
 int get_makefile_entry(char * section, char * entry);
 int add_makefile_entry_to_file(char * makefilename, char * section, char * entry);

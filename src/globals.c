@@ -365,3 +365,56 @@ int replace_build_script_version(char * filename,
 	retval = system(commandstr);
 	return retval;
 }
+
+/* separates the given files string into an array of separate filenames */
+int separate_files(char * files, char ** result, int max_files)
+{
+	int i,ctr=0,initial=1;
+	char filename[BLOCK_SIZE];
+	int no_of_files = 0;
+
+	for (i = 0; i < strlen(files); i++) {
+		if ((files[i] == ',') ||
+			(files[i] == ';') ||
+			(i == strlen(files)-1)) {
+			if ((i == strlen(files)-1) &&
+				(files[i] != ',') &&
+				(files[i] != ';') &&
+				(files[i] != 10) &&
+				(files[i] != 13)) {
+				filename[ctr++] = files[i];
+			}
+			filename[ctr]=0;
+			sprintf(result[no_of_files],"%s",filename);
+			no_of_files++;
+			if (no_of_files >= max_files) {
+				break;
+			}
+			/* reset */
+			initial = 1;
+			ctr = 0;
+		}
+		else {
+			if (initial == 1) {
+				if ((files[i] != ' ') &&
+					(files[i] != '\t')) {
+					initial = 0;
+				}
+			}
+			if (initial == 0) {
+				if ((files[i] != 10) &&
+					(files[i] != 13)) {
+					filename[ctr++] = files[i];
+				}
+			}
+		}
+	}
+
+	if ((ctr > 0) && (no_of_files < max_files-1)) {
+		filename[ctr]=0;
+
+		sprintf(result[no_of_files],"%s",filename);
+		no_of_files++;
+	}
+	return no_of_files;
+}

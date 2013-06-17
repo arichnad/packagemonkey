@@ -301,20 +301,25 @@ static void save_control()
 		str[ctr++] = description[i];
 		if (ctr == 76) {
 			j = ctr-1;
-			while (str[j] != ' ') {
+			if (str[j] != ' ') {
+				while (str[j] != ' ') {
+					j--;
+				}
+			}
+			while (str[j] == ' ') {
 				j--;
 			}
+			j++;
 			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c",str[k]);
+				fprintf(fp,"%c", str[k]);
 			}
 			fprintf(fp,"\n");
-			for (k = j; k < ctr; k++) {
-				str[k-j] = str[j];
-			}
-			ctr = ctr-j;
+			i -= ctr-j-1;
+			str[0] = ' ';
+			ctr = 1;			
 		}
 		else {
-			if (description[i]=='\n') {
+			if (description[i] == '\n') {
 				if (ctr > 0) {
 					str[ctr] = 0;
 					if (strlen(str) > 0) {
@@ -1077,7 +1082,7 @@ static void save_changelog(char * directory)
 	struct tm * timeinfo;
 	int year,month,day,weekday,hour,min;
 	char * dayname[] = {
-		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 	};
 
 	sprintf(filename,"%s%cdebian%cchangelog",directory,

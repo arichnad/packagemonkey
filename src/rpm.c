@@ -34,14 +34,14 @@ static int save_spec(char * directory)
 	int ctr,i,j,k;
 	char str[BLOCK_SIZE];
 	const char * dayname[] = {
-		"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 	};
 	const char * monthname[] = {
 		"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
 	};
 	time_t rawtime;
 	struct tm * timeinfo;
-	int year,month,day;
+	int year,month,day,weekday;
 
 	/* get the current year */
 	time(&rawtime);
@@ -49,6 +49,7 @@ static int save_spec(char * directory)
 	year = timeinfo->tm_year + 1900;
 	month = timeinfo->tm_mon;
 	day = timeinfo->tm_mday;
+	weekday = timeinfo->tm_wday;
 
 	get_setting("project name", project_name);
 	if (strlen(project_name) == 0) return -1;
@@ -92,17 +93,21 @@ static int save_spec(char * directory)
 		str[ctr++] = description[i];
 		if (ctr == 76) {
 			j = ctr-1;
-			while (str[j] != ' ') {
+			if (str[j] != ' ') {
+				while (str[j] != ' ') {
+					j--;
+				}
+			}
+			while (str[j] == ' ') {
 				j--;
 			}
+			j++;
 			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c",str[k]);
+				fprintf(fp,"%c", str[k]);
 			}
 			fprintf(fp,"\n");
-			for (k = j; k < ctr; k++) {
-				str[k-j] = str[j];
-			}
-			ctr = ctr-j;
+			i -= ctr-j-1;
+			ctr = 0;		
 		}
 		else {
 			if (description[i]=='\n') {
@@ -115,6 +120,14 @@ static int save_spec(char * directory)
 					ctr = 0;
 				}
 			}
+		}
+	}
+
+	/* print the anything left over */
+	if (ctr > 0) {
+		str[ctr] = 0;
+		if (strlen(str) > 1) {
+			fprintf(fp, "%s\n", str);
 		}
 	}
 
@@ -160,7 +173,7 @@ static int save_spec(char * directory)
 
 	fprintf(fp,"%s","%changelog\n");
 	fprintf(fp,"* %s %s %d %d  %s\n",
-			dayname[day], monthname[month], day, year, email_address);
+			dayname[weekday], monthname[month], day, year, email_address);
 	fprintf(fp,"%s","- Spec file created\n");
 
 	fclose(fp);

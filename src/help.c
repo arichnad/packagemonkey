@@ -27,8 +27,10 @@ void show_help()
 		   "Set the working directory\n");
 	printf(" -s  --scripts <directory>  " \
 		   "Set directory containing scripts to be packaged\n");
-	printf(" -b  --binary <filename>    " \
-		   "Set filename for pre-built binary to be packaged\n");
+	printf(" -b  --binaries <files>     " \
+		   "Filename/s for pre-built binaries to be packaged\n");
+	printf("     --libs <files>         " \
+		   "Filename/s for pre-built libraries to be packaged\n");
 	printf(" -l  --license <type>       " \
 		   "The license type (gpl2|gpl3|lgpl2|lgpl3|mit|" \
 		   "bsd|apache|mozilla)\n");

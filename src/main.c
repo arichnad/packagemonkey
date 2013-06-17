@@ -30,6 +30,18 @@
 #include "rpm.h"
 #include "help.h"
 
+/* deallocates memory used for filenames */
+void free_filenames(char ** filenames, int no_of_filenames)
+{
+	int i;
+	if (no_of_filenames > 0) {
+		for (i = 0; i < MAX_FILES; i++) {
+			free(filenames[i]);
+			filenames[i]=0;
+		}
+	}
+}
+
 int validate_description(char * description)
 {
 	int retval = valid_description(description);
@@ -57,6 +69,8 @@ int validate_description(char * description)
 int main(int argc, char* argv[])
 {
 	int i;
+	int no_of_binaries = 0;
+	int no_of_libraries = 0;
 	int working_directory_specified = 0;
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
@@ -71,6 +85,10 @@ int main(int argc, char* argv[])
 	char additional_category[BLOCK_SIZE];
 	char description_brief[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
+	char str[BLOCK_SIZE*4];
+	char test_filename[BLOCK_SIZE];
+	char * binaries[MAX_FILES];
+	char * libraries[MAX_FILES];
 
 	if (argc <= 1) {
 		show_help();
@@ -162,14 +180,25 @@ int main(int argc, char* argv[])
 		}
 		/* binary file or script to be packaged */
 		if ((strcmp(argv[i],"-b")==0) ||
-			(strcmp(argv[i],"--binary")==0) ||
+			(strcmp(argv[i],"--binaries")==0) ||
 			(strcmp(argv[i],"--executable")==0)) {
 			i++;
 			if (i < argc) {
-				add_setting("binary",argv[i]);
+				add_setting("binaries",argv[i]);
 			}
 			else {
 				printf("No binary filename given\n");
+			}
+		}
+		/* libraries to be packaged */
+		if ((strcmp(argv[i],"--libs")==0) ||
+			(strcmp(argv[i],"--libraries")==0)) {
+			i++;
+			if (i < argc) {
+				add_setting("libraries",argv[i]);
+			}
+			else {
+				printf("No libraries given\n");
 			}
 		}
 		/* scripts to be packaged */
@@ -380,6 +409,7 @@ int main(int argc, char* argv[])
 	}
 
 	/* detect the type of project */
+	add_setting("project type", "");
 	detect_project_type(directory, project_type);
 	if (strlen(project_type) > 0) {
 		add_setting("project type", project_type);
@@ -402,11 +432,74 @@ int main(int argc, char* argv[])
 
 	printf("Project Version: %s\n", project_version);
 
+	/* get the binary files to be packaged */
+	get_setting("binaries",str);
+	if (strlen(str) > 0) {
+		/* allocate memory for filenames */
+		for (i = 0; i < MAX_FILES; i++) {
+			binaries[i] = (char*)malloc(BLOCK_SIZE);
+		}
+		no_of_binaries = separate_files(str, binaries,
+										MAX_FILES);
+		for (i = 0; i < no_of_binaries; i++) {
+			printf("Binary file: %s\n",binaries[i]);
+			if (binaries[i][0] != DIRECTORY_SEPARATOR) {
+				sprintf(test_filename,"%s%c%s",directory,
+						DIRECTORY_SEPARATOR,
+						binaries[i]);
+			}
+			else {
+				sprintf(test_filename,"%s",binaries[i]);
+			}
+			if (file_exists(test_filename) == 0) {
+				printf("File not found\n");
+				/* deallocate memory */
+				free_filenames(binaries,no_of_binaries);
+				free_filenames(libraries,no_of_libraries);
+				return -1;
+			}
+		}
+	}
+
+	/* get the library files to be packaged */
+	get_setting("libraries",str);
+	if (strlen(str) > 0) {
+		/* allocate memory for filenames */
+		for (i = 0; i < MAX_FILES; i++) {
+			libraries[i] = (char*)malloc(BLOCK_SIZE);
+		}
+		no_of_libraries = separate_files(str, libraries,
+										 MAX_FILES);
+		for (i = 0; i < no_of_libraries; i++) {
+			printf("Library file: %s\n",libraries[i]);
+			if (libraries[i][0] != DIRECTORY_SEPARATOR) {
+				sprintf(test_filename,"%s%c%s",directory,
+						DIRECTORY_SEPARATOR,
+						libraries[i]);
+			}
+			else {
+				sprintf(test_filename,"%s",libraries[i]);
+			}
+			if (file_exists(test_filename) == 0) {
+				printf("File not found\n");
+				/* deallocate memory */
+				free_filenames(binaries,no_of_binaries);
+				free_filenames(libraries,no_of_libraries);
+				return -1;
+			}
+		}
+	}
+
 	save_license(directory);
 	save_debian();
 	save_desktop();
-	save_makefile();
+	save_makefile(no_of_binaries,binaries,
+				  no_of_libraries,libraries);
 	save_rpm();
+
+	/* free memory */
+	free_filenames(binaries,no_of_binaries);
+	free_filenames(libraries,no_of_libraries);
 
 	return 0;
 }

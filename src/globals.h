@@ -43,6 +43,9 @@
 /* separator used within the settings */
 #define SETTINGS_SEPARATOR '\t'
 
+/* the maximum number of binary or library files given */
+#define MAX_FILES 20
+
 /* commands */
 #define COMMAND_MKDIR  "mkdir"
 #define COMMAND_COPY   "cp"
@@ -63,5 +66,6 @@ int valid_description(char * description);
 int replace_build_script_version(char * filename,
 								 char * project_name,
 								 char * project_version);
+int separate_files(char * files, char ** result, int max_files);
 
 #endif

@@ -295,6 +295,7 @@ void save_makefile_as(char * filename)
 
 	fprintf(fp,"APP=%s\n",project_name);
 	fprintf(fp,"VERSION=%s\n",project_version);
+	fprintf(fp,"%s","RELEASE=1\n");
 	fprintf(fp,"ARCH_TYPE=`uname -m`\n\n");
 
 	fprintf(fp,"all:\n");
@@ -311,10 +312,13 @@ void save_makefile_as(char * filename)
 }
 
 /* saves a makefile */
-void save_makefile()
+void save_makefile(int no_of_binaries, char ** binaries,
+				   int no_of_libraries, char ** libraries)
 {
+	int i,j;
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char str[BLOCK_SIZE];
 	char svg_filename[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
@@ -341,8 +345,37 @@ void save_makefile()
 	/* add lines to the makefile if they don't exist */
 	add_makefile_entry_to_file(filename, "source",
 							   "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
-	add_makefile_entry_to_file(filename, "install",
-							   "install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
+	if ((strcmp(project_type,"c")==0) ||
+		(strcmp(project_type,"C")==0) ||
+	    (strcmp(project_type,"c++")==0) ||
+		(strcmp(project_type,"C++")==0) ||
+		(strcmp(project_type,"cpp")==0) ||
+		(strcmp(project_type,"CPP")==0)) {
+		add_makefile_entry_to_file(filename, "install",
+								   "install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
+	}
+	for (i = 0; i < no_of_binaries; i++) {
+		sprintf(str,"install -m 755 --strip %s $(DESTDIR)/usr/bin",binaries[i]);
+		add_makefile_entry_to_file(filename, "install",str);
+	}
+	for (i = 0; i < no_of_libraries; i++) {
+		for (j=strlen(libraries[i])-1; j>=0; j--) {
+			if (libraries[i][j] == DIRECTORY_SEPARATOR) {
+				j++;
+				break;
+			}
+		}
+		sprintf(str,"install -m 755 %s $(DESTDIR)/usr/lib/%s",
+				libraries[i], &libraries[i][j]);
+		add_makefile_entry_to_file(filename, "install",str);
+
+		sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) $(DESTDIR)/usr/lib/%s",
+				&libraries[i][j], &libraries[i][j]);
+		add_makefile_entry_to_file(filename, "install",str);
+	}
+	if (no_of_libraries > 0) {
+		add_makefile_entry_to_file(filename, "install","ldconfig");
+	}
 	add_makefile_entry_to_file(filename, "install",
 							   "install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
 	add_makefile_entry_to_file(filename, "install",
