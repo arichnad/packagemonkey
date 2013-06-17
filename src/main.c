@@ -53,7 +53,8 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	add_setting("version","0.10");
+	sprintf(project_version,"%s","0.10");
+	add_setting("version",project_version);
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -72,7 +73,8 @@ int main(int argc, char* argv[])
 			/* multiple options */
 			i++;
 			if (i < argc) {
-				add_setting("version",argv[i]);
+				sprintf(project_version, "%s", argv[i]);
+				add_setting("version", project_version);
 			}
 			else {
 				printf("No version number given\n");
@@ -376,10 +378,12 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	printf("Project Version: %s\n", project_version);
+
 	save_license(directory);
 	save_debian();
-	save_makefile();
 	save_desktop();
+	save_makefile();
 	save_rpm();
 
 	return 0;

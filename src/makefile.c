@@ -315,6 +315,7 @@ void save_makefile()
 {
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char svg_filename[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 
 	/* get the project directory */
@@ -358,10 +359,13 @@ void save_makefile()
 							   "install -m 644 desktop/$(APP).desktop /usr/share/applications/$(APP)/$(APP).desktop");
 	add_makefile_entry_to_file(filename, "install",
 							   "install -m 644 desktop/icon24.png /usr/share/icons/hicolor/24x24/apps/$(APP).png");
-	add_makefile_entry_to_file(filename, "install",
-							   "install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg");
-	add_makefile_entry_to_file(filename, "install",
-							   "install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg");
+	sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	if (file_exists(svg_filename) != 0) {
+		add_makefile_entry_to_file(filename, "install",
+								   "install -m 644 desktop/icon.svg /usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+		add_makefile_entry_to_file(filename, "install",
+								   "install -m 644 desktop/icon.svg /usr/share/pixmaps/$(APP).svg");
+	}
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0)) {

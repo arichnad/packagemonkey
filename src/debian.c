@@ -1241,14 +1241,16 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/" \
 			"VERSION='${VERSION}'/g' Makefile rpm.sh\n");
 	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/" \
-			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
+			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n\n");
+
+	fprintf(fp,"make clean\n");
+	fprintf(fp,"make\n\n");
 
 	fprintf(fp,"# change the parent directory name " \
 			"to debian format\n");
 	fprintf(fp,"mv ../${APP} ../${DIR}\n\n");
 
 	fprintf(fp,"# Create a source archive\n");
-	fprintf(fp,"make clean\n");
 	fprintf(fp,"make source\n\n");
 
 	fprintf(fp,"# Build the package\n");
