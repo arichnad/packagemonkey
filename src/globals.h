@@ -60,5 +60,8 @@ int valid_gpg(char * email_address);
 void string_to_lower(char * str, char * result);
 void detect_project_type(char * directory, char * project_type);
 int valid_description(char * description);
+int replace_build_script_version(char * filename,
+								 char * project_name,
+								 char * project_version);
 
 #endif

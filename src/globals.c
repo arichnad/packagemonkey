@@ -318,3 +318,50 @@ int valid_description(char * description)
 
 	return 1;
 }
+
+/* changes the version number and project name within the build script */
+int replace_build_script_version(char * filename,
+								 char * project_name,
+								 char * project_version)
+{
+	char linestr[BLOCK_SIZE];
+	char new_filename[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	FILE * fp, * fp_new;
+	int retval=0;
+
+	sprintf(new_filename,"%s.new", filename);
+
+	fp_new = fopen(new_filename,"w");
+	if (!fp_new) return -1;
+	
+	fp = fopen(filename,"r");
+	if (!fp) return -1;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			if (strncmp(linestr,"VERSION=",8)==0) {
+				fprintf(fp_new,"VERSION=%s\n",project_version);
+			}
+			else {
+				if (strncmp(linestr,"APP=",4)==0) {
+					fprintf(fp_new,"APP=%s\n",project_name);
+				}
+				else {
+					fprintf(fp_new,"%s",linestr);
+				}
+			}
+		}
+	}
+
+	fclose(fp);
+	fclose(fp_new);
+
+	sprintf(commandstr,"%s %s %s",COMMAND_COPY,
+			new_filename,filename);
+	retval = system(commandstr);
+	sprintf(commandstr,"%s %s",COMMAND_DELETE,new_filename);
+	retval = system(commandstr);
+	return retval;
+}

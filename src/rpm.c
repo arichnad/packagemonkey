@@ -56,7 +56,6 @@ static int save_spec(char * directory)
 	sprintf(filename,"%s%c%s.spec",
 			directory, DIRECTORY_SEPARATOR,
 			project_name);
-	if (file_exists(filename) != 0) return -1;
 
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
@@ -182,7 +181,14 @@ static int save_script(char * directory, char * subdir)
 	sprintf(filename,"%s%crpm.sh",
 			directory, DIRECTORY_SEPARATOR);
 
-	if (file_exists(filename) != 0) return -1;
+	if (file_exists(filename) != 0) {
+		/* if the script already exists then
+		   change the version number and app name */
+		replace_build_script_version(filename,
+									 project_name,
+									 version);
+		return -1;
+	}
 
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
@@ -199,7 +205,7 @@ static int save_script(char * directory, char * subdir)
 
 	fprintf(fp, "%s", "#update version numbers automatically - so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile debian.sh\n");
-	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' %s/${APP}.spec\n",subdir);
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' %s/${APP}.spec\n\n",subdir);
 
 	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");

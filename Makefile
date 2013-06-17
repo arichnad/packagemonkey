@@ -1,5 +1,5 @@
 APP=packagemonkey
-VERSION=0.20
+VERSION=0.10
 ARCH_TYPE=`uname -m`
 
 all:

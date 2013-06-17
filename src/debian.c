@@ -1215,10 +1215,18 @@ static int save_debian_build_script(char * directory)
 	sprintf(filename,"%s%cdebian.sh",
 			directory, DIRECTORY_SEPARATOR);
 
-	if (file_exists(filename) != 0) return 0;
-
 	get_setting("project name",project_name);
 	get_setting("version",project_version);
+
+	if (file_exists(filename) != 0) {
+		/* if the script already exists then
+		   change the application name
+		   and version number if needed */
+		replace_build_script_version(filename,
+									 project_name,
+									 project_version);
+		return 0;
+	}
 
 	fp = fopen(filename,"w");
 	if (!fp) return 0;
