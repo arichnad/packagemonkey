@@ -31,6 +31,6 @@
 
 void debian_list_sections();
 int debian_valid_section(char * section);
-int save_debian();
+int save_debian(int no_of_binaries, char ** binaries);
 
 #endif

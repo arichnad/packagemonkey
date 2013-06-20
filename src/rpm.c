@@ -18,7 +18,9 @@
 
 #include "rpm.h"
 
-static int save_spec(char * directory)
+static int save_spec(char * project_directory,
+					 char * directory,
+					 int no_of_binaries, char ** binaries)
 {
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
@@ -30,8 +32,9 @@ static int save_spec(char * directory)
 	char requires[BLOCK_SIZE];
 	char build_requires[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
+	char svg_filename[BLOCK_SIZE];
 	FILE * fp;
-	int ctr,i,j,k;
+	int ctr,i,j=0,k;
 	char str[BLOCK_SIZE];
 	const char * dayname[] = {
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
@@ -67,8 +70,8 @@ static int save_spec(char * directory)
 	get_setting("license", license);
 	get_setting("homepage", homepage);
 	get_setting("email", email_address);
-	get_setting("requires", requires);
-	get_setting("build requires", build_requires);
+	get_setting("depends rpm", requires);
+	get_setting("build rpm", build_requires);
 
 	fprintf(fp,"Name: %s\n",project_name);
 	fprintf(fp,"Version: %s\n",version);
@@ -131,6 +134,10 @@ static int save_spec(char * directory)
 		}
 	}
 
+	sprintf(svg_filename,"%s%cdesktop%cicon.svg",
+			project_directory, DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR);
+
 	fprintf(fp,"%s","\n%prep\n");
 	fprintf(fp,"%s","%setup -q\n\n");
 
@@ -145,11 +152,15 @@ static int save_spec(char * directory)
 	fprintf(fp,"%s","mkdir -p %{buildroot}/etc/%{name}\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/bin\n");
+	if (is_library(project_name) != 0) {
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib/%{name}\n");
+	}
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man/man1\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications/%{name}\n");
+	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/%{name}\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
@@ -166,10 +177,61 @@ static int save_spec(char * directory)
 	fprintf(fp,"%s","%defattr(-,root,root,-)\n");
 	fprintf(fp,"%s","%{_bindir}/*\n");
 	fprintf(fp,"%s","%{_mandir}/man1/*\n");
-	fprintf(fp,"%s","%attr(644,root,root) /usr/share/applications/%{name}/%{name}.desktop\n");
+	fprintf(fp,"%s","%attr(644,root,root) /usr/share/applications/%{name}.desktop\n");
 	fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/24x24/apps/%{name}.png\n");
-	fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/scalable/apps/%{name}.svg\n");
-	fprintf(fp,"%s","%attr(644,root,root) /usr/share/pixmaps/%{name}.svg\n\n");
+	if (file_exists(svg_filename) != 0) {
+		fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/scalable/apps/%{name}.svg\n");
+		fprintf(fp,"%s","%attr(644,root,root) /usr/share/pixmaps/%{name}.svg\n");
+	}
+	if (is_library(project_name) == 0) {
+		/* install some binaries */
+		for (i = 0; i < no_of_binaries; i++) {
+			fprintf(fp,"%%attr(755,root,root) /usr/share/%%{name}/%s\n",binaries[i]);
+		}
+	}
+	else {
+		for (i = 0; i < no_of_binaries; i++) {
+			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",binaries[i]);
+		}
+	}
+
+	fprintf(fp,"%s","\n");
+
+	if (is_library(project_name) != 0) {
+		fprintf(fp,"%s","%post\n");
+		fprintf(fp,"%s","umask 007\n");
+		fprintf(fp,"%s","ldconfig > /dev/null 2>&1\n");
+
+		for (i = 0; i < no_of_binaries; i++) {
+			for (j = strlen(binaries[i])-1; j >= 0; j--) {
+				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
+					j++;
+					break;
+				}
+			}
+			if (file_is_library(&binaries[i][j]) != 0) {
+				fprintf(fp,"ln -sf /usr/lib/%s.0.0.1 /usr/lib/%%{name}/%s\n",
+						&binaries[i][j], &binaries[i][j]);
+			}
+		}
+		fprintf(fp,"%s","\n");
+
+		fprintf(fp,"%s","%postun\n");
+		fprintf(fp,"%s","umask 007\n");
+		fprintf(fp,"%s","ldconfig > /dev/null 2>&1\n");
+		for (i = 0; i < no_of_binaries; i++) {
+			for (j = strlen(binaries[i])-1; j >= 0; j--) {
+				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
+					j++;
+					break;
+				}
+            }
+			if (file_is_library(&binaries[i][j]) != 0) {
+				fprintf(fp,"rm /usr/lib/%s\n",&binaries[i][j]);
+			}
+        }
+		fprintf(fp,"%s","\n");
+	}
 
 	fprintf(fp,"%s","%changelog\n");
 	fprintf(fp,"* %s %s %d %d  %s\n",
@@ -255,7 +317,7 @@ static int save_script(char * directory, char * subdir)
 	return system(commandstr);
 }
 
-int save_rpm()
+int save_rpm(int no_of_binaries, char ** binaries)
 {
 	char rpmdir[BLOCK_SIZE];
 	char subdir[BLOCK_SIZE];
@@ -272,7 +334,9 @@ int save_rpm()
 		retval = system(commandstr);
 	}
 
-	save_spec(rpmdir);
+	save_spec(directory, rpmdir,
+			  no_of_binaries, binaries);
+
 	save_script(directory, subdir);
 
 	return retval;

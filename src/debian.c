@@ -251,11 +251,11 @@ static void save_control()
 	get_setting("homepage",homepage);
 	get_setting("vcs browser", vcs_browser);
 	get_setting("vcs repository", vcs_repository);
-	get_setting("build depends", build_depends);
-	get_setting("depends", depends);
 	get_setting("description brief", description_brief);
 	get_setting("description", description);
 	get_setting("section", section);
+	get_setting("depends deb", depends);
+	get_setting("build deb", build_depends);
 
 	get_debian_standard(standard);
 	get_debhelper_version(dh_version);
@@ -902,7 +902,8 @@ static int save_copyright(char * directory)
 }
 
 /* saves the Debian rules file */
-static int save_rules(char * directory)
+static int save_rules(char * directory,
+					  int no_of_binaries, char ** binaries)
 {
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
@@ -921,65 +922,60 @@ static int save_rules(char * directory)
 	fp = fopen(filename,"w");
 	if (!fp) return 0;
 
-	fprintf(fp,"#!/usr/bin/make -f\n\n");
+	fprintf(fp,"%s","#!/usr/bin/make -f\n\n");
 
 	fprintf(fp,"APP=%s\n",project_name);
-	fprintf(fp,"application = $(CURDIR)/$(APP)\n");
-	fprintf(fp,"DEST_APP = $(CURDIR)/debian/$(APP)/usr/bin\n\n");
+	if (strlen(project_type) != 0) {
+		fprintf(fp,"%s","application = $(CURDIR)/$(APP)\n");
+	}
 
-	fprintf(fp,"CPPFLAGS:=$(shell dpkg-buildflags " \
-			"--get CPPFLAGS)\n");
-	fprintf(fp,"CFLAGS:=$(shell dpkg-buildflags " \
-			"--get CFLAGS)\n");
-	fprintf(fp,"CXXFLAGS:=$(shell dpkg-buildflags " \
-			"--get CXXFLAGS)\n");
-	fprintf(fp,"LDFLAGS:=$(shell dpkg-buildflags " \
-			"--get LDFLAGS)\n\n");
-
-	fprintf(fp,"build: build-stamp\n");
+	fprintf(fp,"%s","build: build-stamp\n");
 	fprintf(fp,"%s","\tmake\n");
-	fprintf(fp,"build-arch: build-stamp\n");
-	fprintf(fp,"build-indep: build-stamp\n");
-	fprintf(fp,"build-stamp:\n");
-	fprintf(fp,"		dh_testdir\n");
-	fprintf(fp,"		touch build-stamp\n\n");
+	fprintf(fp,"%s","build-arch: build-stamp\n");
+	fprintf(fp,"%s","build-indep: build-stamp\n");
+	fprintf(fp,"%s","build-stamp:\n");
+	fprintf(fp,"%s","		dh_testdir\n");
+	fprintf(fp,"%s","		touch build-stamp\n\n");
 
-	fprintf(fp,"clean:\n");
-	fprintf(fp,"		dh_testdir\n");
-	fprintf(fp,"		dh_testroot\n");
-	fprintf(fp,"		rm -f build-stamp\n");
-	fprintf(fp,"		dh_clean\n\n");
+	fprintf(fp,"%s","clean:\n");
+	fprintf(fp,"%s","		dh_testdir\n");
+	fprintf(fp,"%s","		dh_testroot\n");
+	fprintf(fp,"%s","		rm -f build-stamp\n");
+	fprintf(fp,"%s","		dh_clean\n\n");
 
-	fprintf(fp,"install: build clean $(application)\n");
-	fprintf(fp,"		 dh_testdir\n");
-	fprintf(fp,"		 dh_testroot\n");
-	fprintf(fp,"		 dh_prep\n");
-	fprintf(fp,"		 dh_installdirs\n\n");
+	if (strlen(project_type) != 0) {
+		fprintf(fp,"%s","install: build clean $(application)\n");
+	}
+	else {
+		fprintf(fp,"%s","install: build clean\n");
+	}
+	fprintf(fp,"%s","		 dh_testdir\n");
+	fprintf(fp,"%s","		 dh_testroot\n");
+	fprintf(fp,"%s","		 dh_prep\n");
+	fprintf(fp,"%s","		 dh_installdirs\n\n");
 
-	fprintf(fp,"		 mkdir -m 755 -p $(DEST_APP)\n");
-	fprintf(fp,"		 install -m 755 --strip " \
-			"$(application) $(DEST_APP)\n\n");
+	fprintf(fp,"%s","		 make install DESTDIR=$(CURDIR)/debian/$(APP)\n\n");
 
-	fprintf(fp,"binary-indep: build install\n");
-	fprintf(fp,"			  dh_shlibdeps\n");
-	fprintf(fp,"			  dh_testdir\n");
-	fprintf(fp,"			  dh_testroot\n");
-	fprintf(fp,"			  dh_installchangelogs\n");
-	fprintf(fp,"			  dh_installdocs\n");
-	fprintf(fp,"			  dh_installexamples\n");
-	fprintf(fp,"			  dh_installman\n");
-	fprintf(fp,"			  dh_link\n");
-	fprintf(fp,"			  dh_compress\n");
-	fprintf(fp,"			  dh_fixperms\n");
-	fprintf(fp,"			  dh_installdeb\n");
-	fprintf(fp,"			  dh_gencontrol\n");
-	fprintf(fp,"			  dh_md5sums\n");
-	fprintf(fp,"			  dh_builddeb\n\n");
+	fprintf(fp,"%s","binary-indep: build install\n");
+	fprintf(fp,"%s","			  dh_shlibdeps\n");
+	fprintf(fp,"%s","			  dh_testdir\n");
+	fprintf(fp,"%s","			  dh_testroot\n");
+	fprintf(fp,"%s","			  dh_installchangelogs\n");
+	fprintf(fp,"%s","			  dh_installdocs\n");
+	fprintf(fp,"%s","			  dh_installexamples\n");
+	fprintf(fp,"%s","			  dh_installman\n");
+	fprintf(fp,"%s","			  dh_link\n");
+	fprintf(fp,"%s","			  dh_compress\n");
+	fprintf(fp,"%s","			  dh_fixperms\n");
+	fprintf(fp,"%s","			  dh_installdeb\n");
+	fprintf(fp,"%s","			  dh_gencontrol\n");
+	fprintf(fp,"%s","			  dh_md5sums\n");
+	fprintf(fp,"%s","			  dh_builddeb\n\n");
 
-	fprintf(fp,"binary-arch: build install\n\n");
+	fprintf(fp,"%s","binary-arch: build install\n\n");
 
-	fprintf(fp,"binary: binary-indep binary-arch\n");
-	fprintf(fp,".PHONY: build clean binary-indep " \
+	fprintf(fp,"%s","binary: binary-indep binary-arch\n");
+	fprintf(fp,"%s",".PHONY: build clean binary-indep " \
 			"binary-arch binary install\n");
 
 	fclose(fp);
@@ -1122,9 +1118,11 @@ static void save_changelog(char * directory)
 
 /* file containing list of binaries to be included
    in the source */
-static void save_include_binary(char * directory)
+static void save_include_binary(char * directory,
+								int no_of_binaries, char ** binaries)
 {
 	FILE * fp;
+	int i;
 	char project_name[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 
@@ -1138,7 +1136,13 @@ static void save_include_binary(char * directory)
 	fp = fopen(filename,"w");
 	if (!fp) return;
 
-	fprintf(fp,"man/%s.1.gz",project_name);
+	fprintf(fp,"man/%s.1.gz\n",project_name);
+
+	for (i = 0; i < no_of_binaries; i++) {
+		if (binaries[i][0] != DIRECTORY_SEPARATOR) {
+			fprintf(fp,"%s\n",binaries[i]);
+		}
+	}
 
 	fclose(fp);
 }
@@ -1285,7 +1289,7 @@ static int save_debian_build_script(char * directory)
 	return system(commandstr);
 }
 
-int save_debian()
+int save_debian(int no_of_binaries, char ** binaries)
 {
 	char debdir[BLOCK_SIZE];
 	char debsourcedir[BLOCK_SIZE];
@@ -1350,10 +1354,12 @@ int save_debian()
 	save_compat();
 	save_control();
 	save_copyright(directory);
-	save_rules(directory);
+	save_rules(directory,
+			   no_of_binaries, binaries);
 	save_manpages(directory);
 	save_changelog(directory);
-	save_include_binary(debsourcedir);
+	save_include_binary(debsourcedir,
+						no_of_binaries, binaries);
 	save_format(debsourcedir);
 	save_readme(directory);
 	save_docs(directory);

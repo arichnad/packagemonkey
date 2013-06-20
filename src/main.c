@@ -28,6 +28,7 @@
 #include "debian.h"
 #include "desktop.h"
 #include "rpm.h"
+#include "directory.h"
 #include "help.h"
 
 /* deallocates memory used for filenames */
@@ -68,9 +69,8 @@ int validate_description(char * description)
 
 int main(int argc, char* argv[])
 {
-	int i;
+	int i, retval;
 	int no_of_binaries = 0;
-	int no_of_libraries = 0;
 	int working_directory_specified = 0;
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
@@ -88,7 +88,6 @@ int main(int argc, char* argv[])
 	char str[BLOCK_SIZE*4];
 	char test_filename[BLOCK_SIZE];
 	char * binaries[MAX_FILES];
-	char * libraries[MAX_FILES];
 
 	if (argc <= 1) {
 		show_help();
@@ -97,6 +96,8 @@ int main(int argc, char* argv[])
 
 	sprintf(project_version,"%s","0.10");
 	add_setting("version",project_version);
+	add_setting("binaries","");
+	add_setting("compile","");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -178,27 +179,16 @@ int main(int argc, char* argv[])
 				printf("No email address given\n");
 			}
 		}
-		/* binary file or script to be packaged */
+		/* specify a directory containing binaries to be packaged */
 		if ((strcmp(argv[i],"-b")==0) ||
 			(strcmp(argv[i],"--binaries")==0) ||
-			(strcmp(argv[i],"--executable")==0)) {
+			(strcmp(argv[i],"--executables")==0)) {
 			i++;
 			if (i < argc) {
 				add_setting("binaries",argv[i]);
 			}
 			else {
-				printf("No binary filename given\n");
-			}
-		}
-		/* libraries to be packaged */
-		if ((strcmp(argv[i],"--libs")==0) ||
-			(strcmp(argv[i],"--libraries")==0)) {
-			i++;
-			if (i < argc) {
-				add_setting("libraries",argv[i]);
-			}
-			else {
-				printf("No libraries given\n");
+				printf("No binaries directory given\n");
 			}
 		}
 		/* scripts to be packaged */
@@ -273,6 +263,56 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No desktop categories given\n");
+			}
+		}
+		/* RPM packages which the build requires */
+		if (strcmp(argv[i],"--buildrpm")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("build rpm",argv[i]);
+			}
+			else {
+				printf("No RPM packages given for the build\n");
+			}
+		}
+		/* deb packages which the build depends upon */
+		if (strcmp(argv[i],"--builddeb")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("build deb",argv[i]);
+			}
+			else {
+				printf("No deb packages given for the build\n");
+			}
+		}
+		/* deb packages which this depends upon */
+		if (strcmp(argv[i],"--dependsdeb")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("depends deb",argv[i]);
+			}
+			else {
+				printf("No deb depends packages given\n");
+			}
+		}
+		/* RPM packages which this depends upon */
+		if (strcmp(argv[i],"--dependsrpm")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("depends rpm",argv[i]);
+			}
+			else {
+				printf("No RPM depends packages given\n");
+			}
+		}
+		/* Additional arguments for the compiler */
+		if (strcmp(argv[i],"--compile")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("compile",argv[i]);
+			}
+			else {
+				printf("No compile arguments given\n");
 			}
 		}
 		/* Debian version */
@@ -434,13 +474,32 @@ int main(int argc, char* argv[])
 
 	/* get the binary files to be packaged */
 	get_setting("binaries",str);
-	if (strlen(str) > 0) {
+	if ((strlen(str) > 0) && (directory_exists(str) != 0)) {
 		/* allocate memory for filenames */
 		for (i = 0; i < MAX_FILES; i++) {
 			binaries[i] = (char*)malloc(BLOCK_SIZE);
 		}
-		no_of_binaries = separate_files(str, binaries,
-										MAX_FILES);
+
+		retval =
+			files_in_directory(str, ".\\.$",
+							   WS_DOTFILES|WS_DEFAULT|WS_MATCHDIRS,
+							   binaries, &no_of_binaries,
+							   MAX_FILES);
+		switch(retval) {
+		case WALK_BADIO: {
+			fprintf(stderr,"Directory '%s' Error %d: %s\n", str,errno,strerror(errno));
+			break;
+		}
+		case WALK_NAMETOOLONG: {
+			fprintf(stderr,"Directory name '%s' is too long\n", str);
+			break;
+		}
+		case WALK_BADPATTERN: {
+			fprintf(stderr,"Bad directory '%s'\n", str);
+			break;
+		}
+		}
+
 		for (i = 0; i < no_of_binaries; i++) {
 			printf("Binary file: %s\n",binaries[i]);
 			if (binaries[i][0] != DIRECTORY_SEPARATOR) {
@@ -455,51 +514,19 @@ int main(int argc, char* argv[])
 				printf("File not found\n");
 				/* deallocate memory */
 				free_filenames(binaries,no_of_binaries);
-				free_filenames(libraries,no_of_libraries);
-				return -1;
-			}
-		}
-	}
-
-	/* get the library files to be packaged */
-	get_setting("libraries",str);
-	if (strlen(str) > 0) {
-		/* allocate memory for filenames */
-		for (i = 0; i < MAX_FILES; i++) {
-			libraries[i] = (char*)malloc(BLOCK_SIZE);
-		}
-		no_of_libraries = separate_files(str, libraries,
-										 MAX_FILES);
-		for (i = 0; i < no_of_libraries; i++) {
-			printf("Library file: %s\n",libraries[i]);
-			if (libraries[i][0] != DIRECTORY_SEPARATOR) {
-				sprintf(test_filename,"%s%c%s",directory,
-						DIRECTORY_SEPARATOR,
-						libraries[i]);
-			}
-			else {
-				sprintf(test_filename,"%s",libraries[i]);
-			}
-			if (file_exists(test_filename) == 0) {
-				printf("File not found\n");
-				/* deallocate memory */
-				free_filenames(binaries,no_of_binaries);
-				free_filenames(libraries,no_of_libraries);
 				return -1;
 			}
 		}
 	}
 
 	save_license(directory);
-	save_debian();
+	save_debian(no_of_binaries,binaries);
 	save_desktop();
-	save_makefile(no_of_binaries,binaries,
-				  no_of_libraries,libraries);
-	save_rpm();
+	save_makefile(no_of_binaries,binaries);
+	save_rpm(no_of_binaries,binaries);
 
 	/* free memory */
 	free_filenames(binaries,no_of_binaries);
-	free_filenames(libraries,no_of_libraries);
 
 	return 0;
 }

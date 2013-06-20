@@ -418,3 +418,29 @@ int separate_files(char * files, char ** result, int max_files)
 	}
 	return no_of_files;
 }
+
+/* returns a non-zero value if the given project name is a library.
+   According to the Debian convention all library names
+   should begin with "lib" */
+int is_library(char * project_name)
+{
+	if (strlen(project_name) < 3) {
+		return 0;
+	}
+	if (strncmp(project_name,"lib",3)==0) {
+		return 1;
+	}
+	return 0;
+}
+
+/* is the given file a library? */
+int file_is_library(char * filename)
+{
+	if (strlen(filename) < 4) return 0;
+	if ((filename[strlen(filename)-3] == '.') &&
+		(filename[strlen(filename)-2] == 's') &&
+		(filename[strlen(filename)-1] == 'o')) {
+		return 1;
+	}
+	return 0;
+}

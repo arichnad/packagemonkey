@@ -23,39 +23,47 @@ void show_help()
 	printf("%s v%s - because packaging is harder than " \
 		   "it needs to be\n\n", PROJECT_NAME, VERSION);
 
-	printf(" -d  --dir <directory>      " \
+	printf(" -d  --dir <directory>         " \
 		   "Set the working directory\n");
-	printf(" -s  --scripts <directory>  " \
+	printf(" -s  --scripts <directory>     " \
 		   "Set directory containing scripts to be packaged\n");
-	printf(" -b  --binaries <files>     " \
-		   "Filename/s for pre-built binaries to be packaged\n");
-	printf("     --libs <files>         " \
-		   "Filename/s for pre-built libraries to be packaged\n");
-	printf(" -l  --license <type>       " \
+	printf(" -b  --binaries <files>        " \
+		   "Directory containing binaries to be packaged\n");
+	printf("     --compile <args>          " \
+		   "Additional arguments to add to the compilation\n");
+	printf(" -l  --license <type>          " \
 		   "The license type (gpl2|gpl3|lgpl2|lgpl3|mit|" \
 		   "bsd|apache|mozilla)\n");
-	printf(" -e  --email <address>      " \
+	printf(" -e  --email <address>         " \
 		   "Set full name and email address\n");
-	printf("     --brief <description>  " \
+	printf("     --brief <description>     " \
 		   "A brief one line description of the project\n");
-	printf("     --desc <description>   " \
+	printf("     --desc <description>      " \
 		   "A full description of the project\n");
-	printf("     --homepage <url>       " \
+	printf("     --homepage <url>          " \
 		   "URL of the project home page\n");
-	printf("     --section <sections>   " \
+	printf("     --section <sections>      " \
 		   "Debian sections\n");
-	printf("     --categories <cat>     " \
+	printf("     --categories <cat>        " \
 		   ".desktop file categories\n");
-	printf("     --list-sections        " \
+	printf("     --dependsdeb <packages>   " \
+		   "Deb packages which the project depends upon\n");
+	printf("     --builddeb <packages>     " \
+		   "Deb packages required to build the project\n");
+	printf("     --dependsrpm <packages>   " \
+		   "RPM packages which the project depends upon\n");
+	printf("     --buildrpm <packages>     " \
+		   "RPM packages required to build the project\n");
+	printf("     --list-sections           " \
 		   "List the possible Debian sections\n");
-	printf("     --list-desktop         " \
+	printf("     --list-desktop            " \
 		   "List the possible desktop file categories\n");
-	printf("     --debian <version>     " \
+	printf("     --debian <version>        " \
 		   "Set the Debian version\n");
-	printf(" -t  --tests                " \
+	printf(" -t  --tests                   " \
 		   "Run unit tests\n");
-	printf(" -v  --version              " \
+	printf(" -v  --version                 " \
 		   "Show version number\n");
-	printf(" -h  --help                 " \
+	printf(" -h  --help                    " \
 		   "Show help\n");
 }
