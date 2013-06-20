@@ -316,7 +316,7 @@ void save_makefile_as(char * filename)
 /* saves a makefile */
 void save_makefile(int no_of_binaries, char ** binaries)
 {
-	int i,j;
+	int i,j,no_of_directories;
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 	char str[BLOCK_SIZE];
@@ -325,6 +325,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	char project_version[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
+	char * directories[MAX_FILES];
 
 	/* get the project directory */
 	get_setting("directory",directory);
@@ -361,6 +362,22 @@ void save_makefile(int no_of_binaries, char ** binaries)
 								   "mkdir -m 755 -p $(DESTDIR)/usr/lib/$(APP)");
 	}
 
+	/* create directories for binaries */
+	if (no_of_binaries > 0) {
+		no_of_directories =
+			get_directories(binaries, no_of_binaries,
+							directories);
+		for (i = 0; i < no_of_directories; i++) {
+			if (get_subdirectory_string(directories[i]) != 0) {
+				sprintf(str,"mkdir -m 755 -p \"$(DESTDIR)/%s\"",
+						get_subdirectory_string(directories[i]));
+				add_makefile_entry_to_file(filename, "install",
+										   str);
+			}
+			free(directories[i]);
+		}
+	}
+
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0) ||
 	    (strcmp(project_type,"c++")==0) ||
@@ -374,8 +391,12 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	if (is_library(project_name) == 0) {
 		/* install binary files from a directory */
 		for (i = 0; i < no_of_binaries; i++) {
-			sprintf(str,"install -m 755 --strip %s $(DESTDIR)/usr/share/$(APP)",binaries[i]);
-			add_makefile_entry_to_file(filename, "install",str);
+            if (get_subdirectory_string(binaries[i]) != 0){
+			    sprintf(str,"install -m 755 \"%s\" \"$(DESTDIR)/%s\"",
+				  	    binaries[i],
+						get_subdirectory_string(binaries[i]));
+			    add_makefile_entry_to_file(filename, "install",str);
+            }
 		}
 	}
 	else {	
@@ -386,7 +407,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 					break;
 				}
 			}
-			sprintf(str,"install -m 755 %s $(DESTDIR)/usr/lib/$(APP)/%s",
+			sprintf(str,"install -m 755 \"%s\" $(DESTDIR)/usr/lib/$(APP)/%s",
 					binaries[i], &binaries[i][j]);
 			add_makefile_entry_to_file(filename, "install",str);
 

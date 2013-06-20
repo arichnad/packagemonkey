@@ -28,6 +28,7 @@
 #include <ctype.h>
 #include "globals.h"
 #include "settings.h"
+#include "directory.h"
 
 void debian_list_sections();
 int debian_valid_section(char * section);

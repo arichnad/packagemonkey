@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "globals.h"
 #include "settings.h"
+#include "directory.h"
 
 void save_makefile_as(char * filename);
 void save_makefile(int no_of_binaries, char ** binaries);

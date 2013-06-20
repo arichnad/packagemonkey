@@ -444,3 +444,43 @@ int file_is_library(char * filename)
 	}
 	return 0;
 }
+
+/* returns a non-zero value if the given string
+   contains the given character */
+int contains_char(char * str, char search)
+{
+	int i;
+
+	for (i = 0; i < strlen(str); i++) {
+		if (str[i] == search) return 1;
+	}
+	return 0;
+}
+
+/* returns a non-zero value if the given file is a script */
+int is_script(char * filename)
+{
+	FILE * fp;
+	int found = 0;
+	char linestr[BLOCK_SIZE];
+
+	fp = fopen(filename,"r");
+	if (!fp) return 0;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) < 2) continue;
+			if ((linestr[0] == '#') &&
+				(linestr[1] == '!')) {
+				found = 1; 
+			}
+			break;
+		}		
+	}
+
+	fclose(fp);
+
+	if (found == 0) return 0;
+
+	return 1;
+}

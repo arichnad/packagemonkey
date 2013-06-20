@@ -905,10 +905,12 @@ static int save_copyright(char * directory)
 static int save_rules(char * directory,
 					  int no_of_binaries, char ** binaries)
 {
+	int i, j, no_of_directories;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
+	char * directories[MAX_FILES];
 	FILE * fp;
 
 	/* rules file path and filename */
@@ -928,6 +930,7 @@ static int save_rules(char * directory,
 	if (strlen(project_type) != 0) {
 		fprintf(fp,"%s","application = $(CURDIR)/$(APP)\n");
 	}
+	fprintf(fp,"%s","DESTDIR=$(CURDIR)/debian/$(APP)\n");
 
 	fprintf(fp,"%s","build: build-stamp\n");
 	fprintf(fp,"%s","\tmake\n");
@@ -952,9 +955,86 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		 dh_testdir\n");
 	fprintf(fp,"%s","		 dh_testroot\n");
 	fprintf(fp,"%s","		 dh_prep\n");
-	fprintf(fp,"%s","		 dh_installdirs\n\n");
+	fprintf(fp,"%s","		 dh_installdirs\n");
 
-	fprintf(fp,"%s","		 make install DESTDIR=$(CURDIR)/debian/$(APP)\n\n");
+	fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/bin\n");
+	if (is_library(project_name) != 0) {
+		fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/lib\n");
+		fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/lib/$(APP)\n");
+	}
+
+	if (no_of_binaries > 0) {
+		no_of_directories =
+			get_directories(binaries, no_of_binaries,
+							directories);
+		for (i = 0; i < no_of_directories; i++) {
+			if (get_subdirectory_string(directories[i]) != 0) {
+			    fprintf(fp,"		 mkdir -m 755 -p \"$(CURDIR)/debian/$(APP)/%s\"\n",
+						get_subdirectory_string(directories[i]));
+			}
+			free(directories[i]);
+		}
+	}
+
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/applications\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man/man1\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/$(APP)\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/pixmaps\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24\n");
+	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps\n");
+
+
+
+	if ((strcmp(project_type,"c")==0) ||
+		(strcmp(project_type,"C")==0) ||
+	    (strcmp(project_type,"c++")==0) ||
+		(strcmp(project_type,"C++")==0) ||
+		(strcmp(project_type,"cpp")==0) ||
+		(strcmp(project_type,"CPP")==0)) {
+		fprintf(fp,	"%s", "		 install -m 755 --strip $(APP) $(DESTDIR)/usr/bin\n");
+	}
+
+	if (is_library(project_name) == 0) {
+		/* install binary files from a directory */
+		for (i = 0; i < no_of_binaries; i++) {
+            if (get_subdirectory_string(binaries[i]) != 0){
+				if ((contains_char(get_subdirectory_string(binaries[i]), '.')!=0) ||
+					(is_script(binaries[i])!=0)) {
+					fprintf(fp,	"		 install -m 755 \"%s\" \"$(DESTDIR)/%s\"\n",
+							binaries[i],
+							get_subdirectory_string(binaries[i]));
+				}
+				else {
+					fprintf(fp,	"		 install -m 755 --strip \"%s\" \"$(DESTDIR)/%s\"\n",
+							binaries[i],
+							get_subdirectory_string(binaries[i]));
+				}
+            }
+		}
+	}
+	else {	
+		for (i = 0; i < no_of_binaries; i++) {
+			for (j=strlen(binaries[i])-1; j>=0; j--) {
+				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
+					j++;
+					break;
+				}
+			}
+			fprintf(fp,"		 install -m 755 \"%s\" $(DESTDIR)/usr/lib/$(APP)/%s\n",
+					binaries[i], &binaries[i][j]);
+
+			fprintf(fp,"		 ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) $(DESTDIR)/usr/lib/$(APP)/%s\n",
+					&binaries[i][j], &binaries[i][j]);
+		}
+		fprintf(fp,"%s","		 ldconfig\n");
+	}
+
 
 	fprintf(fp,"%s","binary-indep: build install\n");
 	fprintf(fp,"%s","			  dh_shlibdeps\n");

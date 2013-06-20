@@ -69,5 +69,7 @@ int replace_build_script_version(char * filename,
 int separate_files(char * files, char ** result, int max_files);
 int is_library(char * project_name);
 int file_is_library(char * filename);
+int contains_char(char * str, char search);
+int is_script(char * filename);
 
 #endif

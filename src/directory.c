@@ -104,3 +104,68 @@ int files_in_directory(char *dname, char *pattern, int spec,
 
     return res;
 }
+
+/* returns the directories for a set of filenames */
+int get_directories(char ** filenames, int no_of_filenames,
+					char ** directories)
+{
+	int i, j, k, winner;
+	int no_of_directories = 0;
+	char str[BLOCK_SIZE];
+	char * temp;
+
+	for (i = 0; i < no_of_filenames; i++) {
+		for (j = 0; j < strlen(filenames[i]); j++) {
+			if (filenames[i][j] == DIRECTORY_SEPARATOR) {
+				/* get the directory */
+				for (k = 0; k < j; k++) {
+					str[k] = filenames[i][k];
+				}
+				str[k] = 0;
+				/* does the directory exist? */
+				for (k = 0; k < no_of_directories; k++) {
+					if (strcmp(directories[k],str)==0) break;
+				}
+				/* store the directory */
+				if (k == no_of_directories) {
+					directories[no_of_directories] =
+						(char*)malloc(j+1);
+					sprintf(directories[no_of_directories],
+							"%s",str);
+					no_of_directories++;
+				}
+			}
+		}
+	}
+
+	/* sort in order of string length */
+	for (i = 0; i < no_of_directories; i++) {
+		winner = i;
+		for (j = i+1; j < no_of_directories; j++) {
+			if (strlen(directories[j]) <
+				strlen(directories[winner])) {
+				winner = j;
+			}
+		}
+		if (winner != i) {
+			temp = directories[i];
+			directories[i] = directories[winner];
+			directories[winner] = temp;
+		}
+	}
+
+	return no_of_directories;
+}
+
+/* returns the given directory with the root directory removed */
+char * get_subdirectory_string(char * directory)
+{
+	int i;
+
+	for (i = 0; i < strlen(directory)-1; i++) {
+		if (directory[i] == DIRECTORY_SEPARATOR) {
+			return &directory[i+1];
+		}
+	}
+	return 0;
+}

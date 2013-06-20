@@ -33,8 +33,9 @@ static int save_spec(char * project_directory,
 	char build_requires[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char svg_filename[BLOCK_SIZE];
+	char * directories[MAX_FILES];
 	FILE * fp;
-	int ctr,i,j=0,k;
+	int ctr,i,j=0,k,no_of_directories;
 	char str[BLOCK_SIZE];
 	const char * dayname[] = {
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
@@ -152,6 +153,21 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","mkdir -p %{buildroot}/etc/%{name}\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/bin\n");
+
+	/* create directories for binaries */
+	if (no_of_binaries > 0) {
+		no_of_directories =
+			get_directories(binaries, no_of_binaries,
+							directories);
+		for (i = 0; i < no_of_directories; i++) {
+			if (get_subdirectory_string(directories[i]) != 0) {
+				fprintf(fp,"mkdir -p \"%%{buildroot}/%s\"\n",
+						get_subdirectory_string(directories[i]));
+			}
+			free(directories[i]);
+		}
+	}
+
 	if (is_library(project_name) != 0) {
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib/%{name}\n");
@@ -186,12 +202,14 @@ static int save_spec(char * project_directory,
 	if (is_library(project_name) == 0) {
 		/* install some binaries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp,"%%attr(755,root,root) /usr/share/%%{name}/%s\n",binaries[i]);
+			fprintf(fp,"%%attr(755,root,root) \"/%s\"\n",
+					get_subdirectory_string(binaries[i]));
 		}
 	}
 	else {
+		/* install libraries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",binaries[i]);
+			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",get_subdirectory_string(binaries[i]));
 		}
 	}
 

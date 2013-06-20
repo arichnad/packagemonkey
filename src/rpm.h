@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "globals.h"
 #include "settings.h"
+#include "directory.h"
 
 int save_rpm(int no_of_binaries, char ** binaries);
 

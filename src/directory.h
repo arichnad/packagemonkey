@@ -51,5 +51,8 @@ enum {
 int files_in_directory(char *dname, char *pattern, int spec,
 					   char ** filenames, int * no_of_filenames,
 					   int max_filenames);
+int get_directories(char ** filenames, int no_of_filenames,
+					char ** directories);
+char * get_subdirectory_string(char * directory);
 
 #endif
