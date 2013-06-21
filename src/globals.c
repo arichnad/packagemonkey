@@ -485,7 +485,8 @@ int is_script(char * filename)
 	return 1;
 }
 
-/* returns a non-zero value of files matching the given pattern exist in the given directory */
+/* returns a non-zero value of files matching the given
+   pattern exist in the given directory */
 int files_exist(char * directory, char * file_extension)
 {
 	char commandstr[BLOCK_SIZE];

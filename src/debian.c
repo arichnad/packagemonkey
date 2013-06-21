@@ -970,7 +970,7 @@ static int save_rules(char * directory,
 							directories);
 		for (i = 0; i < no_of_directories; i++) {
 			if (get_subdirectory_string(directories[i]) != 0) {
-			    fprintf(fp,"		 mkdir -m 755 -p \"$(CURDIR)/debian/$(APP)/%s\"\n",
+			    fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)\"/debian/$(APP)/%s\"\n",
 						get_subdirectory_string(directories[i]));
 			}
 			free(directories[i]);
@@ -1015,12 +1015,12 @@ static int save_rules(char * directory,
             if (get_subdirectory_string(binaries[i]) != 0){
 				if ((contains_char(get_subdirectory_string(binaries[i]), '.')!=0) ||
 					(is_script(binaries[i])!=0)) {
-					fprintf(fp,	"		 install -m 755 \"%s\" \"$(DESTDIR)/%s\"\n",
+					fprintf(fp,	"		 install -m 755 \"%s\" $(DESTDIR)\"/%s\"\n",
 							binaries[i],
 							get_subdirectory_string(binaries[i]));
 				}
 				else {
-					fprintf(fp,	"		 install -m 755 --strip \"%s\" \"$(DESTDIR)/%s\"\n",
+					fprintf(fp,	"		 install -m 755 --strip \"%s\" $(DESTDIR)\"/%s\"\n",
 							binaries[i],
 							get_subdirectory_string(binaries[i]));
 				}

@@ -533,6 +533,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
+    save_configure(directory);
 	save_license(directory);
 	save_debian(no_of_binaries,binaries);
 	save_desktop();

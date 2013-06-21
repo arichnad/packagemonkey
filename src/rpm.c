@@ -33,6 +33,8 @@ static int save_spec(char * project_directory,
 	char build_requires[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char svg_filename[BLOCK_SIZE];
+	char source_package[BLOCK_SIZE];
+	char categories[BLOCK_SIZE];
 	char * directories[MAX_FILES];
 	FILE * fp;
 	int ctr,i,j=0,k,no_of_directories;
@@ -73,6 +75,8 @@ static int save_spec(char * project_directory,
 	get_setting("email", email_address);
 	get_setting("depends rpm", requires);
 	get_setting("build rpm", build_requires);
+	get_setting("source package", source_package);
+	get_setting("categories", categories);
 
 	fprintf(fp,"Name: %s\n",project_name);
 	fprintf(fp,"Version: %s\n",version);
@@ -81,8 +85,18 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"License: %s\n",license);
 	fprintf(fp,"URL: %s\n",homepage);
 	fprintf(fp,"Packager: %s\n", email_address);   
-    /*fprintf(fp,"Source0: %s\n", source_package);*/
-    fprintf(fp,"Group: Applications/Utilities\n");
+	if (strlen(source_package) > 0) {
+		fprintf(fp,"Source0: %s\n", source_package);
+	}
+	else {
+		fprintf(fp,"%s", "Source0: http://yourdomainname.com/src/%{name}-%{version}.orig.tar.gz\n");
+	}
+	if (strlen(categories) > 0) {
+		fprintf(fp,"Group: %s\n",categories);
+	}
+	else {
+		fprintf(fp,"%s","Group: Application/Utility\n");
+	}
 
 	if (strlen(requires) > 0) {
 		fprintf(fp,"Requires: %s\n",requires);
@@ -186,7 +200,7 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps\n\n");
 
 	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");
-	fprintf(fp,"%s","make install DESTDIR=%{buildroot}\n\n");
+	fprintf(fp,"%s","make install -B DESTDIR=%{buildroot}\n\n");
 
 	fprintf(fp,"%s","%files\n");
 	fprintf(fp,"%s","%doc README.md LICENSE\n");
@@ -202,14 +216,21 @@ static int save_spec(char * project_directory,
 	if (is_library(project_name) == 0) {
 		/* install some binaries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp,"%%attr(755,root,root) \"/%s\"\n",
-					get_subdirectory_string(binaries[i]));
+			if (contains_char(get_subdirectory_string(binaries[i]),' ')==0) {
+				fprintf(fp,"%%attr(755,root,root) /%s\n",
+						get_subdirectory_string(binaries[i]));
+			}
+			else {
+				fprintf(fp,"%%attr(755,root,root) \"/%s\"\n",
+						get_subdirectory_string(binaries[i]));
+			}
 		}
 	}
 	else {
 		/* install libraries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",get_subdirectory_string(binaries[i]));
+			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",
+					get_subdirectory_string(binaries[i]));
 		}
 	}
 
@@ -297,7 +318,7 @@ static int save_script(char * directory, char * subdir)
 	fprintf(fp, "%s", "SOURCEDIR=.\n");
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
-	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES/${APP}_${VERSION}.orig.tar.gz\n\n");
+	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES/${APP}-${VERSION}.orig.tar.gz\n\n");
 
 	fprintf(fp, "%s", "#update version numbers automatically - so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile debian.sh\n");
