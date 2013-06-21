@@ -911,6 +911,7 @@ static int save_rules(char * directory,
 	char project_type[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char * directories[MAX_FILES];
+	char svg_filename[BLOCK_SIZE];
 	FILE * fp;
 
 	/* rules file path and filename */
@@ -990,6 +991,14 @@ static int save_rules(char * directory,
 	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps\n");
 
 
+	fprintf(fp,	"%s", "		 install -m 644 desktop/$(APP).desktop $(CURDIR)/debian/$(APP)/usr/share/applications/$(APP).desktop\n");
+	fprintf(fp,	"%s", "		 install -m 644 desktop/icon24.png $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
+
+	sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	if (file_exists(svg_filename) != 0) {
+		fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
+		fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/pixmaps/$(APP).svg\n");
+	}
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0) ||
