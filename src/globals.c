@@ -484,3 +484,50 @@ int is_script(char * filename)
 
 	return 1;
 }
+
+/* returns a non-zero value of files matching the given pattern exist in the given directory */
+int files_exist(char * directory, char * file_extension)
+{
+	char commandstr[BLOCK_SIZE];
+	char temp_filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+	FILE * fp;
+	int exists=0,valid_data=0;
+
+	sprintf(temp_filename,"%s%cpm_temp_cmd",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+
+	sprintf(commandstr,"ls %s%c*.%s > %s 2>%%1",
+			directory, DIRECTORY_SEPARATOR, file_extension,
+			temp_filename);
+	exists = system(commandstr);
+
+	fp = fopen(temp_filename,"r");
+	if (!fp) return exists;
+	exists = -1;
+	valid_data = 0;
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			if (contains_char(linestr,':') != 0) {
+				exists = 0;
+				break;
+			}
+			else {
+				valid_data = 1;
+			}
+		}
+	}	
+	fclose(fp);
+
+	if ((exists == -1) && (valid_data==1)) {
+		exists = 1;
+	}
+	else {
+		exists = 0;
+	}
+
+	sprintf(commandstr,"%s %s",COMMAND_DELETE,temp_filename);
+	if (system(commandstr)) return exists;
+	return exists;
+}

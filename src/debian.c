@@ -1394,7 +1394,7 @@ int save_debian(int no_of_binaries, char ** binaries)
 	char desktopdir[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
-	int retval=0;
+	int retval=0,i;
 
 	/* create the debian directory */
 	get_setting("directory", directory);
@@ -1433,13 +1433,19 @@ int save_debian(int no_of_binaries, char ** binaries)
 	}
 
 	/* move any code into the src directory */
-	sprintf(commandstr,
-			"cd %s; %s *.c *.cpp *.h *.py *.vala *.java " \
-			"*.rbbas *.rbuistate *.rbmnu *.rbfrm " \
-			"*.rbtbar *.rbvcp *.rbres *.ico *.png " \
-			"*.jpg *.gif src 2>&1",
-			directory, COMMAND_MOVE);
-	retval = system(commandstr);
+	int no_of_extensions = 18;
+	char * extensions[] =  {
+		"c","cpp","h","py","vala","java","rbbas","rbuistate","rbmnu","rbfrm",
+		"rbtbar","rbvcp","rbres","ico","png","jpg", "jpeg", "gif"
+	};
+	for (i = 0; i < no_of_extensions; i++) {
+		if (files_exist(directory,extensions[i]) != 0) {
+			sprintf(commandstr,
+					"cd %s; %s *.%s src",
+					directory, COMMAND_MOVE, extensions[i]);
+			retval = system(commandstr);
+		}
+	}
 
 	/* remove any object files */
 	sprintf(commandstr,
