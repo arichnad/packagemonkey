@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
 	sprintf(project_version,"%s","0.10");
 	add_setting("version",project_version);
-	add_setting("binaries","");
+	add_setting("binaries","install");
 	add_setting("compile","");
 
 	/* parse options */
