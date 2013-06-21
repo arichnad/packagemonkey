@@ -76,7 +76,7 @@ static int save_spec(char * project_directory,
 
 	fprintf(fp,"Name: %s\n",project_name);
 	fprintf(fp,"Version: %s\n",version);
-	fprintf(fp,"%s","Release: 1%{?dist}\n");
+	fprintf(fp,"%s","Release: 1\n");
 	fprintf(fp,"Summary: %s\n",description_brief);
 	fprintf(fp,"License: %s\n",license);
 	fprintf(fp,"URL: %s\n",homepage);
@@ -267,9 +267,11 @@ static int save_script(char * directory, char * subdir)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
 
 	get_setting("project name", project_name);
 	get_setting("version", version);
+	get_setting("release",release);
 
 	sprintf(filename,"%s%crpm.sh",
 			directory, DIRECTORY_SEPARATOR);
@@ -291,6 +293,7 @@ static int save_script(char * directory, char * subdir)
 	fprintf(fp, "APP=%s\n",project_name);
 	fprintf(fp, "PREV_VERSION=%s\n", version);
 	fprintf(fp, "VERSION=%s\n",version);
+	fprintf(fp, "RELEASE=%s\n",release);
 	fprintf(fp, "%s", "SOURCEDIR=.\n");
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
@@ -298,7 +301,8 @@ static int save_script(char * directory, char * subdir)
 
 	fprintf(fp, "%s", "#update version numbers automatically - so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile debian.sh\n");
-	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' %s/${APP}.spec\n\n",subdir);
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' %s/${APP}.spec\n",subdir);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}'/Release: '${RELEASE}'/g' %s/${APP}.spec\n\n", subdir);
 
 	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");

@@ -63,7 +63,9 @@ void show_help()
 	printf(" -t  --tests                   " \
 		   "Run unit tests\n");
 	printf(" -v  --version                 " \
-		   "Show version number\n");
+		   "Show or set the project version number\n");
+	printf(" -r  --release                 " \
+		   "Set the project release number\n");
 	printf(" -h  --help                    " \
 		   "Show help\n");
 }

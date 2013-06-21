@@ -1309,12 +1309,14 @@ static int save_debian_build_script(char * directory)
 	char project_name[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
 
 	sprintf(filename,"%s%cdebian.sh",
 			directory, DIRECTORY_SEPARATOR);
 
 	get_setting("project name",project_name);
 	get_setting("version",project_version);
+	get_setting("release",release);
 
 	if (file_exists(filename) != 0) {
 		/* if the script already exists then
@@ -1334,6 +1336,7 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"APP=%s\n",project_name);
 	fprintf(fp,"PREV_VERSION=%s\n",project_version);
 	fprintf(fp,"VERSION=%s\n",project_version);
+	fprintf(fp,"RELEASE=%s\n",release);
 	fprintf(fp,"ARCH_TYPE=`uname -m`\n");
 	fprintf(fp,"DIR=${APP}-${VERSION}\n\n");
 
@@ -1349,7 +1352,9 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/" \
 			"VERSION='${VERSION}'/g' Makefile rpm.sh\n");
 	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/" \
-			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n\n");
+			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
+	fprintf(fp,"sed -i 's/Release: '${RELEASE}'/" \
+			"Release: '${RELEASE}'/g' rpmpackage/${APP}.spec\n\n");
 
 	fprintf(fp,"make clean\n");
 	fprintf(fp,"make\n\n");

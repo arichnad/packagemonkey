@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
 	char project_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
@@ -98,6 +99,7 @@ int main(int argc, char* argv[])
 	add_setting("version",project_version);
 	add_setting("binaries","install");
 	add_setting("compile","");
+	add_setting("release","1");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -121,6 +123,18 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No version number given\n");
+			}
+		}
+		/* release number */
+		if ((strcmp(argv[i],"-r")==0) ||
+			(strcmp(argv[i],"--release")==0)) {
+			i++;
+			if (i < argc) {
+				sprintf(release, "%s", argv[i]);
+				add_setting("release", release);
+			}
+			else {
+				printf("No release number given\n");
 			}
 		}
 		/* run unit tests */

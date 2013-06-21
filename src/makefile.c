@@ -308,8 +308,6 @@ void save_makefile_as(char * filename)
 
 	fprintf(fp,"clean:\n");
 
-	fprintf(fp,"remove:\n");
-
 	fclose(fp);
 }
 
