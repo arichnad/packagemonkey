@@ -466,8 +466,14 @@ int main(int argc, char* argv[])
 		show_categories_main();
 		return -1;
 	}
-	if ((strlen(additional_category) > 0) &&
-		(valid_main_category(additional_category) == -1)) {
+	if (strlen(additional_category)==0) {
+		printf("An additional desktop/group category " \
+			   "should be specified using the " \
+			   "--categories option\n");
+		show_categories_additional();
+		return -1;		
+	}
+	if (valid_additional_category(additional_category) == -1) {
 		printf("%s is not a valid additional category\n\n",
 			   additional_category);
 		show_categories_additional();

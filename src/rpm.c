@@ -38,6 +38,8 @@ static int save_spec(char * project_directory,
 	char release[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
 	char * directories[MAX_FILES];
+	char group_main[BLOCK_SIZE];
+	char group_additional[BLOCK_SIZE];
 	FILE * fp;
 	int ctr,i,j=0,k,no_of_directories;
 	char str[BLOCK_SIZE];
@@ -96,7 +98,8 @@ static int save_spec(char * project_directory,
 		fprintf(fp,"%s", "Source0: http://yourdomainname.com/src/%{name}_%{version}.orig.tar.gz\n");
 	}
 	if (strlen(categories) > 0) {
-		fprintf(fp,"Group: %s\n",categories);
+		parse_desktop_category(categories, group_main, group_additional);
+		fprintf(fp,"Group: %s/%s\n",group_main,group_additional);
 	}
 	else {
 		fprintf(fp,"%s","Group: Application/Utility\n");

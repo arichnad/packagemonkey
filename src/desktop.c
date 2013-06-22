@@ -167,13 +167,15 @@ void parse_desktop_category(char * str, char * main, char * additional)
 	for (i = 0; i < strlen(str); i++) {
 		if ((str[i] != ';') &&
 			(str[i] != ',') &&
+			(str[i] != '/') &&
 			(i != strlen(str)-1)) {
 			array[ctr++] = str[i];
 		}
 		else {
 			if (i == strlen(str)-1) {
 				if ((str[i] != ';') &&
-					(str[i] != ',')) {
+					(str[i] != ',') &&
+					(str[i] != '/')) {
 					array[ctr++] = str[i];
 				}
 			}

@@ -27,6 +27,7 @@
 #include "globals.h"
 #include "settings.h"
 #include "directory.h"
+#include "desktop.h"
 
 int save_rpm(int no_of_binaries, char ** binaries);
 
