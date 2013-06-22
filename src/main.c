@@ -101,6 +101,10 @@ int main(int argc, char* argv[])
 	add_setting("binaries","install");
 	add_setting("compile","");
 	add_setting("release","1");
+	add_setting("depends deb","");
+	add_setting("depends rpm","");
+	add_setting("build deb","");
+	add_setting("build rpm","");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
