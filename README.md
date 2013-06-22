@@ -47,71 +47,71 @@ Example
 Options
 -------
 
-<b>-d,--dir <directory></br><br>
+<b>-d,--dir <directory></b><br>
 Set the directory of the project to be packaged.
 
 
--c,--cmd
+<b>-c,--cmd</b><br>
 Used to indicate this is a command line project.  If this option is not used then an icon and desktop file suitable for a GUI application will be generated.
 
--b,--binaries <files>
+<b>-b,--binaries <files></b><br>
 Directory containing binaries or scripts to be packaged.  By default this is a subdirectory called "install".
 
---compile <args>
+<b>--compile <args></b><br>
 Additional arguments to add to the compilation.
 
--l,--license <type>
+<b>-l,--license <type></b><br>
 The license type (gpl2|gpl3|lgpl2|lgpl3|mit|bsd|apache|mozilla)
 
--e,--email <address>
+<b>-e,--email <address></b><br>
 Set full name and email address.
 
---brief <description>
+<b>--brief <description></b><br>
 A brief one line description of the project.
 
---desc <description>
+<b>--desc <description></b><br>
 A full description of the project.
 
---homepage <url>
+<b>--homepage <url></b><br>
 URL of the project home page.
 
---section <sections>
+<b>--section <sections></b><br>
 Debian sections.
 
---categories <cat>
+<b>--categories <cat></b><br>
 desktop file categories.
 
---dependsdeb <packages>
+<b>--dependsdeb <packages></b><br>
 Deb packages which the project depends upon.
 
---builddeb <packages>
+<b>--builddeb <packages></b><br>
 Deb packages required to build the project.
 
---dependsrpm <packages>
+<b>--dependsrpm <packages></b><br>
 RPM packages which the project depends upon.
 
---buildrpm <packages>
+<b>--buildrpm <packages></b><br>
 RPM packages required to build the project.
 
---list-sections
+<b>--list-sections</b><br>
 List the possible Debian sections.
 
---list-desktop
+<b>--list-desktop</b><br>
 List the possible desktop file categories.
 
---debian <version>
+<b>--debian <version></b><br>
 Set the Debian version.
 
---tests
+<b>--tests</b><br>
 Run unit tests.
 
--v,--version <number>
+<b>-v,--version <number></b><br>
 Show or set the project version number.  If only a single option exists then this will return the version number of packagemonkey, otherwise in a multi-option situation it can be used to set the version number of the prokect to be packaged.
 
--r,--release <number>
+<b>-r,--release <number></b><br>
 Set the project release number.
 
--h,--help
+<b>-h,--help</b><br>
 Show help.
 
 
