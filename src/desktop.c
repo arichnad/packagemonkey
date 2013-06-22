@@ -321,12 +321,14 @@ int save_desktop()
 	char project_name[BLOCK_SIZE];
 	char description_brief[BLOCK_SIZE];
 	char desktop_categories[BLOCK_SIZE];
+	char category_main[BLOCK_SIZE];
+	char category_additional[BLOCK_SIZE];
 	int retval=0;
 
 	get_setting("directory",directory);
 	get_setting("project name",project_name);
 	get_setting("description brief",description_brief);
-	get_setting("desktop categories",desktop_categories);
+	get_setting("categories",desktop_categories);
 
 	/* create a desktop directory */
 	sprintf(desktopdir,"%s%cdesktop",
@@ -344,25 +346,29 @@ int save_desktop()
 	/* create a desktop file */
 	sprintf(desktop_filename,"%s%c%s.desktop",
 			desktopdir, DIRECTORY_SEPARATOR, project_name);
-	if (file_exists(desktop_filename)==0) {
-		fp = fopen(desktop_filename,"w");
-		if (fp) {
-			fprintf(fp,"[Desktop Entry]\n");
-			fprintf(fp,"Type=Application\n");
-			fprintf(fp,"Name=%s\n",project_name);
-			fprintf(fp,"GenericName=%s\n",project_name);
-			fprintf(fp,"Comment=%s\n",description_brief);
-			fprintf(fp,"Exec=%s %%U\n",project_name);
-			fprintf(fp,"Icon=%s\n",project_name);
-			fprintf(fp,"Terminal=false\n");
-			if (strlen(desktop_categories) == 0) {
-				fprintf(fp,"Categories=Utility;\n");
-			}
-			else {
-				fprintf(fp,"Categories=%s;\n",desktop_categories);
-			}
-			fclose(fp);
+
+	fp = fopen(desktop_filename,"w");
+	if (fp) {
+		fprintf(fp,"[Desktop Entry]\n");
+		fprintf(fp,"Type=Application\n");
+		fprintf(fp,"Name=%s\n",project_name);
+		fprintf(fp,"GenericName=%s\n",project_name);
+		fprintf(fp,"Comment=%s\n",description_brief);
+		fprintf(fp,"Exec=%s %%U\n",project_name);
+		fprintf(fp,"Icon=%s\n",project_name);
+		fprintf(fp,"Terminal=false\n");
+		if (strlen(desktop_categories) == 0) {
+			fprintf(fp,"Categories=Utility;\n");
 		}
+		else {
+			parse_desktop_category(desktop_categories,
+								   category_main,
+								   category_additional);
+
+			fprintf(fp,"Categories=%s;%s;\n",
+					category_main, category_additional);
+		}
+		fclose(fp);
 	}
 	return retval;
 }
