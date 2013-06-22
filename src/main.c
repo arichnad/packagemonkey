@@ -217,17 +217,6 @@ int main(int argc, char* argv[])
 				printf("No binaries directory given\n");
 			}
 		}
-		/* scripts to be packaged */
-		if ((strcmp(argv[i],"-s")==0) ||
-			(strcmp(argv[i],"--scripts")==0)) {
-			i++;
-			if (i < argc) {
-				add_setting("scripts",argv[i]);
-			}
-			else {
-				printf("No script filename given\n");
-			}
-		}
 		/* homepage */
 		if ((strcmp(argv[i],"--url")==0) ||
 			(strcmp(argv[i],"--homepage")==0)) {

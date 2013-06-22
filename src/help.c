@@ -24,11 +24,9 @@ void show_help()
 		   "it needs to be\n\n", PROJECT_NAME, VERSION);
 
 	printf(" -d  --dir <directory>         " \
-		   "Set the working directory\n");
+		   "Directory of the project to be packaged\n");
 	printf(" -c  --cmd                     " \
 		   "Used to indicate this is a command line project\n");
-	printf(" -s  --scripts <directory>     " \
-		   "Set directory containing scripts to be packaged\n");
 	printf(" -b  --binaries <files>        " \
 		   "Directory containing binaries to be packaged\n");
 	printf("     --compile <args>          " \
