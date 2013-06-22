@@ -102,7 +102,7 @@ List the possible desktop file categories.
 <b>--debian [version]</b><br>
 Set the Debian version.
 
-<b>--tests</b><br>
+<b>-t, --tests</b><br>
 Run unit tests.
 
 <b>-v, --version [number]</b><br>
