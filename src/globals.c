@@ -498,8 +498,9 @@ int files_exist(char * directory, char * file_extension)
 	sprintf(temp_filename,"%s%cpm_temp_cmd",
 			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
 
-	sprintf(commandstr,"ls %s%c*.%s > %s 2>%%1",
-			directory, DIRECTORY_SEPARATOR, file_extension,
+	sprintf(commandstr,"cd %s; ls %s%c*.%s > %s 2>%%1",
+			TEMP_DIRECTORY, directory,
+			DIRECTORY_SEPARATOR, file_extension,
 			temp_filename);
 	exists = system(commandstr);
 

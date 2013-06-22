@@ -200,13 +200,15 @@ static int save_spec(char * project_directory,
 	if (strlen(commandline) == 0) {
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/%{name}\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24\n");
 		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps\n\n");
+		if (strlen(svg_filename) > 0) {
+			fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
+			fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable\n");
+			fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps\n");
+		}
 	}
 
 	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");	
@@ -215,6 +217,36 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","%files\n");
 	fprintf(fp,"%s","%doc README.md LICENSE\n");
 	fprintf(fp,"%s","%defattr(-,root,root,-)\n");
+
+	/* claim ownership of directories */
+	no_of_directories =
+		get_directories(binaries, no_of_binaries,
+						directories);
+	for (i = 0; i < no_of_directories; i++) {
+		if (get_subdirectory_string(directories[i]) != 0) {
+			if (contains_char(get_subdirectory_string(directories[i]), ' ') == 0) {
+				fprintf(fp,"%%dir /%s\n",get_subdirectory_string(directories[i]));
+			}
+			else {
+				fprintf(fp,"%%dir \"/%s\"\n",get_subdirectory_string(directories[i]));
+			}
+		}
+		free(directories[i]);
+	}
+
+	if (strlen(commandline) == 0) {
+		fprintf(fp,"%s","%dir /usr/share/%{name}\n");
+		fprintf(fp,"%s","%dir /usr/share/applications\n");
+		fprintf(fp,"%s","%dir /usr/share/icons/hicolor\n");
+		fprintf(fp,"%s","%dir /usr/share/icons/hicolor/24x24\n");
+		fprintf(fp,"%s","%dir /usr/share/icons/hicolor/24x24/apps\n");
+		if (strlen(svg_filename) > 0) {
+			fprintf(fp,"%s","%dir /usr/share/pixmaps\n");
+			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable\n");
+			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable/apps\n");
+		}
+	}
+
 	fprintf(fp,"%s","%{_bindir}/*\n");
 	fprintf(fp,"%s","%{_mandir}/man1/*\n");
 	if (strlen(commandline) == 0) {
