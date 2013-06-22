@@ -247,6 +247,12 @@ int add_makefile_entry_to_file(char * makefilename,
 		}
 	}
 
+	if (section_found == 0) {
+		/* no section was found, so create one */
+		fprintf(fp_new,"\n%s:\n",section);
+		fprintf(fp_new,"\t%s\n",entry);
+	}
+
 	fclose(fp);
 	fclose(fp_new);
 
@@ -342,6 +348,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	char project_version[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	char * directories[MAX_FILES];
 
 	/* get the project directory */
@@ -358,6 +365,9 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	/* compiler arguments */
 	get_setting("compile",compile_args);
+
+	/* command line project */
+	get_setting("commandline",commandline);
 
 	/* path and filename */
 	sprintf(filename,"%s%cMakefile",directory,
@@ -403,7 +413,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0) ||
-	    (strcmp(project_type,"c++")==0) ||
+		(strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
@@ -414,7 +424,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	if (is_library(project_name) == 0) {
 		/* install binary files from a directory */
 		for (i = 0; i < no_of_binaries; i++) {
-            if (get_subdirectory_string(binaries[i]) != 0){
+			if (get_subdirectory_string(binaries[i]) != 0){
 				if (contains_char(binaries[i],' ')==0) {
 					sprintf(str,"install -m 755 %s $(DESTDIR)/%s",
 							binaries[i],
@@ -425,8 +435,8 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							binaries[i],
 							get_subdirectory_string(binaries[i]));
 				}
-			    add_makefile_entry_to_file(filename, "install",str);
-            }
+				add_makefile_entry_to_file(filename, "install", str);
+			}
 		}
 	}
 	else {	
@@ -445,7 +455,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 				sprintf(str,"install -m 755 \"%s\" $(DESTDIR)\"/usr/lib/$(APP)/%s\"",
 						binaries[i], &binaries[i][j]);
 			}
-			add_makefile_entry_to_file(filename, "install",str);
+			add_makefile_entry_to_file(filename, "install", str);
 
 			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) $(DESTDIR)/usr/lib/$(APP)/%s",
 					&binaries[i][j], &binaries[i][j]);
@@ -456,39 +466,43 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	add_makefile_entry_to_file(filename, "install",
 							   "mkdir -m 755 -p $(DESTDIR)/usr/share");
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/applications");
-	add_makefile_entry_to_file(filename, "install",
 							   "mkdir -m 755 -p $(DESTDIR)/usr/share/man");
 	add_makefile_entry_to_file(filename, "install",
 							   "mkdir -m 755 -p $(DESTDIR)/usr/share/man/man1");
 	add_makefile_entry_to_file(filename, "install",
 							   "install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/$(APP)");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/pixmaps");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable/apps");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24/apps");
-	add_makefile_entry_to_file(filename, "install",
-							   "install -m 644 desktop/$(APP).desktop $(DESTDIR)/usr/share/applications/$(APP).desktop");
-	add_makefile_entry_to_file(filename, "install",
-							   "install -m 644 desktop/icon24.png $(DESTDIR)/usr/share/icons/hicolor/24x24/apps/$(APP).png");
-	sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
-	if (file_exists(svg_filename) != 0) {
+
+	/* additional install for desktop icons */
+	if (strlen(commandline) == 0) {
 		add_makefile_entry_to_file(filename, "install",
-								   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/$(APP)");
 		add_makefile_entry_to_file(filename, "install",
-								   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/pixmaps/$(APP).svg");
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/applications");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/pixmaps");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable/apps");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24");
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24/apps");
+		add_makefile_entry_to_file(filename, "install",
+								   "install -m 644 desktop/$(APP).desktop $(DESTDIR)/usr/share/applications/$(APP).desktop");
+		add_makefile_entry_to_file(filename, "install",
+								   "install -m 644 desktop/icon24.png $(DESTDIR)/usr/share/icons/hicolor/24x24/apps/$(APP).png");
+		sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+		if (file_exists(svg_filename) != 0) {
+			add_makefile_entry_to_file(filename, "install",
+									   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+			add_makefile_entry_to_file(filename, "install",
+									   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/pixmaps/$(APP).svg");
+		}
 	}
 
 	if ((strcmp(project_type,"c")==0) ||

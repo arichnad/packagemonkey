@@ -912,6 +912,7 @@ static int save_rules(char * directory,
 	char commandstr[BLOCK_SIZE];
 	char * directories[MAX_FILES];
 	char svg_filename[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	FILE * fp;
 
 	/* rules file path and filename */
@@ -921,6 +922,7 @@ static int save_rules(char * directory,
 
 	get_setting("project name",project_name);
 	get_setting("project type",project_type);
+	get_setting("commandline",commandline);
 
 	fp = fopen(filename,"w");
 	if (!fp) return 0;
@@ -978,28 +980,29 @@ static int save_rules(char * directory,
 	}
 
 	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/applications\n");
 	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man\n");
 	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man/man1\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/$(APP)\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/pixmaps\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps\n");
 
+	if (strlen(commandline) == 0) {
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/$(APP)\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/applications\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/pixmaps\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24\n");
+		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps\n");
 
-	fprintf(fp,	"%s", "		 install -m 644 desktop/$(APP).desktop $(CURDIR)/debian/$(APP)/usr/share/applications/$(APP).desktop\n");
-	fprintf(fp,	"%s", "		 install -m 644 desktop/icon24.png $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
+		fprintf(fp,	"%s", "		 install -m 644 desktop/$(APP).desktop $(CURDIR)/debian/$(APP)/usr/share/applications/$(APP).desktop\n");
+		fprintf(fp,	"%s", "		 install -m 644 desktop/icon24.png $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
 
-	sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
-	if (file_exists(svg_filename) != 0) {
-		fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
-		fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/pixmaps/$(APP).svg\n");
+		sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+		if (file_exists(svg_filename) != 0) {
+			fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
+			fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/pixmaps/$(APP).svg\n");
+		}
 	}
-
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0) ||
 	    (strcmp(project_type,"c++")==0) ||
@@ -1046,7 +1049,7 @@ static int save_rules(char * directory,
 
 
 	fprintf(fp,"%s","binary-indep: build install\n");
-	fprintf(fp,"%s","			  dh_shlibdeps\n");
+	/*fprintf(fp,"%s","			  dh_shlibdeps\n");*/
 	fprintf(fp,"%s","			  dh_testdir\n");
 	fprintf(fp,"%s","			  dh_testroot\n");
 	fprintf(fp,"%s","			  dh_installchangelogs\n");

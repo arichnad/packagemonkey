@@ -25,6 +25,8 @@ void show_help()
 
 	printf(" -d  --dir <directory>         " \
 		   "Set the working directory\n");
+	printf(" -c  --cmd                     " \
+		   "Used to indicate this is a command line project\n");
 	printf(" -s  --scripts <directory>     " \
 		   "Set directory containing scripts to be packaged\n");
 	printf(" -b  --binaries <files>        " \

@@ -96,6 +96,7 @@ int main(int argc, char* argv[])
 	}
 
 	sprintf(project_version,"%s","0.10");
+	add_setting("commandline","");
 	add_setting("version",project_version);
 	add_setting("binaries","install");
 	add_setting("compile","");
@@ -142,6 +143,13 @@ int main(int argc, char* argv[])
 			(strcmp(argv[i],"--tests")==0)) {
 			run_tests();
 			return 0;
+		}
+		/* Is this a commandline project? -
+		   i.e. no desktop icon is needed */
+		if ((strcmp(argv[i],"-c")==0) ||
+			(strcmp(argv[i],"--cmd")==0) ||
+			(strcmp(argv[i],"--commandline")==0)) {
+			add_setting("commandline","1");
 		}
 		/* set the working directory */
 		if ((strcmp(argv[i],"-d")==0) ||

@@ -35,6 +35,8 @@ static int save_spec(char * project_directory,
 	char svg_filename[BLOCK_SIZE];
 	char source_package[BLOCK_SIZE];
 	char categories[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	char * directories[MAX_FILES];
 	FILE * fp;
 	int ctr,i,j=0,k,no_of_directories;
@@ -77,10 +79,12 @@ static int save_spec(char * project_directory,
 	get_setting("build rpm", build_requires);
 	get_setting("source package", source_package);
 	get_setting("categories", categories);
+	get_setting("release", release);
+	get_setting("commandline", commandline);
 
 	fprintf(fp,"Name: %s\n",project_name);
 	fprintf(fp,"Version: %s\n",version);
-	fprintf(fp,"%s","Release: 1\n");
+	fprintf(fp,"Release: %s%%{?dist}\n",release);
 	fprintf(fp,"Summary: %s\n",description_brief);
 	fprintf(fp,"License: %s\n",license);
 	fprintf(fp,"URL: %s\n",homepage);
@@ -89,7 +93,7 @@ static int save_spec(char * project_directory,
 		fprintf(fp,"Source0: %s\n", source_package);
 	}
 	else {
-		fprintf(fp,"%s", "Source0: http://yourdomainname.com/src/%{name}-%{version}.orig.tar.gz\n");
+		fprintf(fp,"%s", "Source0: http://yourdomainname.com/src/%{name}_%{version}.orig.tar.gz\n");
 	}
 	if (strlen(categories) > 0) {
 		fprintf(fp,"Group: %s\n",categories);
@@ -189,17 +193,20 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man\n");
 	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man/man1\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/%{name}\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps\n\n");
 
-	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");
+	if (strlen(commandline) == 0) {
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/%{name}\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24\n");
+		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps\n\n");
+	}
+
+	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");	
 	fprintf(fp,"%s","make install -B DESTDIR=%{buildroot}\n\n");
 
 	fprintf(fp,"%s","%files\n");
@@ -207,11 +214,13 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","%defattr(-,root,root,-)\n");
 	fprintf(fp,"%s","%{_bindir}/*\n");
 	fprintf(fp,"%s","%{_mandir}/man1/*\n");
-	fprintf(fp,"%s","%attr(644,root,root) /usr/share/applications/%{name}.desktop\n");
-	fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/24x24/apps/%{name}.png\n");
-	if (file_exists(svg_filename) != 0) {
-		fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/scalable/apps/%{name}.svg\n");
-		fprintf(fp,"%s","%attr(644,root,root) /usr/share/pixmaps/%{name}.svg\n");
+	if (strlen(commandline) == 0) {
+		fprintf(fp,"%s","%attr(644,root,root) /usr/share/applications/%{name}.desktop\n");
+		fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/24x24/apps/%{name}.png\n");
+		if (file_exists(svg_filename) != 0) {
+			fprintf(fp,"%s","%attr(644,root,root) /usr/share/icons/hicolor/scalable/apps/%{name}.svg\n");
+			fprintf(fp,"%s","%attr(644,root,root) /usr/share/pixmaps/%{name}.svg\n");
+		}
 	}
 	if (is_library(project_name) == 0) {
 		/* install some binaries */
