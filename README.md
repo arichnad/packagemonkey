@@ -47,50 +47,50 @@ Example
 Options
 -------
 
-<b>-d, --dir <directory></b><br>
+<b>-d, --dir [directory]</b><br>
 Set the directory of the project to be packaged.
 
 
 <b>-c, --cmd</b><br>
 Used to indicate this is a command line project.  If this option is not used then an icon and desktop file suitable for a GUI application will be generated.
 
-<b>-b, --binaries <files></b><br>
+<b>-b, --binaries [files]</b><br>
 Directory containing binaries or scripts to be packaged.  By default this is a subdirectory called "install".
 
-<b>--compile <args></b><br>
+<b>--compile [args]</b><br>
 Additional arguments to add to the compilation.
 
-<b>-l, --license <type></b><br>
+<b>-l, --license [type]</b><br>
 The license type (gpl2|gpl3|lgpl2|lgpl3|mit|bsd|apache|mozilla)
 
-<b>-e, --email <address></b><br>
+<b>-e, --email [address]</b><br>
 Set full name and email address.
 
-<b>--brief <description></b><br>
+<b>--brief [description]</b><br>
 A brief one line description of the project.
 
-<b>--desc <description></b><br>
+<b>--desc [description]</b><br>
 A full description of the project.
 
-<b>--homepage <url></b><br>
+<b>--homepage [url]</b><br>
 URL of the project home page.
 
-<b>--section <sections></b><br>
+<b>--section [sections]</b><br>
 Debian sections.
 
-<b>--categories <cat></b><br>
+<b>--categories [cat]</b><br>
 desktop file categories.
 
-<b>--dependsdeb <packages></b><br>
+<b>--dependsdeb [packages]</b><br>
 Deb packages which the project depends upon.
 
-<b>--builddeb <packages></b><br>
+<b>--builddeb [packages]</b><br>
 Deb packages required to build the project.
 
-<b>--dependsrpm <packages></b><br>
+<b>--dependsrpm [packages]</b><br>
 RPM packages which the project depends upon.
 
-<b>--buildrpm <packages></b><br>
+<b>--buildrpm [packages>]</b><br>
 RPM packages required to build the project.
 
 <b>--list-sections</b><br>
@@ -99,16 +99,16 @@ List the possible Debian sections.
 <b>--list-desktop</b><br>
 List the possible desktop file categories.
 
-<b>--debian <version></b><br>
+<b>--debian [version]</b><br>
 Set the Debian version.
 
 <b>--tests</b><br>
 Run unit tests.
 
-<b>-v, --version <number></b><br>
+<b>-v, --version [number]</b><br>
 Show or set the project version number.  If only a single option exists then this will return the version number of packagemonkey, otherwise in a multi-option situation it can be used to set the version number of the prokect to be packaged.
 
-<b>-r, --release <number></b><br>
+<b>-r, --release [number]</b><br>
 Set the project release number.
 
 <b>-h, --help</b><br>
