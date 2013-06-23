@@ -75,6 +75,9 @@ A full description of the project.
 <b>--homepage [url]</b><br>
 URL of the project home page.
 
+<b>--src [url]</b><br>
+URL of the compressed source code.
+
 <b>--section [sections]</b><br>
 Debian sections.
 

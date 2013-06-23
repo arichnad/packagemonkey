@@ -336,7 +336,8 @@ int main(int argc, char* argv[])
 			}
 		}
 		/* URL for the compressed source code */
-		if (strcmp(argv[i],"--source")==0) {
+		if ((strcmp(argv[i],"--src")==0) ||
+			(strcmp(argv[i],"--source")==0)) {
 			i++;
 			if (i < argc) {
 				add_setting("source package",argv[i]);

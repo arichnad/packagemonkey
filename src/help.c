@@ -42,6 +42,8 @@ void show_help()
 		   "A full description of the project\n");
 	printf("     --homepage <url>          " \
 		   "URL of the project home page\n");
+	printf("     --src <url>          " \
+		   "URL of the compressed source code\n");
 	printf("     --section <sections>      " \
 		   "Debian sections\n");
 	printf("     --categories <cat>        " \
