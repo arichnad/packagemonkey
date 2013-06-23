@@ -533,3 +533,40 @@ int files_exist(char * directory, char * file_extension)
 	if (system(commandstr)) return exists;
 	return exists;
 }
+
+/* prints a script to the console so that it can be coppied */
+void print_script(char * source_script, char * name)
+{
+	FILE * fp;
+	int i, ctr;
+	char linestr[BLOCK_SIZE],str[BLOCK_SIZE];
+
+	fp = fopen(source_script, "r");
+	if (!fp) return;
+
+	printf("void save_%s(char * filename)\n{\n",name);
+	printf("    FILE * fp;\n\n");
+	printf("    fp = fopen(filename,\"w\");\n");
+	printf("    if (!fp) return;\n");
+	
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			ctr = 0;
+			for (i = 0; i < strlen(linestr); i++) {
+				if ((linestr[i] != '\t') &&
+					(linestr[i] != 10) &&
+					(linestr[i] != 13)) {
+					if (linestr[i] == '"') {
+						str[ctr++] = '\\';
+					}
+					str[ctr++] = linestr[i];
+				}
+			}
+			printf("    fprintf(fp,\"%%s\",\"%s\");\n", str);
+		}
+	}
+	printf("    fclose(fp);\n}\n");
+
+	fclose(fp);
+}

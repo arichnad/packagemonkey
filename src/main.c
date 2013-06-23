@@ -29,6 +29,8 @@
 #include "desktop.h"
 #include "rpm.h"
 #include "directory.h"
+#include "arch.h"
+#include "puppy.h"
 #include "help.h"
 
 /* deallocates memory used for filenames */
@@ -103,8 +105,11 @@ int main(int argc, char* argv[])
 	add_setting("release","1");
 	add_setting("depends deb","");
 	add_setting("depends rpm","");
+	add_setting("depends arch","");
 	add_setting("build deb","");
 	add_setting("build rpm","");
+	add_setting("build arch","");
+	get_setting("source package", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -330,6 +335,16 @@ int main(int argc, char* argv[])
 				printf("No compile arguments given\n");
 			}
 		}
+		/* URL for the compressed source code */
+		if (strcmp(argv[i],"--source")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("source package",argv[i]);
+			}
+			else {
+				printf("No source package given\n");
+			}
+		}
 		/* Debian version */
 		if (strcmp(argv[i],"--debian")==0) {
 			i++;
@@ -546,6 +561,7 @@ int main(int argc, char* argv[])
 	save_desktop();
 	save_makefile(no_of_binaries,binaries);
 	save_rpm(no_of_binaries,binaries);
+	save_arch();
 
 	/* free memory */
 	free_filenames(binaries,no_of_binaries);

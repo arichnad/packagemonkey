@@ -72,5 +72,6 @@ int file_is_library(char * filename);
 int contains_char(char * str, char search);
 int is_script(char * filename);
 int files_exist(char * directory, char * file_extension);
+void print_script(char * source_script, char * name);
 
 #endif
