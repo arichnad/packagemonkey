@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 	add_setting("build deb","");
 	add_setting("build rpm","");
 	add_setting("build arch","");
-	get_setting("source package", "");
+	add_setting("source package", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -563,6 +563,7 @@ int main(int argc, char* argv[])
 	save_makefile(no_of_binaries,binaries);
 	save_rpm(no_of_binaries,binaries);
 	save_arch();
+	save_puppy();
 
 	/* free memory */
 	free_filenames(binaries,no_of_binaries);

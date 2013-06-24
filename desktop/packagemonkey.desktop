@@ -6,4 +6,4 @@ Comment=Tool to make packaging easier
 Exec=packagemonkey %U
 Icon=packagemonkey
 Terminal=false
-Categories=Utility;
+Categories=Utility;ConsoleOnly;

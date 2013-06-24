@@ -195,8 +195,9 @@ static void save_compat()
 	get_debhelper_version(dh_version);
 
 	get_setting("directory", directory);
-	sprintf(filename,"%s%cdebian%ccompat", directory,
-			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%c%s%ccompat", directory,
+			DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	fp = fopen(filename,"w");
 	if (!fp) return;
@@ -244,8 +245,9 @@ static void save_control()
 
 	/* get the variables */
 	get_setting("directory", directory);
-	sprintf(filename,"%s%cdebian%ccontrol", directory,
-			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%c%s%ccontrol", directory,
+			DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 	get_setting("email", email_address);
 	get_setting("project name", project_name);
 	get_setting("homepage",homepage);
@@ -849,9 +851,9 @@ static int save_copyright(char * directory)
 	get_setting("license", license);
 
 	/* the copyright path and filename */
-	sprintf(filename, "%s%cdebian%ccopyright",
+	sprintf(filename, "%s%c%s%ccopyright",
 			directory, DIRECTORY_SEPARATOR,
-			DIRECTORY_SEPARATOR);
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* convert to lower case */
 	for (i = 0; i < strlen(license); i++) {
@@ -916,9 +918,9 @@ static int save_rules(char * directory,
 	FILE * fp;
 
 	/* rules file path and filename */
-	sprintf(filename, "%s%cdebian%crules",
+	sprintf(filename, "%s%c%s%crules",
 			directory, DIRECTORY_SEPARATOR,
-			DIRECTORY_SEPARATOR);
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	get_setting("project name",project_name);
 	get_setting("project type",project_type);
@@ -933,7 +935,8 @@ static int save_rules(char * directory,
 	if (strlen(project_type) != 0) {
 		fprintf(fp,"%s","application = $(CURDIR)/$(APP)\n");
 	}
-	fprintf(fp,"%s","DESTDIR=$(CURDIR)/debian/$(APP)\n");
+	fprintf(fp, "DESTDIR=$(CURDIR)/%s/$(APP)\n",
+			DEB_SUBDIR);
 
 	fprintf(fp,"%s","build: build-stamp\n");
 	fprintf(fp,"%s","\tmake\n");
@@ -960,10 +963,10 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		 dh_prep\n");
 	fprintf(fp,"%s","		 dh_installdirs\n");
 
-	fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/bin\n");
+	fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/bin\n", DEB_SUBDIR);
 	if (is_library(project_name) != 0) {
-		fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/lib\n");
-		fprintf(fp,"%s","		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/lib/$(APP)\n");
+		fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/lib\n", DEB_SUBDIR);
+		fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/lib/$(APP)\n", DEB_SUBDIR);
 	}
 
 	if (no_of_binaries > 0) {
@@ -972,35 +975,35 @@ static int save_rules(char * directory,
 							directories);
 		for (i = 0; i < no_of_directories; i++) {
 			if (get_subdirectory_string(directories[i]) != 0) {
-			    fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)\"/debian/$(APP)/%s\"\n",
-						get_subdirectory_string(directories[i]));
+			    fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)\"/%s/$(APP)/%s\"\n",
+						DEB_SUBDIR, get_subdirectory_string(directories[i]));
 			}
 			free(directories[i]);
 		}
 	}
 
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man\n");
-	fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/man/man1\n");
+	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share\n", DEB_SUBDIR);
+	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/man\n", DEB_SUBDIR);
+	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/man/man1\n", DEB_SUBDIR);
 
 	if (strlen(commandline) == 0) {
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/$(APP)\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/applications\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/pixmaps\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24\n");
-		fprintf(fp,	"%s", "		 mkdir -m 755 -p $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps\n");
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/$(APP)\n", DEB_SUBDIR);
+		fprintf(fp, "		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/applications\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/pixmaps\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable/apps\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24\n", DEB_SUBDIR);
+		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24/apps\n", DEB_SUBDIR);
 
-		fprintf(fp,	"%s", "		 install -m 644 desktop/$(APP).desktop $(CURDIR)/debian/$(APP)/usr/share/applications/$(APP).desktop\n");
-		fprintf(fp,	"%s", "		 install -m 644 desktop/icon24.png $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n");
+		fprintf(fp,	"		 install -m 644 desktop/$(APP).desktop $(CURDIR)/%s/$(APP)/usr/share/applications/$(APP).desktop\n", DEB_SUBDIR);
+		fprintf(fp,	"		 install -m 644 desktop/icon24.png $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n", DEB_SUBDIR);
 
 		sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 		if (file_exists(svg_filename) != 0) {
-			fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n");
-			fprintf(fp,	"%s", "		 install -m 644 desktop/icon.svg $(CURDIR)/debian/$(APP)/usr/share/pixmaps/$(APP).svg\n");
+			fprintf(fp,	"		 install -m 644 desktop/icon.svg $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n", DEB_SUBDIR);
+			fprintf(fp,	"		 install -m 644 desktop/icon.svg $(CURDIR)/%s/$(APP)/usr/share/pixmaps/$(APP).svg\n", DEB_SUBDIR);
 		}
 	}
 	if ((strcmp(project_type,"c")==0) ||
@@ -1099,9 +1102,9 @@ static void save_manpages(char * directory)
 	month = timeinfo->tm_mon;
 	day = timeinfo->tm_mday;
 
-	sprintf(filename,"%s%cdebian%cmanpages",
+	sprintf(filename,"%s%c%s%cmanpages",
 			directory, DIRECTORY_SEPARATOR,
-			DIRECTORY_SEPARATOR);
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	get_setting("project name",project_name);
 
@@ -1174,8 +1177,9 @@ static void save_changelog(char * directory)
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 	};
 
-	sprintf(filename,"%s%cdebian%cchangelog",directory,
-			DIRECTORY_SEPARATOR,DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%c%s%cchangelog",directory,
+			DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* does it already exist? */
 	if (file_exists(filename) != 0) return;
@@ -1266,8 +1270,9 @@ static void save_docs(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 
-	sprintf(filename,"%s%cdebian%cdocs", directory,
-			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(filename,"%s%c%s%cdocs", directory,
+			DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
 	if (file_exists(filename) != 0) return;
 
@@ -1342,45 +1347,53 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"PREV_VERSION=%s\n",project_version);
 	fprintf(fp,"VERSION=%s\n",project_version);
 	fprintf(fp,"RELEASE=%s\n",release);
-	fprintf(fp,"ARCH_TYPE=`uname -m`\n");
-	fprintf(fp,"DIR=${APP}-${VERSION}\n\n");
+	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	fprintf(fp, "%s", "DIR=${APP}-${VERSION}\n\n");
 
-	fprintf(fp,"if [ $ARCH_TYPE == \"x86_64\" ]; then\n");
-	fprintf(fp,"    ARCH_TYPE=\"amd64\"\n");
-	fprintf(fp,"fi\n");
-	fprintf(fp,"if [ $ARCH_TYPE == \"i686\" ]; then\n");
-	fprintf(fp,"    ARCH_TYPE=\"i386\"\n");
-	fprintf(fp,"fi\n\n");
+	fprintf(fp, "%s", "if [ $ARCH_TYPE == \"x86_64\" ]; then\n");
+	fprintf(fp, "%s", "    ARCH_TYPE=\"amd64\"\n");
+	fprintf(fp, "%s", "fi\n");
+	fprintf(fp, "%s", "if [ $ARCH_TYPE == \"i686\" ]; then\n");
+	fprintf(fp, "%s", "    ARCH_TYPE=\"i386\"\n");
+	fprintf(fp, "%s", "fi\n\n");
 
-	fprintf(fp,"#update version numbers automatically - " \
+	fprintf(fp, "%s", "#update version numbers automatically - " \
 			"so you don't have to\n");
-	fprintf(fp,"sed -i 's/VERSION='${PREV_VERSION}'/" \
+	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/" \
 			"VERSION='${VERSION}'/g' Makefile rpm.sh\n");
-	fprintf(fp,"sed -i 's/Version: '${PREV_VERSION}'/" \
-			"Version: '${VERSION}'/g' rpmpackage/${APP}.spec\n");
-	fprintf(fp,"sed -i 's/Release: '${RELEASE}'/" \
-			"Release: '${RELEASE}'/g' rpmpackage/${APP}.spec\n\n");
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/" \
+			"Version: '${VERSION}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}'/" \
+			"Release: '${RELEASE}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
+			"pkgver='${VERSION}'/g' %s/PKGBUILD\n\n",
+			ARCH_SUBDIR);
 
-	fprintf(fp,"make clean\n");
-	fprintf(fp,"make\n\n");
+	fprintf(fp, "%s", "make clean\n");
+	fprintf(fp, "%s", "make\n\n");
 
-	fprintf(fp,"# change the parent directory name " \
+	fprintf(fp, "%s", "# change the parent directory name " \
 			"to debian format\n");
-	fprintf(fp,"mv ../${APP} ../${DIR}\n\n");
+	fprintf(fp, "%s", "mv ../${APP} ../${DIR}\n\n");
 
-	fprintf(fp,"# Create a source archive\n");
-	fprintf(fp,"make source\n\n");
+	fprintf(fp, "%s", "# Create a source archive\n");
+	fprintf(fp, "%s", "make source\n\n");
 
-	fprintf(fp,"# Build the package\n");
-	fprintf(fp,"dpkg-buildpackage -F\n\n");
+	fprintf(fp, "%s", "# Build the package\n");
+	fprintf(fp, "%s", "dpkg-buildpackage -F\n\n");
 
-	fprintf(fp,"# sign files\n");
-	fprintf(fp,"gpg -ba ../${APP}_${VERSION}-1_$" \
+	fprintf(fp, "%s", "# sign files\n");
+	fprintf(fp, "%s", "gpg -ba ../${APP}_${VERSION}-1_$" \
 			"{ARCH_TYPE}.deb\n");
-	fprintf(fp,"gpg -ba ../${APP}_${VERSION}.orig.tar.gz\n\n");
+	fprintf(fp, "%s", "gpg -ba ../${APP}_${VERSION}.orig.tar.gz\n\n");
 
-	fprintf(fp,"# restore the parent directory name\n");
-	fprintf(fp,"mv ../${DIR} ../${APP}\n");
+	fprintf(fp, "%s", "# restore the parent directory name\n");
+	fprintf(fp, "%s", "mv ../${DIR} ../${APP}\n");
 
 	fclose(fp);
 
@@ -1401,14 +1414,16 @@ int save_debian(int no_of_binaries, char ** binaries)
 
 	/* create the debian directory */
 	get_setting("directory", directory);
-	sprintf(debdir,"%s%cdebian", directory, DIRECTORY_SEPARATOR);
+	sprintf(debdir,"%s%c%s",
+			directory, DIRECTORY_SEPARATOR,DEB_SUBDIR);
 	if (directory_exists(debdir)==0) {
 		sprintf(commandstr,"%s %s",COMMAND_MKDIR,debdir);
 		retval = system(commandstr);
 	}
 	/* create debian/source */
-	sprintf(debsourcedir,"%s%cdebian%csource",
-			directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	sprintf(debsourcedir,"%s%c%s%csource",
+			directory, DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 	if (directory_exists(debsourcedir)==0) {
 		sprintf(commandstr,"%s %s",COMMAND_MKDIR,debsourcedir);
 		retval = system(commandstr);

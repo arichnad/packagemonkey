@@ -362,12 +362,24 @@ static int save_script(char * directory, char * subdir)
 	fprintf(fp, "%s", "SOURCEDIR=.\n");
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
-	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES/${APP}-${VERSION}.orig.tar.gz\n\n");
+	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES" \
+			"/${APP}-${VERSION}.orig.tar.gz\n\n");
 
-	fprintf(fp, "%s", "#update version numbers automatically - so you don't have to\n");
-	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/VERSION='${VERSION}'/g' Makefile debian.sh\n");
-	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/Version: '${VERSION}'/g' %s/${APP}.spec\n",subdir);
-	fprintf(fp, "sed -i 's/Release: '${RELEASE}'/Release: '${RELEASE}'/g' %s/${APP}.spec\n\n", subdir);
+	fprintf(fp, "%s", "#update version numbers " \
+			"automatically - so you don't have to\n");
+	fprintf(fp, "%s", "sed -i 's/VERSION='" \
+			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
+			" Makefile debian.sh\n");
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
+			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
+			subdir);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
+			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
+			subdir);
+	fprintf(fp, "%s", "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' archpackage/PKGBUILD\n");
+	fprintf(fp, "%s", "sed -i 's/pkgver='${PREV_VERSION}'/"	\
+			"pkgver='${VERSION}'/g' archpackage/PKGBUILD\n\n");
 
 	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");
@@ -414,7 +426,7 @@ int save_rpm(int no_of_binaries, char ** binaries)
 
 	/* create the debian directory */
 	get_setting("directory", directory);
-	sprintf(subdir,"%s","rpmpackage");
+	sprintf(subdir,"%s", RPM_SUBDIR);
 	sprintf(rpmdir,"%s%c%s", directory, DIRECTORY_SEPARATOR, subdir);
 	if (directory_exists(rpmdir)==0) {
 		sprintf(commandstr,"%s %s",COMMAND_MKDIR,rpmdir);

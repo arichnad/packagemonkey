@@ -33,6 +33,8 @@ static void save_PKGBUILD(char * directory)
 	char source_package[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 	FILE * fp;
+	char * package_list[MAX_FILES];
+	int i, no_of_packages;
 
 	sprintf(filename, "%s%cPKGBUILD",
 			directory, DIRECTORY_SEPARATOR);
@@ -51,6 +53,7 @@ static void save_PKGBUILD(char * directory)
 	get_setting("build arch",build_depends);
 	get_setting("source package",source_package);
 
+
     fprintf(fp, "# Maintainer: %s\n", email_address);
     fprintf(fp, "pkgname=%s\n",project_name);
     fprintf(fp, "pkgver=%s\n", version);
@@ -60,8 +63,27 @@ static void save_PKGBUILD(char * directory)
 	fprintf(fp, "url=\"%s\"\n",homepage);
 	fprintf(fp, "license=('%s')\n",license);
 	fprintf(fp, "groups=()\n");
-	fprintf(fp, "depends=(%s)\n",depends);
-	fprintf(fp, "makedepends=('base-devel' %s)\n",build_depends);
+
+	fprintf(fp, "%s", "depends=(");
+	no_of_packages =
+		separate_files(depends, package_list,
+					   MAX_FILES);
+	for (i = 0; i < no_of_packages; i++) {
+		fprintf(fp, " '%s'", package_list[i]);
+		free(package_list[i]);
+	}
+	fprintf(fp,"%s",")\n");
+
+	fprintf(fp, "%s", "makedepends=('base-devel'");
+	no_of_packages =
+		separate_files(build_depends, package_list,
+					   MAX_FILES);
+	for (i = 0; i < no_of_packages; i++) {
+		fprintf(fp, " '%s'", package_list[i]);
+		free(package_list[i]);
+	}
+	fprintf(fp,"%s",")\n");
+
 	fprintf(fp, "optdepends=()\n");
 	fprintf(fp, "provides=()\n");
 	fprintf(fp, "conflicts=()\n");
@@ -99,8 +121,9 @@ int save_arch()
 	int retval=0;
 
 	get_setting("directory",directory);
-	sprintf(arch_directory,"%s%carchpackage",
-			directory, DIRECTORY_SEPARATOR);
+	sprintf(arch_directory,"%s%c%s",
+			directory, DIRECTORY_SEPARATOR,
+			ARCH_SUBDIR);
 
 	/* create a directory for building arch packages */
 	if (directory_exists(arch_directory)==0) {
