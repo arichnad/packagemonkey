@@ -182,7 +182,7 @@ static int save_script(char * directory)
 
 	fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
 	fprintf(fp, "%s", "CHECKSM=$(md5sum ${SOURCE})\n");
-	fprintf(fp, "sed -i \"s/md5sums=()/" \
+	fprintf(fp, "sed -i \"s/md5sums[^)]*)/" \
 			"md5sums=(${CHECKSM%%%% *})/g\" %s/PKGBUILD\n",
 			ARCH_SUBDIR);
 
