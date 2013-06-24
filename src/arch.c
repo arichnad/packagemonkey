@@ -99,7 +99,7 @@ static void save_PKGBUILD(char * directory)
 	    fprintf(fp, "source=(%s)\n",source_package);
     }
 	fprintf(fp, "noextract=()\n");
-	fprintf(fp, "md5sums=() #generate with 'makepkg -g'\n");
+	/*fprintf(fp, "md5sums=() #generate with 'makepkg -g'\n");*/
 	fprintf(fp, "build() {\n");
 	fprintf(fp, "  cd \"$srcdir/$pkgname-$pkgver\"\n");
 	fprintf(fp, "  ./configure --prefix=/usr\n");
@@ -111,6 +111,91 @@ static void save_PKGBUILD(char * directory)
 	fprintf(fp, "}\n");
 
     fclose(fp);
+}
+
+static int save_script(char * directory)
+{
+	FILE * fp;
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
+
+	get_setting("project name", project_name);
+	get_setting("version", version);
+	get_setting("release",release);
+
+	sprintf(filename,"%s%carch.sh",
+			directory, DIRECTORY_SEPARATOR);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp, "%s", "#!/bin/bash\n\n");
+
+	fprintf(fp, "APP=%s\n",project_name);
+	fprintf(fp, "PREV_VERSION=%s\n", version);
+	fprintf(fp, "VERSION=%s\n",version);
+	fprintf(fp, "RELEASE=%s\n",release);
+	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
+	fprintf(fp, "SOURCE=%s/${APP}_${VERSION}.orig.tar.gz\n",
+			ARCH_SUBDIR);
+
+
+	/* alter the version numbers */
+	fprintf(fp, "%s", "\n# Update version numbers " \
+			"automatically - so you don't have to\n");
+	fprintf(fp, "%s", "sed -i 's/VERSION='" \
+			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
+			" Makefile debian.sh rpm.sh\n");
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
+			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
+			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
+			"pkgver='${VERSION}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+
+	fprintf(fp, "%s", "\n# Set the type of architecture\n");
+	fprintf(fp, "sed -i 's/arch=(''any'')'${PREV_VERSION}'/" \
+			"pkgver='${ARCH_TYPE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+
+	fprintf(fp, "%s", "\n# Create the source code\n");
+	fprintf(fp, "%s", "make clean\n");
+	fprintf(fp, "%s %s/*.gz\n", COMMAND_DELETE, ARCH_SUBDIR);
+	fprintf(fp, "%s", "# having the root directory called name-version seems essential\n");
+	fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
+	fprintf(fp, "%s", "tar -cvzf ${SOURCE} ../${APP}-${VERSION} --exclude-vcs\n");
+	fprintf(fp, "%s", "# rename the root directory without the version number\n");
+	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
+
+	fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
+
+	fprintf(fp, "%s", "\n# Update the integrity checks\n");
+
+	fprintf(fp, "%s", "GREP=$(grep \"md5sums=\" PKGBUILD)\n");
+	fprintf(fp, "%s", "if [[ ! -z $GREP ]]; then\n");
+	fprintf(fp, "%s", "\tmakepkg -g >> PKGBUILD\n");
+	fprintf(fp, "%s", "fi\n");
+
+	fprintf(fp, "%s", "\n# Create the package\n");
+	fprintf(fp, "%s", "makepkg\n");
+
+	fprintf(fp, "%s", "\n# Move back to the original directory\n");
+	fprintf(fp, "%s", "cd ${CURRDIR}\n\n");
+
+	fclose(fp);
+
+	sprintf(commandstr,"chmod +x %s", filename);
+	return system(commandstr);
 }
 
 int save_arch()
@@ -133,6 +218,7 @@ int save_arch()
 	}
 
 	save_PKGBUILD(arch_directory);
+	save_script(directory);
 
 	return retval;
 }

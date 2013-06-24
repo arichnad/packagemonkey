@@ -341,15 +341,6 @@ static int save_script(char * directory, char * subdir)
 	sprintf(filename,"%s%crpm.sh",
 			directory, DIRECTORY_SEPARATOR);
 
-	if (file_exists(filename) != 0) {
-		/* if the script already exists then
-		   change the version number and app name */
-		replace_build_script_version(filename,
-									 project_name,
-									 version);
-		return -1;
-	}
-
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
@@ -369,17 +360,19 @@ static int save_script(char * directory, char * subdir)
 			"automatically - so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='" \
 			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
-			" Makefile debian.sh\n");
+			" Makefile debian.sh arch.sh\n");
 	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
 			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
-			subdir);
+			RPM_SUBDIR);
 	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
 			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
-			subdir);
-	fprintf(fp, "%s", "sed -i 's/pkgrel='${RELEASE}'/" \
-			"pkgrel='${RELEASE}'/g' archpackage/PKGBUILD\n");
-	fprintf(fp, "%s", "sed -i 's/pkgver='${PREV_VERSION}'/"	\
-			"pkgver='${VERSION}'/g' archpackage/PKGBUILD\n\n");
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/" \
+			"pkgver='${VERSION}'/g' %s/PKGBUILD\n\n",
+			ARCH_SUBDIR);
 
 	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");

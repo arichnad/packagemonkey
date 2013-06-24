@@ -1360,7 +1360,7 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp, "%s", "#update version numbers automatically - " \
 			"so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='${PREV_VERSION}'/" \
-			"VERSION='${VERSION}'/g' Makefile rpm.sh\n");
+			"VERSION='${VERSION}'/g' Makefile rpm.sh arch.sh\n");
 	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'/" \
 			"Version: '${VERSION}'/g' %s/${APP}.spec\n",
 			RPM_SUBDIR);
