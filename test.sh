@@ -1,7 +1,6 @@
 #!/bin/bash
 
-rm -rf debian
-rm -rf rpmpackage
+rm -rf debian rpmpackage archpackage
 #rm -rf desktop
 #rm -f LICENSE rpm.sh debian.sh Makefile
 

@@ -65,6 +65,7 @@ int match_string(char * str, char ** strings, int no_of_strings);
 int valid_email(char * email_address);
 int valid_gpg(char * email_address);
 void string_to_lower(char * str, char * result);
+void string_to_upper(char * str, char * result);
 void detect_project_type(char * directory, char * project_type);
 int valid_description(char * description);
 int replace_build_script_version(char * filename,

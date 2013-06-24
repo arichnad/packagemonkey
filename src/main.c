@@ -71,7 +71,7 @@ int validate_description(char * description)
 
 int main(int argc, char* argv[])
 {
-	int i, retval;
+	int i, j, retval;
 	int no_of_binaries = 0;
 	int working_directory_specified = 0;
 	char directory[BLOCK_SIZE];
@@ -249,6 +249,11 @@ int main(int argc, char* argv[])
 			(strcmp(argv[i],"--license")==0)) {
 			i++;
 			if (i < argc) {
+				/* convert to lower case */
+				for (j = 0; j < strlen(argv[i]); j++) {
+					argv[i][j] = tolower(argv[i][j]);
+				}
+
 				add_setting("license",argv[i]);
 			}
 			else {
@@ -414,8 +419,15 @@ int main(int argc, char* argv[])
 		return -1;
 	} 
 	if (valid_license(license)==0) {
-		printf("%s is not a recognised license\n",license);
+		printf("%s is not a recognised license.\n",license);
 		return -1;
+	}
+	/* convert license to upper case */
+	if (strcmp(license,"mozilla")!=0) {
+		for (i = 0; i < strlen(license); i++) {
+			license[i] = toupper(license[i]);
+		}
+		add_setting("license",license);
 	}
 
 	/* check that the Debian sections are valid */

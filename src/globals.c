@@ -107,6 +107,18 @@ void string_to_lower(char * str, char * result)
 	result[i] = 0;
 }
 
+/* converts a string to upper case */
+void string_to_upper(char * str, char * result)
+{
+	int i;
+
+	/* convert to lower case */
+	for (i = 0; i < strlen(str); i++) {
+		result[i] = toupper(str[i]);
+	}
+	result[i] = 0;
+}
+
 /* returns a non-zero value if the given email addess is in the correct format */
 int valid_email(char * email_address)
 {
