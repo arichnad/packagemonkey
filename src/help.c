@@ -54,8 +54,12 @@ void show_help()
 		   "Deb packages required to build the project\n");
 	printf("     --dependsrpm <packages>   " \
 		   "RPM packages which the project depends upon\n");
+	printf("     --dependsarch <packages>   " \
+		   "Arch packages which the project depends upon\n");
 	printf("     --buildrpm <packages>     " \
 		   "RPM packages required to build the project\n");
+	printf("     --buildarch <packages>     " \
+		   "Arch packages required to build the project\n");
 	printf("     --list-sections           " \
 		   "List the possible Debian sections\n");
 	printf("     --list-desktop            " \

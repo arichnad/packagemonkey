@@ -300,6 +300,16 @@ int main(int argc, char* argv[])
 				printf("No RPM packages given for the build\n");
 			}
 		}
+		/* Arch packages which the build requires */
+		if (strcmp(argv[i],"--buildarch")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("build arch",argv[i]);
+			}
+			else {
+				printf("No Arch packages given for the build\n");
+			}
+		}
 		/* deb packages which the build depends upon */
 		if (strcmp(argv[i],"--builddeb")==0) {
 			i++;
@@ -328,6 +338,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No RPM depends packages given\n");
+			}
+		}
+		/* Arch packages which this depends upon */
+		if (strcmp(argv[i],"--dependsarch")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("depends arch",argv[i]);
+			}
+			else {
+				printf("No Arch depends packages given\n");
 			}
 		}
 		/* Additional arguments for the compiler */
