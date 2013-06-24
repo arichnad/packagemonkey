@@ -140,7 +140,7 @@ static int save_script(char * directory)
 	fprintf(fp, "RELEASE=%s\n",release);
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
-	fprintf(fp, "SOURCE=%s/${APP}_${VERSION}.orig.tar.gz\n",
+	fprintf(fp, "SOURCE=%s/${APP}-${VERSION}.tar.gz\n",
 			ARCH_SUBDIR);
 
 
@@ -164,7 +164,7 @@ static int save_script(char * directory)
 			ARCH_SUBDIR);
 
 	fprintf(fp, "%s", "\n# Set the type of architecture\n");
-	fprintf(fp, "sed -i 's/arch=(''any'')'${PREV_VERSION}'/" \
+	fprintf(fp, "sed -i 's/arch=(''any'')/" \
 			"pkgver='${ARCH_TYPE}'/g' %s/PKGBUILD\n",
 			ARCH_SUBDIR);
 
@@ -177,14 +177,13 @@ static int save_script(char * directory)
 	fprintf(fp, "%s", "# rename the root directory without the version number\n");
 	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
 
+	fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
+	fprintf(fp, "%s", "CHECK=$(md5sum ${SOURCE})\n");
+	fprintf(fp, "sed -i 's/md5sums=()/" \
+			"md5sums=('${CHECK}')/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+
 	fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
-
-	fprintf(fp, "%s", "\n# Update the integrity checks\n");
-
-	fprintf(fp, "%s", "GREP=$(grep \"md5sums=\" PKGBUILD)\n");
-	fprintf(fp, "%s", "if [[ ! -z $GREP ]]; then\n");
-	fprintf(fp, "%s", "\tmakepkg -g >> PKGBUILD\n");
-	fprintf(fp, "%s", "fi\n");
 
 	fprintf(fp, "%s", "\n# Create the package\n");
 	fprintf(fp, "%s", "makepkg\n");
