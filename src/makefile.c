@@ -380,13 +380,15 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							   "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
 
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/bin");
+							   "mkdir -p $(DESTDIR)/usr");
+	add_makefile_entry_to_file(filename, "install",
+							   "mkdir -p $(DESTDIR)/usr/bin");
 
 	if (is_library(project_name) != 0) {
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/lib");
+								   "mkdir -p $(DESTDIR)/usr/lib");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/lib/$(APP)");
+								   "mkdir -p $(DESTDIR)/usr/lib/$(APP)");
 	}
 
 	/* create directories for binaries */
@@ -534,22 +536,22 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		}
 	}
 
-	add_makefile_entry_to_file(filename, "clean",
-							   "rm -f $(APP) \\#* " \
-							   "\\.#* gnuplot* *.png " \
-							   "debian/*.substvars " \
-							   "debian/*.log");
-	add_makefile_entry_to_file(filename, "clean",
-							   "rm -rf deb.* " \
-							   "debian/$(APP) " \
-							   "rpmpackage/$(ARCH_TYPE)");
+	sprintf(str,"%s $(APP) \\#* \\.#* gnuplot* " \
+			"*.png %s/*.substvars %s/*.log",
+			COMMAND_DELETE, DEB_SUBDIR, DEB_SUBDIR);
+	add_makefile_entry_to_file(filename, "clean", str);
+
+	sprintf(str,"%sr deb.* %s/$(APP) %s/$(ARCH_TYPE)",
+			COMMAND_DELETE, DEB_SUBDIR, RPM_SUBDIR);
+	add_makefile_entry_to_file(filename, "clean", str);
 	add_makefile_entry_to_file(filename, "clean",
 							   "rm -f ../$(APP)*.deb " \
 							   "../$(APP)*.changes " \
 							   "../$(APP)*.asc " \
 							   "../$(APP)*.dsc");
-	add_makefile_entry_to_file(filename, "clean",
-							   "rm -f rpmpackage/*.src.rpm");
+	sprintf(str,"%s %s/*.src.rpm %s/*.gz",
+			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR);
+	add_makefile_entry_to_file(filename, "clean", str);
 
 	replace_build_script_version(filename,
 								 project_name,

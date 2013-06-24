@@ -74,12 +74,15 @@ static void save_PKGBUILD(char * directory)
 	}
 	fprintf(fp,"%s",")\n");
 
-	fprintf(fp, "%s", "makedepends=('base-devel'");
+	fprintf(fp, "%s", "makedepends=(");
 	no_of_packages =
 		separate_files(build_depends, package_list,
 					   MAX_FILES);
 	for (i = 0; i < no_of_packages; i++) {
 		fprintf(fp, " '%s'", package_list[i]);
+		if (i < no_of_packages-1) {
+			fprintf(fp,"%s"," ");
+		}
 		free(package_list[i]);
 	}
 	fprintf(fp,"%s",")\n");
@@ -99,7 +102,7 @@ static void save_PKGBUILD(char * directory)
 	    fprintf(fp, "source=(%s)\n",source_package);
     }
 	fprintf(fp, "noextract=()\n");
-	/*fprintf(fp, "md5sums=() #generate with 'makepkg -g'\n");*/
+	fprintf(fp, "md5sums=()\n");
 	fprintf(fp, "build() {\n");
 	fprintf(fp, "  cd \"$srcdir/$pkgname-$pkgver\"\n");
 	fprintf(fp, "  ./configure --prefix=/usr\n");
@@ -164,8 +167,8 @@ static int save_script(char * directory)
 			ARCH_SUBDIR);
 
 	fprintf(fp, "%s", "\n# Set the type of architecture\n");
-	fprintf(fp, "sed -i 's/arch=(''any'')/" \
-			"pkgver='${ARCH_TYPE}'/g' %s/PKGBUILD\n",
+	fprintf(fp, "sed -i \"s/arch=('any')/" \
+			"arch=('${ARCH_TYPE}')/g\" \"%s/PKGBUILD\"\n",
 			ARCH_SUBDIR);
 
 	fprintf(fp, "%s", "\n# Create the source code\n");
@@ -178,9 +181,9 @@ static int save_script(char * directory)
 	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
 
 	fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
-	fprintf(fp, "%s", "CHECK=$(md5sum ${SOURCE})\n");
-	fprintf(fp, "sed -i 's/md5sums=()/" \
-			"md5sums=('${CHECK}')/g' %s/PKGBUILD\n",
+	fprintf(fp, "%s", "CHECKSM=$(md5sum ${SOURCE})\n");
+	fprintf(fp, "sed -i \"s/md5sums=()/" \
+			"md5sums=(${CHECKSM%%%% *})/g\" %s/PKGBUILD\n",
 			ARCH_SUBDIR);
 
 	fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
