@@ -152,7 +152,7 @@ static int save_script(char * directory)
 			"automatically - so you don't have to\n");
 	fprintf(fp, "%s", "sed -i 's/VERSION='" \
 			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
-			" Makefile debian.sh rpm.sh\n");
+			" Makefile debian.sh rpm.sh puppy.sh\n");
 	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
 			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
 			RPM_SUBDIR);

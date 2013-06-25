@@ -153,7 +153,6 @@ static int save_script(char * directory)
 {
 	char script_filename[BLOCK_SIZE];
 	char build_directory[BLOCK_SIZE];
-	char build_project_directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
@@ -170,18 +169,12 @@ static int save_script(char * directory)
 			directory, DIRECTORY_SEPARATOR);
 
 	/* directory in which to build the package */
-	sprintf(build_directory,"%s%cbuildpet",
-			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
-
-	/* directory in which the project files will be installed */
-	sprintf(build_project_directory,"%s%c%s-%s-%s",
-		    build_directory, DIRECTORY_SEPARATOR,
-			project_name, version, release);
+	sprintf(build_directory,"~%cpetbuild",
+			DIRECTORY_SEPARATOR);
 
 	/* base name of the tarball */
-	sprintf(tarball_base,"%s%c%s-%s.tar",
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
-			project_name, version);
+	sprintf(tarball_base,"%s%c${APP}-${VERSION}-${RELEASE}.tar",
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* save the script */
 	fp = fopen(script_filename,"w");
@@ -190,29 +183,53 @@ static int save_script(char * directory)
 	fprintf(fp,"%s","#!/bin/bash\n\n");
 
 	/* create the build directory /tmp/buildpet/project-version */
-	fprintf(fp,"%s -p %s\n",COMMAND_MKDIR, build_directory);
-	fprintf(fp,"%s -p %s\n",
-			COMMAND_MKDIR, build_project_directory);
+	fprintf(fp,"APP=%s\n",project_name);
+	fprintf(fp,"PREV_VERSION=%s\n",version);
+	fprintf(fp,"VERSION=%s\n",version);
+	fprintf(fp,"RELEASE=%s\n",release);
+	fprintf(fp,"BUILDDIR=%s\n",build_directory);
+	fprintf(fp,"%s","PROJECTDIR=${BUILDDIR}/${APP}-${VERSION}-${RELEASE}\n");
+
+	/* alter the version numbers */
+	fprintf(fp, "%s", "\n# Update version numbers " \
+			"automatically - so you don't have to\n");
+	fprintf(fp, "%s", "sed -i 's/VERSION='" \
+			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
+			" Makefile debian.sh rpm.sh arch.sh\n");
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
+			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
+			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
+			"pkgver='${VERSION}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+
+	/* make directories */
+	fprintf(fp,"%s","\n# Make directories within which the project will be built\n");
+	fprintf(fp,"%s -p ${BUILDDIR}\n",COMMAND_MKDIR);
+	fprintf(fp,"%s -p ${PROJECTDIR}\n",	COMMAND_MKDIR);
 
 	/* build */
 	fprintf(fp,"%s","\n# Build the project\n");
 	fprintf(fp,"%s","make clean\n");
 	fprintf(fp,"%s","make\n");
-	fprintf(fp,"make install DESTDIR=%s\n",
-			build_project_directory);
+	fprintf(fp,"%s","make install DESTDIR=${PROJECTDIR}\n");
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
-	fprintf(fp,"%s %s%cpet.specs %s\n",
+	fprintf(fp,"%s %s%cpet.specs ${PROJECTDIR}\n",
 			COMMAND_COPY,
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
-			build_project_directory);
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* compress the build directory */
 	fprintf(fp,"%s","\n# Compress the build directory\n");
-	fprintf(fp,"tar -c -f %s %s\n",
-			tarball_base,
-			build_project_directory); 
+	fprintf(fp,"tar -c -f %s ${PROJECTDIR}\n",
+			tarball_base);
 	fprintf(fp,"%s","sync\n");
 	fprintf(fp,"gzip %s\n", tarball_base);
 
@@ -222,13 +239,12 @@ static int save_script(char * directory)
 			tarball_base);
 	fprintf(fp,"echo -n \"$MD5SUM\" >> %s.gz\n", tarball_base);
 	fprintf(fp,"%s","sync\n");
-	fprintf(fp,"mv -f %s.gz %s%c%s-%s-%s.pet\n",
+	fprintf(fp,"mv -f %s.gz %s%c${APP}-${VERSION}-${RELEASE}.pet\n",
 			tarball_base, PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR,
-			project_name, version, release);
+			DIRECTORY_SEPARATOR);
 	fprintf(fp,"%s","sync\n");
 	fprintf(fp,"%s","\n# Remove the temporary build directory\n");
-	fprintf(fp,"%sr %s\n", COMMAND_DELETE, build_directory);
+	fprintf(fp,"%sr ${BUILDDIR}\n", COMMAND_DELETE);
 	fclose(fp);
 
 	sprintf(commandstr,"chmod +x %s", script_filename);
