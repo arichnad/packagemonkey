@@ -582,3 +582,49 @@ void print_script(char * source_script, char * name)
 
 	fclose(fp);
 }
+
+/* returns the size of a directory */
+void directory_size(char * directory,
+					char * dir_size)
+{
+	char commandstr[BLOCK_SIZE];
+	char temp_filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+	FILE * fp;
+	int i;
+
+	sprintf(temp_filename,"%s%cpm_dir_size",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+
+	sprintf(commandstr,"cd %s; du -sh > %s",
+			directory,temp_filename); 
+
+	i = system(commandstr);
+
+	sprintf(dir_size,"%s","0K");
+	if (file_exists(temp_filename)==0) return;
+
+	fp = fopen(temp_filename,"r");
+	if (!fp) return;
+	
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) == 0) continue;
+			for (i = 0; i < strlen(linestr); i++) {
+				if ((linestr[i]=='\t') ||
+					(linestr[i]==' ') ||
+					(i == strlen(linestr)-1)) {
+					if (i == strlen(linestr)-1) {
+						dir_size[i] = linestr[i];
+						i++;
+					}
+					dir_size[i]=0;
+					break;
+				}
+				dir_size[i] = linestr[i];
+			}
+			break;
+		}
+	}
+	fclose(fp);
+}

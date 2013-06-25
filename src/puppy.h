@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include "globals.h"
 #include "settings.h"
+#include "desktop.h"
 
 int save_puppy();
 
