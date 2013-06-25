@@ -388,15 +388,21 @@ int separate_files(char * files, char ** result, int max_files)
 	for (i = 0; i < strlen(files); i++) {
 		if ((files[i] == ',') ||
 			(files[i] == ';') ||
+			(files[i] == '/') ||
+			(files[i] == '|') ||
 			(i == strlen(files)-1)) {
+			/* end of filename */
 			if ((i == strlen(files)-1) &&
 				(files[i] != ',') &&
 				(files[i] != ';') &&
+				(files[i] != '/') &&
+				(files[i] != '|') &&
 				(files[i] != 10) &&
 				(files[i] != 13)) {
 				filename[ctr++] = files[i];
 			}
 			filename[ctr]=0;
+			result[no_of_files] = (char*)malloc(sizeof(filename)+1);
 			sprintf(result[no_of_files],"%s",filename);
 			no_of_files++;
 			if (no_of_files >= max_files) {
@@ -407,12 +413,18 @@ int separate_files(char * files, char ** result, int max_files)
 			ctr = 0;
 		}
 		else {
+			/* looking for the beginning of a filename */
 			if (initial == 1) {
 				if ((files[i] != ' ') &&
+					(files[i] != ',') &&
+					(files[i] != ';') &&
+					(files[i] != '/') &&
+					(files[i] != '|') &&
 					(files[i] != '\t')) {
 					initial = 0;
 				}
 			}
+			/* storing a filename */
 			if (initial == 0) {
 				if ((files[i] != 10) &&
 					(files[i] != 13)) {

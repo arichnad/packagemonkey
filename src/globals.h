@@ -32,7 +32,7 @@
 #define PROJECT_NAME "packagemonkey"
 
 /* maximum size of a string */
-#define BLOCK_SIZE 256
+#define BLOCK_SIZE 512
 
 /* character used to separate directories */
 #define DIRECTORY_SEPARATOR '/'
