@@ -1373,6 +1373,16 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
 			"pkgver='${VERSION}'/g' %s/PKGBUILD\n\n",
 			ARCH_SUBDIR);
+	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
+			"/-${VERSION}-/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
+	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
+			"/|${VERSION}|/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
 
 	fprintf(fp, "%s", "make clean\n");
 	fprintf(fp, "%s", "make\n\n");

@@ -165,6 +165,16 @@ static int save_script(char * directory)
 	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
 			"pkgver='${VERSION}'/g' %s/PKGBUILD\n",
 			ARCH_SUBDIR);
+	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
+			"/-${VERSION}-/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
+	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
+			"/|${VERSION}|/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
 
 	fprintf(fp, "%s", "\n# Set the type of architecture\n");
 	fprintf(fp, "sed -i \"s/arch=('any')/" \
