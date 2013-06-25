@@ -106,6 +106,7 @@ int main(int argc, char* argv[])
 	add_setting("depends deb","");
 	add_setting("depends rpm","");
 	add_setting("depends arch","");
+	add_setting("depends puppy","");
 	add_setting("build deb","");
 	add_setting("build rpm","");
 	add_setting("build arch","");
@@ -348,6 +349,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No Arch depends packages given\n");
+			}
+		}
+		/* Puppy packages which this depends upon */
+		if (strcmp(argv[i],"--dependspuppy")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("depends puppy",argv[i]);
+			}
+			else {
+				printf("No Puppy depends packages given\n");
 			}
 		}
 		/* Additional arguments for the compiler */

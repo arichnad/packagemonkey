@@ -56,6 +56,8 @@ void show_help()
 		   "RPM packages which the project depends upon\n");
 	printf("     --dependsarch <packages>   " \
 		   "Arch packages which the project depends upon\n");
+	printf("     --dependspuppy <packages>   " \
+		   "Puppy packages which the project depends upon\n");
 	printf("     --buildrpm <packages>     " \
 		   "RPM packages required to build the project\n");
 	printf("     --buildarch <packages>     " \

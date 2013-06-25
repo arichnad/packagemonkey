@@ -100,6 +100,9 @@ RPM packages which the project depends upon.
 <b>--dependsarch [packages]</b><br>
 Arch packages which the project depends upon.
 
+<b>--dependspuppy [packages]</b><br>
+Puppy packages which the project depends upon.
+
 <b>--buildrpm [packages>]</b><br>
 RPM packages required to build the project.
 

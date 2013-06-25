@@ -22,6 +22,7 @@
 static int save_spec(char * directory)
 {
 	char spec_filename[BLOCK_SIZE];
+	char depends[BLOCK_SIZE];
 	FILE * fp;
 
 	sprintf(spec_filename,"%s%cpet.specs",
@@ -29,7 +30,7 @@ static int save_spec(char * directory)
 	fp = fopen(spec_filename,"w");
 	if (!fp) return -1;
 
-
+	get_setting("depends puppy",depends);
 
 	fclose(fp);
 	return 0;
