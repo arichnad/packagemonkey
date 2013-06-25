@@ -52,9 +52,10 @@
 #define COMMAND_DELETE "rm -f"
 #define COMMAND_MOVE   "mv"
 
-#define ARCH_SUBDIR "archpackage"
-#define RPM_SUBDIR  "rpmpackage"
-#define DEB_SUBDIR  "debian"
+#define ARCH_SUBDIR  "archpackage"
+#define RPM_SUBDIR   "rpmpackage"
+#define DEB_SUBDIR   "debian"
+#define PUPPY_SUBDIR "puppypackage"
 
 int file_exists(char * filename);
 int directory_exists(char * directory);

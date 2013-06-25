@@ -27,6 +27,6 @@
 #include "globals.h"
 #include "settings.h"
 
-void save_puppy();
+int save_puppy();
 
 #endif
