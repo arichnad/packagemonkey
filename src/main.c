@@ -20,6 +20,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <errno.h>
+
 #include "globals.h"
 #include "tests.h"
 #include "settings.h"
@@ -166,7 +170,21 @@ int main(int argc, char* argv[])
 			(strcmp(argv[i],"--dir")==0)) {
 			i++;
 			if (i < argc) {
-				add_setting("directory",argv[i]);
+				if ((strlen(argv[i])==0) ||
+					(strcmp(argv[i],".")==0)) {
+					char cwd[BLOCK_SIZE];
+					if (getcwd(cwd, sizeof(cwd)) != NULL) {
+						printf("Directory: %s\n", cwd);
+						add_setting("directory",cwd);
+					}
+					else {
+						printf("No working directory given\n");
+						return -1;
+					}
+				}
+				else {
+					add_setting("directory",argv[i]);
+				}
 				working_directory_specified = 1;
 			}
 			else {
