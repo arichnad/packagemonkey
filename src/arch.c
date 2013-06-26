@@ -146,35 +146,8 @@ static int save_script(char * directory)
 	fprintf(fp, "SOURCE=%s/${APP}-${VERSION}.tar.gz\n",
 			ARCH_SUBDIR);
 
-
 	/* alter the version numbers */
-	fprintf(fp, "%s", "\n# Update version numbers " \
-			"automatically - so you don't have to\n");
-	fprintf(fp, "%s", "sed -i 's/VERSION='" \
-			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
-			" Makefile debian.sh rpm.sh puppy.sh\n");
-	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
-			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
-			RPM_SUBDIR);
-	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
-			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
-			RPM_SUBDIR);
-	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
-			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
-			ARCH_SUBDIR);
-	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
-			"pkgver='${VERSION}'/g' %s/PKGBUILD\n",
-			ARCH_SUBDIR);
-	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
-			"/-${VERSION}-/g\"" \
-			" %s%cpet.specs\n",
-			PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR);
-	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
-			"/|${VERSION}|/g\"" \
-			" %s%cpet.specs\n",
-			PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR);
+	script_version_numbers(fp,"arch");
 
 	fprintf(fp, "%s", "\n# Set the type of architecture\n");
 	fprintf(fp, "sed -i \"s/arch=('any')/" \

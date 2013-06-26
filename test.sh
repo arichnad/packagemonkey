@@ -2,7 +2,7 @@
 
 rm -rf debian rpmpackage archpackage
 #rm -rf desktop
-#rm -f LICENSE rpm.sh debian.sh Makefile
+rm -f rpm.sh debian.sh arch.sh puppy.sh Makefile
 
 #make clean
 #make

@@ -640,3 +640,65 @@ void directory_size(char * directory,
 	}
 	fclose(fp);
 }
+
+/* Generates a chunk of bash script which alters
+   the version number within other files.
+   This saves having to change version numbers
+   within multiple files. */
+void script_version_numbers(FILE * fp,
+							char * script_name)
+{
+	int i, first = 1;
+	const int no_of_scripts = 4;
+	char * scripts[] = {
+		"debian","rpm","arch","puppy"
+	};
+
+	fprintf(fp, "%s", "\n# Update version numbers " \
+			"automatically - so you don't have to\n");
+
+	/* alter the version number from the previous one to
+	   the current one */
+	fprintf(fp, "%s", "sed -i 's/VERSION='" \
+			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
+			" Makefile ");
+
+	/* for each script except for the current one */
+	for (i = 0; i < no_of_scripts; i++) {
+		if (strcmp(scripts[i],script_name)==0) continue;
+		if (first == 0) fprintf(fp,"%s"," ");
+		fprintf(fp,"%s.sh",scripts[i]);
+		first = 0;
+	}
+	fprintf(fp,"%s","\n");
+
+	/* alter the version within the RPM spec file */
+	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
+			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
+			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
+			RPM_SUBDIR);
+
+	/* alter the version within the Arch PKGBUILD file */
+	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
+			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/"	\
+			"pkgver='${VERSION}'/g' %s/PKGBUILD\n",
+			ARCH_SUBDIR);
+
+	/* alter the version within the puppy pet.specs file */
+	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
+			"/-${VERSION}-/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
+	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
+			"/|${VERSION}|/g\"" \
+			" %s%cpet.specs\n",
+			PUPPY_SUBDIR,
+			DIRECTORY_SEPARATOR);
+
+	fprintf(fp,"%s","\n");
+}

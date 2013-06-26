@@ -356,33 +356,8 @@ static int save_script(char * directory, char * subdir)
 	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES" \
 			"/${APP}-${VERSION}.orig.tar.gz\n\n");
 
-	fprintf(fp, "%s", "#update version numbers " \
-			"automatically - so you don't have to\n");
-	fprintf(fp, "%s", "sed -i 's/VERSION='" \
-			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
-			" Makefile debian.sh arch.sh puppy.sh\n");
-	fprintf(fp, "sed -i 's/Version: '${PREV_VERSION}'" \
-			"/Version: '${VERSION}'/g' %s/${APP}.spec\n",
-			RPM_SUBDIR);
-	fprintf(fp, "sed -i 's/Release: '${RELEASE}" \
-			"'/Release: '${RELEASE}'/g' %s/${APP}.spec\n",
-			RPM_SUBDIR);
-	fprintf(fp, "sed -i 's/pkgrel='${RELEASE}'/" \
-			"pkgrel='${RELEASE}'/g' %s/PKGBUILD\n",
-			ARCH_SUBDIR);
-	fprintf(fp, "sed -i 's/pkgver='${PREV_VERSION}'/" \
-			"pkgver='${VERSION}'/g' %s/PKGBUILD\n\n",
-			ARCH_SUBDIR);
-	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
-			"/-${VERSION}-/g\"" \
-			" %s%cpet.specs\n",
-			PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR);
-	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
-			"/|${VERSION}|/g\"" \
-			" %s%cpet.specs\n",
-			PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR);
+	/* alter the version numbers */
+	script_version_numbers(fp,"rpm");
 
 	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");
