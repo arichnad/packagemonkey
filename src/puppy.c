@@ -18,63 +18,6 @@
 
 #include "puppy.h"
 
-/* convert a free desktop category into a puppy linux category */
-static void get_category(char * puppy_category)
-{
-	char free_desktop_categories[BLOCK_SIZE];
-	char main_category[BLOCK_SIZE];
-	char additional_category[BLOCK_SIZE];
-
-	/* Puppy Linux categories:
-
-	   Desktop System Setup Utility Filesystem Graphic
-	   Document Calculate Personal Network Internet
-	   Multimedia Fun Help BuildingBlock Develop */
-
-	get_setting("categories", free_desktop_categories);
-
-	sprintf(puppy_category,"%s","Desktop");
-
-	parse_desktop_category(free_desktop_categories,
-						   main_category,
-						   additional_category);
-
-	if ((strcmp(main_category,"AudioVideo") == 0) ||
-		(strcmp(main_category,"Audio") == 0) ||
-		(strcmp(main_category,"Video") == 0)) {
-		sprintf(puppy_category,"%s","Multimedia");
-	}
-
-	if (strcmp(main_category,"Development") == 0) {
-		sprintf(puppy_category,"%s","Utility");
-	}
-	if (strcmp(main_category,"Education") == 0) {
-		sprintf(puppy_category,"%s","Personal");
-	}
-	if (strcmp(main_category,"Game") == 0) {
-		sprintf(puppy_category,"%s","Fun");
-	}
-	if (strcmp(main_category,"Graphics") == 0) {
-		sprintf(puppy_category,"%s","Graphic");
-	}
-	if (strcmp(main_category,"Network") == 0) {
-		sprintf(puppy_category,"%s","Network");
-	}
-	if (strcmp(main_category,"Office") == 0) {
-		sprintf(puppy_category,"%s","Personal");
-	}
-	if (strcmp(main_category,"Science") == 0) {
-		sprintf(puppy_category,"%s","Utility");
-	}
-	if ((strcmp(main_category,"Settings") == 0) ||
-		(strcmp(main_category,"System") == 0)) {
-		sprintf(puppy_category,"%s","System");
-	}
-	if (strcmp(main_category,"Utility") == 0) {
-		sprintf(puppy_category,"%s","Utility");
-	}
-}
-
 /*saves the spec file into the puppypackage directory */
 static int save_spec(char * directory)
 {
@@ -83,7 +26,7 @@ static int save_spec(char * directory)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
-	char category[BLOCK_SIZE];
+	char puppy_desktop_category[BLOCK_SIZE];
 	char dir_size[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
@@ -91,11 +34,10 @@ static int save_spec(char * directory)
 	char compiled_with_distro[BLOCK_SIZE];
 	char compiled_with_distro_version[BLOCK_SIZE];
 	char puppy_repository[BLOCK_SIZE];
+	char free_desktop_categories[BLOCK_SIZE];
 	char * separate_depends[MAX_FILES];
 	FILE * fp;
 	int i, no_of_depends;
-
-	get_category(category);
 
 	sprintf(spec_filename,"%s%cpet.specs",
 			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
@@ -107,6 +49,12 @@ static int save_spec(char * directory)
 	get_setting("description brief",description);
 	get_setting("depends puppy",depends);
 	get_setting("homepage",homepage);
+
+	/* convert from free desktop categories 
+	   to puppy desktop categories */
+	get_setting("categories",free_desktop_categories);
+	free_desktop_to_puppy_desktop(free_desktop_categories,
+								  puppy_desktop_category);
 
 	sprintf(compiled_with_distro,"%s","ubuntu");
 	sprintf(compiled_with_distro_version,"%s","precise");
@@ -126,7 +74,7 @@ static int save_spec(char * directory)
 	fprintf(fp,"%s|",project_name);
 	fprintf(fp,"%s|",version);
 	fprintf(fp,"%s|",release);
-	fprintf(fp,"%s|",category);
+	fprintf(fp,"%s|",puppy_desktop_category);
 	fprintf(fp,"%s|",dir_size);
 	fprintf(fp,"%s|",repository_path);
 	fprintf(fp,"%s-%s-%s.pet|",project_name,version,release);
@@ -157,13 +105,18 @@ static int save_script(char * directory)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
+	char categories[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
+	char puppy_desktop_categories[BLOCK_SIZE];
 	char tarball_base[BLOCK_SIZE];
+	char free_main_category[BLOCK_SIZE];
+	char free_additional_category[BLOCK_SIZE];
 	FILE * fp;
 
 	get_setting("project name",project_name);
 	get_setting("version",version);
 	get_setting("release",release);
+	get_setting("categories",categories);
 
 	/* name of the script to build the package */
 	sprintf(script_filename,"%s%cpuppy.sh",
@@ -174,8 +127,7 @@ static int save_script(char * directory)
 			DIRECTORY_SEPARATOR);
 
 	/* base name of the tarball */
-	sprintf(tarball_base,"%s%c${APP}-${VERSION}-${RELEASE}.tar",
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+	sprintf(tarball_base,"%s","{APP}-${VERSION}-${RELEASE}.tar");
 
 	/* save the script */
 	fp = fopen(script_filename,"w");
@@ -189,6 +141,7 @@ static int save_script(char * directory)
 	fprintf(fp,"VERSION=%s\n",version);
 	fprintf(fp,"RELEASE=%s\n",release);
 	fprintf(fp,"BUILDDIR=%s\n",build_directory);
+	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
 	fprintf(fp,"%s","PROJECTDIR=${BUILDDIR}/${APP}-${VERSION}-${RELEASE}\n");
 
 	/* alter the version numbers */
@@ -205,6 +158,19 @@ static int save_script(char * directory)
 	fprintf(fp,"%s","make\n");
 	fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
 
+	/* alter the category within the .desktop file */
+	free_desktop_to_puppy_desktop(categories,
+								  puppy_desktop_categories);
+	parse_desktop_category(categories,
+						   free_main_category,
+						   free_additional_category);
+	fprintf(fp,"%s","\n# Alter the desktop file categories\n");
+	fprintf(fp,"sed -i \"s/Categories=%s;%s;/Categories=%s/g\" " \
+			"${PROJECTDIR}/usr/share/applications/${APP}.desktop\n",
+			free_main_category,
+			free_additional_category,
+			puppy_desktop_categories);
+
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
 	fprintf(fp,"%s %s%cpet.specs ${PROJECTDIR}\n",
@@ -213,10 +179,14 @@ static int save_script(char * directory)
 
 	/* compress the build directory */
 	fprintf(fp,"%s","\n# Compress the build directory\n");
-	fprintf(fp,"tar -c -f %s ${PROJECTDIR}\n",
+	fprintf(fp,"%s","cd ${BUILDDIR}\n");
+	fprintf(fp,"tar -c -f %s .\n",
 			tarball_base);
 	fprintf(fp,"%s","sync\n");
 	fprintf(fp,"gzip %s\n", tarball_base);
+	fprintf(fp,"mv %s.gz ${CURRDIR}/%s\n",
+			tarball_base, PUPPY_SUBDIR);
+	fprintf(fp,"cd ${CURRDIR}/%s\n",PUPPY_SUBDIR);
 
 	/* convert to PET format */
 	fprintf(fp,"%s","\n# Create the PET package\n");
@@ -224,10 +194,10 @@ static int save_script(char * directory)
 			tarball_base);
 	fprintf(fp,"echo -n \"$MD5SUM\" >> %s.gz\n", tarball_base);
 	fprintf(fp,"%s","sync\n");
-	fprintf(fp,"mv -f %s.gz %s%c${APP}-${VERSION}-${RELEASE}.pet\n",
-			tarball_base, PUPPY_SUBDIR,
-			DIRECTORY_SEPARATOR);
+	fprintf(fp,"mv -f %s.gz ${APP}-${VERSION}-${RELEASE}.pet\n",
+			tarball_base);
 	fprintf(fp,"%s","sync\n");
+	fprintf(fp,"%s","cd ${CURRDIR}\n");
 	fprintf(fp,"%s","\n# Remove the temporary build directory\n");
 	fprintf(fp,"%sr ${BUILDDIR}\n", COMMAND_DELETE);
 	fclose(fp);

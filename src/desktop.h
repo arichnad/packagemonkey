@@ -35,5 +35,7 @@ void parse_desktop_category(char * str, char * main, char * additional);
 void show_categories();
 void show_categories_main();
 void show_categories_additional();
+void free_desktop_to_puppy_desktop(char * free_desktop_categories,
+								   char * puppy_desktop_categories);
 
 #endif

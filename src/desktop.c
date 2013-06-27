@@ -155,6 +155,130 @@ char * category_additional[] = {
 	"ConsoleOnly"
 };
 
+char * puppy_hierarchy[] = {
+	"Desktop",    "appearance",     "X-Desktop-appearance,DesktopSettings",
+	"Desktop",    "settings",       "X-Desktop-settings,X-DesktopCountry,Accessibility",
+	"Desktop",    "windows",        "X-Desktop-windows",
+	"Desktop",    "sleep",          "X-Desktop-sleep,Screensaver",
+	"Desktop",    "applet",         "X-Desktop-applet,X-DesktopApplets,Clock",
+
+	"System",     "Sub",            "X-System,System,HardwareSettings,Core",
+	"System",     "process",        "X-System-process,Monitor,X-SystemSchedule",
+	"System",     "memory",         "X-System-memory,X-SystemMemory",
+	"System",     "print",          "X-System-print",
+	"System",     "storage",        "X-System-storage",
+	"System",     "security",       "X-System-security,Security",
+
+	"Setup",      "Sub",            "X-Setup",
+	"Setup",      "puppy",          "X-Setup-puppy,X-SetupEntry,PackageManager",
+	"Setup",      "wizard",         "X-Setup-wizard,X-SetupWizard",
+	"Setup",      "installation",   "X-Setup-installation,X-SetupUtility",
+
+	"Utility",    "Sub",            "X-Utility,Utility,Electronics,Emulator,Engineering",
+	"Utility",    "development",    "X-Utility-development,Development,Building,Debugger,IDE,Profiling,ProjectManagement,RevisionControl,Translation,GUIDesigner",
+	"Utility",    "package",        "X-Utility-package,Archiving,Compression",
+	"Utility",    "shell",          "X-Utility-shell,TerminalEmulator,Shell",
+	"Utility",    "help",           "X-Utility-help,Documentation",
+
+	"Filesystem", "Sub",            "X-Filesystem,FileSystem,FileTools",
+	"Filesystem", "filemanager",    "X-Filesystem-filemanager,FileManager",
+	"Filesystem", "mount",          "X-Filesystem-mount,X-FilesystemMount", 
+	"Filesystem", "find",           "X-Filesystem-find,X-FilesystemFind",
+	"Filesystem", "storage",        "X-Filesystem-storage,X-FilesystemUtility",
+
+	"Graphic",    "Sub",            "X-Graphic,2DGraphics,3DGraphics",
+	"Graphic",    "paint",          "X-Graphic-paint,RasterGraphics2",
+	"Graphic",    "draw",           "X-Graphic-draw,VectorGraphics",
+	"Graphic",    "flow",           "X-Graphic-flow,Chart,FlowChart,Presentation",
+	"Graphic",    "viewer",         "X-Graphic-viewer,Viewer,X-Graphic-viewer",
+	"Graphic",    "camera",         "X-Graphic-camera,Photography",
+	"Graphic",    "scanner",        "X-Graphic-scanner,Scanning,OCR",
+	"Graphic",    "print",          "X-Graphic-print",
+	"Graphic",    "utility",        "X-Graphic-utility,X-GraphicUtility",
+
+	"Document",   "Sub",            "X-Document",
+	"Document",   "layout",         "X-Document-layout,Publishing,WordProcessor,WebDevelopment",
+	"Document",   "catalog",        "X-Document-catalog,Dictionary",
+	"Document",   "edit",           "X-Document-edit,TextEditor",
+	"Document",   "viewer",         "X-Document-viewer,Viewer",
+	"Document",   "utility",        "X-Document-utility,X-DocumentUtility",
+
+	"Business",   "Sub",            "X-Business,X-Calculate2",
+	"Business",   "spreadsheet",    "X-Business-spreadsheet,Spreadsheet",
+	"Business",   "planner",        "X-Business-planner,ProjectManagement",
+	"Business",   "finance",        "X-Business-finance,Finance",
+	"Business",   "calc",           "X-Business-calc,Calculator,X-CalculateUtility",
+
+	"Personal",   "Sub",            "X-Personal",
+	"Personal",   "database",       "X-Personal-database,ContactManagement",
+	"Personal",   "date",           "X-Personal-date,Calendar",
+	"Personal",   "organizer",      "X-Personal-organizer,PDA",
+	"Personal",   "security",       "X-Personal-security",
+	"Personal",   "timing",         "X-Personal-timing,X-PersonalUtility",
+	"Personal",   "education",      "X-Personal-education,Languages,Science,ArtificialIntelligence,Astronomy,Biology,Chemistry,ComputerScience,DataVisualization,Economy,Electricity,Geography,Geology,Geoscience,History,ImageProcessing,Literature,Math,NumericalAnalysis,MedicalSoftware,Physics,Robotics,Sports,ParallelComputing",
+
+	"Network",    "Sub",            "X-Network,Network",
+	"Network",    "firewall",       "X-Network-firewall",
+	"Network",    "phone",          "X-Network-phone,Dialup",
+	"Network",    "connect",        "X-Network-connect,HamRadio,RemoteAccess",
+	"Network2",   "transfer",       "X-Network-transfer",
+	"Network",    "utility",        "X-Network-utility",
+
+	"Internet",   "Sub",            "X-Internet",
+	"Internet",   "browser",        "X-Internet-browser,WebBrowser",
+	"Internet",   "chat",           "X-Internet-chat,Chat,InstantMessaging,VideoConference  #ayttm pidgin pidgin_perl psip wengophone xchat",
+	"Internet",   "mailnews",       "X-Internet-mailnews,Email,News",
+	"Internet",   "transfer",       "X-Internet-transfer,Telephony,IRCClient,FileTransfer,P2P #axel bareftp gcurl gftp lftp ncftp puppy-podcast-grabber pwget",
+	"Internet",   "login",          "X-Internet-login",
+	"Internet",   "block",          "X-Internet-block",
+	"Internet",   "utility",        "X-Internet-utility",
+
+	"Multimedia", "Sub",            "X-Multimedia,Recorder",
+	"Multimedia", "mediaplayer",    "X-Multimedia-mediaplayer,Player",
+	"Multimedia", "audiovideo",     "X-Multimedia-audiovideo,AudioVideo,AudioVideoEditing,Tuner",
+	"Multimedia", "sound",          "X-Multimedia-sound,Music,Audio,Midi,Mixer,Sequencer #absvolume absvolume_puppy audacity aumix madplay mhwaveedit sgmixer",
+	"Multimedia", "video",          "X-Multimedia-video,Video,TV",
+	"Multimedia", "optical",        "X-Multimedia-optical,DiskBurning",
+	"Multimedia", "utility",        "X-Multimedia-utility",
+
+	"Fun",        "Sub",            "X-Fun,Game,Amusement,BlocksGame,KidsGame,Simulation,SportsGame",
+	"Fun",        "adventure",      "X-Fun-adventure,ActionGame,AdventureGame,RolePlaying",
+	"Fun",        "boardgame",      "X-Fun-boardgame,BoardGame",
+	"Fun",        "cardgame",       "X-Fun-cardgame,CardGame",
+	"Fun",        "puzzle",         "X-Fun-puzzle,StrategyGame,LogicGame",
+	"Fun",        "shooter",        "X-Fun-shooter",
+	"Fun",        "arcade",         "X-Fun-arcade,ArcadeGame",
+
+	"End",        "",               ""
+};
+
+/* converts free desktop categories into puppy desktop categories */
+void free_desktop_to_puppy_desktop(char * free_desktop_categories,
+								   char * puppy_desktop_categories)
+{
+	char free_main_category[BLOCK_SIZE];
+	char free_additional_category[BLOCK_SIZE];
+	int i = 0;
+
+	sprintf(puppy_desktop_categories,"%s","Desktop");
+
+	parse_desktop_category(free_desktop_categories,
+						   free_main_category,
+						   free_additional_category);
+
+	while (strcmp(puppy_hierarchy[i],"End") != 0) {
+		if (strstr(puppy_hierarchy[i+2],
+				   free_additional_category) != NULL) {
+			sprintf(puppy_desktop_categories,
+					"%s:%s",
+					puppy_hierarchy[i],
+					puppy_hierarchy[i+1]);
+			break;
+		}
+		i += 3;
+	}
+}
+
 /* parses the given categories string into the main and additional parts */
 void parse_desktop_category(char * str, char * main, char * additional)
 {
