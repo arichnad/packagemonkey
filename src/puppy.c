@@ -46,7 +46,7 @@ static void get_category(char * puppy_category)
 	}
 
 	if (strcmp(main_category,"Development") == 0) {
-		sprintf(puppy_category,"%s","Develop");
+		sprintf(puppy_category,"%s","Utility");
 	}
 	if (strcmp(main_category,"Education") == 0) {
 		sprintf(puppy_category,"%s","Personal");
@@ -64,7 +64,7 @@ static void get_category(char * puppy_category)
 		sprintf(puppy_category,"%s","Personal");
 	}
 	if (strcmp(main_category,"Science") == 0) {
-		sprintf(puppy_category,"%s","Calculate");
+		sprintf(puppy_category,"%s","Utility");
 	}
 	if ((strcmp(main_category,"Settings") == 0) ||
 		(strcmp(main_category,"System") == 0)) {
@@ -203,7 +203,7 @@ static int save_script(char * directory)
 	fprintf(fp,"%s","\n# Build the project\n");
 	fprintf(fp,"%s","make clean\n");
 	fprintf(fp,"%s","make\n");
-	fprintf(fp,"%s","make install DESTDIR=${PROJECTDIR}\n");
+	fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");

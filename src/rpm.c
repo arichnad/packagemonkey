@@ -325,7 +325,7 @@ static int save_spec(char * project_directory,
 	return 0;
 }
 
-static int save_script(char * directory, char * subdir)
+static int save_script(char * directory)
 {
 	FILE * fp;
 	char filename[BLOCK_SIZE];
@@ -359,34 +359,46 @@ static int save_script(char * directory, char * subdir)
 	/* alter the version numbers */
 	script_version_numbers(fp,"rpm");
 
-	fprintf(fp, "%s", "sudo yum groupinstall \"Development Tools\"\n");
+	fprintf(fp, "%s",
+			"sudo yum groupinstall \"Development Tools\"\n");
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");
 
 	fprintf(fp, "%s", "# setup the rpmbuild directory tree\n");
 	fprintf(fp, "%s", "rpmdev-setuptree\n\n");
 
-	fprintf(fp, "%s", "# create the source code in the SOURCES directory\n");
+	fprintf(fp, "%s", "# create the source code in " \
+			"the SOURCES directory\n");
 	fprintf(fp, "%s", "make clean\n");
 	fprintf(fp, "%s -p ~/rpmbuild/SOURCES\n", COMMAND_MKDIR);
 	fprintf(fp, "%s", "rm -f ${SOURCE}\n");
-	fprintf(fp, "%s", "# having the root directory called name-version seems essential\n");
+	fprintf(fp, "%s",
+			"# having the root directory called " \
+			"name-version seems essential\n");
 	fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
-	fprintf(fp, "%s", "tar -cvzf ${SOURCE} ../${APP}-${VERSION} --exclude-vcs\n");
-	fprintf(fp, "%s", "# rename the root directory without the version number\n");
+	fprintf(fp, "%s",
+			"tar -cvzf ${SOURCE} ../${APP}-${VERSION} " \
+			"--exclude-vcs\n");
+	fprintf(fp, "%s", "# rename the root directory " \
+			"without the version number\n");
 	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n\n");
 
-	fprintf(fp, "%s", "# copy the spec file into the SPECS directory\n");
-	fprintf(fp, "cp -f %s/${APP}.spec ~/rpmbuild/SPECS\n\n",subdir);
+	fprintf(fp, "%s",
+			"# copy the spec file into the SPECS directory\n");
+	fprintf(fp, "cp -f %s/${APP}.spec ~/rpmbuild/SPECS\n\n",
+			RPM_SUBDIR);
 
 	fprintf(fp, "%s", "# build\n");
 	fprintf(fp, "%s", "cd ~/rpmbuild/SPECS\n");
 	fprintf(fp, "%s", "rpmbuild -ba ${APP}.spec\n");
 	fprintf(fp, "%s", "cd ${CURRDIR}\n\n");
 
-	fprintf(fp, "# Copy the results into the %s directory\n", subdir);
-	fprintf(fp, "mkdir -p %s/${ARCH_TYPE}\n", subdir);
-	fprintf(fp, "cp -r ~/rpmbuild/RPMS/${ARCH_TYPE}/${APP}* %s/${ARCH_TYPE}\n", subdir);
-	fprintf(fp, "cp -r ~/rpmbuild/SRPMS/${APP}* %s\n", subdir);
+	fprintf(fp, "# Copy the results into the %s directory\n",
+			RPM_SUBDIR);
+	fprintf(fp, "mkdir -p %s/${ARCH_TYPE}\n", RPM_SUBDIR);
+	fprintf(fp, "cp -r ~/rpmbuild/RPMS/${ARCH_TYPE}/${APP}* " \
+			"%s/${ARCH_TYPE}\n", RPM_SUBDIR);
+	fprintf(fp, "cp -r ~/rpmbuild/SRPMS/${APP}* %s\n",
+			RPM_SUBDIR);
 
 	fclose(fp);
 
@@ -397,15 +409,14 @@ static int save_script(char * directory, char * subdir)
 int save_rpm(int no_of_binaries, char ** binaries)
 {
 	char rpmdir[BLOCK_SIZE];
-	char subdir[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	int retval=0;
 
-	/* create the debian directory */
+	/* create the rpmpackage directory */
 	get_setting("directory", directory);
-	sprintf(subdir,"%s", RPM_SUBDIR);
-	sprintf(rpmdir,"%s%c%s", directory, DIRECTORY_SEPARATOR, subdir);
+	sprintf(rpmdir,"%s%c%s",
+			directory, DIRECTORY_SEPARATOR, RPM_SUBDIR);
 	if (directory_exists(rpmdir)==0) {
 		sprintf(commandstr,"%s %s",COMMAND_MKDIR,rpmdir);
 		retval = system(commandstr);
@@ -414,7 +425,7 @@ int save_rpm(int no_of_binaries, char ** binaries)
 	save_spec(directory, rpmdir,
 			  no_of_binaries, binaries);
 
-	save_script(directory, subdir);
+	save_script(directory);
 
 	return retval;
 }

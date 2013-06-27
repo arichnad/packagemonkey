@@ -1,3 +1,21 @@
+/*
+  packagemonkey - a package creation assistant
+  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "globals.h"
 
 /* returns non-zero value if the given file exists */
@@ -388,14 +406,12 @@ int separate_files(char * files, char ** result, int max_files)
 	for (i = 0; i < strlen(files); i++) {
 		if ((files[i] == ',') ||
 			(files[i] == ';') ||
-			(files[i] == '/') ||
 			(files[i] == '|') ||
 			(i == strlen(files)-1)) {
 			/* end of filename */
 			if ((i == strlen(files)-1) &&
 				(files[i] != ',') &&
 				(files[i] != ';') &&
-				(files[i] != '/') &&
 				(files[i] != '|') &&
 				(files[i] != 10) &&
 				(files[i] != 13)) {
@@ -418,7 +434,6 @@ int separate_files(char * files, char ** result, int max_files)
 				if ((files[i] != ' ') &&
 					(files[i] != ',') &&
 					(files[i] != ';') &&
-					(files[i] != '/') &&
 					(files[i] != '|') &&
 					(files[i] != '\t')) {
 					initial = 0;
@@ -649,9 +664,9 @@ void script_version_numbers(FILE * fp,
 							char * script_name)
 {
 	int i, first = 1;
-	const int no_of_scripts = 4;
+	const int no_of_scripts = 5;
 	char * scripts[] = {
-		"debian","rpm","arch","puppy"
+		"debian","rpm","arch","puppy", "ebuild"
 	};
 
 	fprintf(fp, "%s", "\n# Update version numbers " \

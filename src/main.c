@@ -35,6 +35,7 @@
 #include "directory.h"
 #include "arch.h"
 #include "puppy.h"
+#include "ebuild.h"
 #include "help.h"
 
 /* deallocates memory used for filenames */
@@ -625,6 +626,7 @@ int main(int argc, char* argv[])
 	save_rpm(no_of_binaries,binaries);
 	save_arch();
 	save_puppy();
+	save_ebuild();
 
 	/* free memory */
 	free_filenames(binaries,no_of_binaries);
