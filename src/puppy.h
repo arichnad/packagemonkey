@@ -28,6 +28,6 @@
 #include "settings.h"
 #include "desktop.h"
 
-int save_puppy();
+int save_puppy(int no_of_binaries, char ** binaries);
 
 #endif

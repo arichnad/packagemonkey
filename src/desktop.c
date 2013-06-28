@@ -270,7 +270,7 @@ void free_desktop_to_puppy_desktop(char * free_desktop_categories,
 		if (strstr(puppy_hierarchy[i+2],
 				   free_additional_category) != NULL) {
 			sprintf(puppy_desktop_categories,
-					"%s:%s",
+					"%s;%s;",
 					puppy_hierarchy[i],
 					puppy_hierarchy[i+1]);
 			break;
@@ -443,6 +443,7 @@ int save_desktop()
 	char icon_filename[BLOCK_SIZE];
 	char desktop_filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_full_name[BLOCK_SIZE];
 	char description_brief[BLOCK_SIZE];
 	char desktop_categories[BLOCK_SIZE];
 	char category_main[BLOCK_SIZE];
@@ -451,6 +452,7 @@ int save_desktop()
 
 	get_setting("directory",directory);
 	get_setting("project name",project_name);
+	get_setting("project full name",project_full_name);
 	get_setting("description brief",description_brief);
 	get_setting("categories",desktop_categories);
 
@@ -475,8 +477,8 @@ int save_desktop()
 	if (fp) {
 		fprintf(fp,"[Desktop Entry]\n");
 		fprintf(fp,"Type=Application\n");
-		fprintf(fp,"Name=%s\n",project_name);
-		fprintf(fp,"GenericName=%s\n",project_name);
+		fprintf(fp,"Name=%s\n",project_full_name);
+		fprintf(fp,"GenericName=%s\n",project_full_name);
 		fprintf(fp,"Comment=%s\n",description_brief);
 		fprintf(fp,"Exec=%s %%U\n",project_name);
 		fprintf(fp,"Icon=%s\n",project_name);

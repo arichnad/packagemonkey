@@ -51,9 +51,11 @@ Example
 Options
 -------
 
-<b>-d, --dir [directory]</b><br>
-Set the directory of the project to be packaged.
+<b>-n, --name [project name]</b><br>
+The full name or title of the project.  This may contain upper case characters, and may be different from the name of the project directory.
 
+<b>-d, --dir [directory]</b><br>
+Set the directory of the project to be packaged.  If this is set to "." then the current directory will be used.
 
 <b>-c, --cmd</b><br>
 Used to indicate this is a command line project.  If this option is not used then an icon and desktop file suitable for a GUI application will be generated.

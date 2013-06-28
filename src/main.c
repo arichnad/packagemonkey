@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
 	int working_directory_specified = 0;
 	char directory[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_full_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
@@ -117,6 +118,7 @@ int main(int argc, char* argv[])
 	add_setting("build rpm","");
 	add_setting("build arch","");
 	add_setting("source package", "");
+	add_setting("project full name", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -152,6 +154,17 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No release number given\n");
+			}
+		}
+		/* Full project name */
+		if ((strcmp(argv[i],"--name")==0) ||
+			(strcmp(argv[i],"-n")==0)) {
+			i++;
+			if (i < argc) {
+				add_setting("project full name", argv[i]);
+			}
+			else {
+				printf("No full project name given\n");
 			}
 		}
 		/* run unit tests */
@@ -473,6 +486,15 @@ int main(int argc, char* argv[])
 	add_setting("project name",project_name);
 	add_setting("version",project_version);
 
+	/* Check that a full project name was specified.
+	   If not the use the name from the project directory */
+	get_setting("project full name",project_full_name);
+	if (strlen(project_full_name)==0) {
+		sprintf(project_full_name,"%s",project_name);
+		project_full_name[0] = toupper(project_full_name[0]);
+		add_setting("project full name",project_full_name);
+	}
+
 	/* check that a license is specified */
 	get_setting("license",license);
 	if (strlen(license) == 0) {
@@ -636,7 +658,7 @@ int main(int argc, char* argv[])
 	save_makefile(no_of_binaries,binaries);
 	save_rpm(no_of_binaries,binaries);
 	save_arch();
-	save_puppy();
+	save_puppy(no_of_binaries,binaries);
 	save_ebuild();
 
 	/* free memory */

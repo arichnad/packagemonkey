@@ -23,6 +23,8 @@ void show_help()
 	printf("%s v%s - because packaging is harder than " \
 		   "it needs to be\n\n", PROJECT_NAME, VERSION);
 
+	printf(" -n  --name <project name>     " \
+		   "The full name or title of the project\n");
 	printf(" -d  --dir <directory>         " \
 		   "Directory of the project to be packaged\n");
 	printf(" -c  --cmd                     " \

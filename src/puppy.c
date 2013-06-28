@@ -24,6 +24,7 @@ static int save_spec(char * directory)
 	char spec_filename[BLOCK_SIZE];
 	char depends[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_full_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
 	char puppy_desktop_category[BLOCK_SIZE];
@@ -39,16 +40,18 @@ static int save_spec(char * directory)
 	FILE * fp;
 	int i, no_of_depends;
 
-	sprintf(spec_filename,"%s%cpet.specs",
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
-
 	get_setting("depends puppy",depends);
 	get_setting("project name",project_name);
+	get_setting("project full name",project_full_name);
 	get_setting("version",version);
 	get_setting("release",release);
 	get_setting("description brief",description);
 	get_setting("depends puppy",depends);
 	get_setting("homepage",homepage);
+
+	sprintf(spec_filename,"%s%c%s-%s.pet.specs",
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
+			project_name,version);
 
 	/* convert from free desktop categories 
 	   to puppy desktop categories */
@@ -71,7 +74,7 @@ static int save_spec(char * directory)
 		separate_files(depends,separate_depends,MAX_FILES);
 
 	fprintf(fp,"%s-%s-%s|",project_name,version,release);
-	fprintf(fp,"%s|",project_name);
+	fprintf(fp,"%s|",project_full_name);
 	fprintf(fp,"%s|",version);
 	fprintf(fp,"%s|",release);
 	fprintf(fp,"%s|",puppy_desktop_category);
@@ -98,7 +101,8 @@ static int save_spec(char * directory)
 }
 
 
-static int save_script(char * directory)
+static int save_script(char * directory,
+					   char * xpm_filename)
 {
 	char script_filename[BLOCK_SIZE];
 	char build_directory[BLOCK_SIZE];
@@ -173,9 +177,24 @@ static int save_script(char * directory)
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
-	fprintf(fp,"%s %s%cpet.specs ${PROJECTDIR}\n",
+	fprintf(fp,"%s %s%c%s-%s.pet.specs ${PROJECTDIR}\n",
 			COMMAND_COPY,
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
+			project_name, version);
+
+	/* copy the xpm mini icon */
+	fprintf(fp,"%s","\n# Copy the XPM mini icon into the build directory\n");
+	if (strlen(xpm_filename) > 0) {
+		fprintf(fp,"%s %s ${PROJECTDIR}%c%s.xpm\n",
+				COMMAND_COPY, xpm_filename,
+				DIRECTORY_SEPARATOR,
+				project_name);
+	}
+	else {
+		fprintf(fp,"%s %s%c*.xpm ${PROJECTDIR}\n",
+				COMMAND_COPY,
+				directory, DIRECTORY_SEPARATOR);
+	}
 
 	/* compress the build directory */
 	fprintf(fp,"%s","\n# Compress the build directory\n");
@@ -206,13 +225,56 @@ static int save_script(char * directory)
 	return system(commandstr);
 }
 
-int save_puppy()
+/* searches for an XPM file within the install directory.
+   If an XPM file is found this is coppied into the
+   puppypackage directory as the mini icon for the menu */
+static int copy_mini_icon(char * directory,
+						  int no_of_binaries, char ** binaries,
+						  char * xpm_filename)
 {
+	char commandstr[BLOCK_SIZE];
+	int i,ctr=0;
+
+	for (i = 0; i < no_of_binaries; i++) {
+		if (strstr(binaries[i],".xpm")!=NULL) {
+			sprintf(xpm_filename,"%s",binaries[i]);
+			ctr++;
+		}
+	}
+
+	if (ctr == 0) {
+		printf("WARNING: No XPM mini icon " \
+			   "was located within the install " \
+			   "directory.\n");
+		return -1;
+	}
+
+	if (ctr > 1) {
+		printf("WARNING: More than one XPM files were " \
+			   "located within the install directory.  " \
+			   "To avoid any confusion none of these " \
+			   "have been used as the Puppy menu mini icon.\n");
+		return -2;
+	}
+
+	/* copy the xpm into the puppypackage directory */
+	sprintf(commandstr,"%s %s %s%c%s",
+			COMMAND_COPY,
+			xpm_filename,
+			directory, DIRECTORY_SEPARATOR,
+			PUPPY_SUBDIR);
+	return system(commandstr);
+}
+
+int save_puppy(int no_of_binaries, char ** binaries)
+{
+	char xpm_filename[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char subdir[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	int retval=0;
 
+	xpm_filename[0] = 0;
 	get_setting("directory",directory);
 
 	sprintf(subdir,"%s%c%s",directory,DIRECTORY_SEPARATOR,PUPPY_SUBDIR);
@@ -222,6 +284,9 @@ int save_puppy()
 	}
 
 	save_spec(directory);
-	save_script(directory);
+	copy_mini_icon(directory,
+				   no_of_binaries, binaries,
+				   xpm_filename);
+	save_script(directory, xpm_filename);
 	return retval;
 }
