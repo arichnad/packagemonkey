@@ -58,6 +58,8 @@ void show_help()
 		   "Arch packages which the project depends upon\n");
 	printf("     --dependspuppy <packages>   " \
 		   "Puppy packages which the project depends upon\n");
+	printf("     --dependsebuild <packages>   " \
+		   "Ebuild packages which the project depends upon\n");
 	printf("     --buildrpm <packages>     " \
 		   "RPM packages required to build the project\n");
 	printf("     --buildarch <packages>     " \

@@ -112,6 +112,7 @@ int main(int argc, char* argv[])
 	add_setting("depends rpm","");
 	add_setting("depends arch","");
 	add_setting("depends puppy","");
+	add_setting("depends ebuild","");
 	add_setting("build deb","");
 	add_setting("build rpm","");
 	add_setting("build arch","");
@@ -378,6 +379,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No Puppy depends packages given\n");
+			}
+		}
+		/* Ebuild packages which this depends upon */
+		if (strcmp(argv[i],"--dependsebuild")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("depends ebuild",argv[i]);
+			}
+			else {
+				printf("No ebuild depends packages given\n");
 			}
 		}
 		/* Additional arguments for the compiler */
