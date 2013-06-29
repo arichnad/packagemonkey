@@ -51,6 +51,8 @@ int save_file(char * directory)
 			EBUILD_SUBDIR, DIRECTORY_SEPARATOR,
 			project_name, version, release);
 
+	printf("%s",filename);
+
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
@@ -169,7 +171,7 @@ int save_ebuild()
 		retval = system(commandstr);
 	}
 
-	save_file(subdir);
+	save_file(directory);
 	save_script(directory);
 	return retval;
 }

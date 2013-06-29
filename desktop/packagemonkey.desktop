@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=packagemonkey
-GenericName=packagemonkey
+Name=Packagemonkey
+GenericName=Packagemonkey
 Comment=Tool to make packaging easier
 Exec=packagemonkey %U
 Icon=packagemonkey
