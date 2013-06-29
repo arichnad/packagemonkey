@@ -1052,7 +1052,7 @@ static int save_rules(char * directory,
 
 
 	fprintf(fp,"%s","binary-indep: build install\n");
-	/*fprintf(fp,"%s","			  dh_shlibdeps\n");*/
+	fprintf(fp,"%s","			  dh_shlibdeps\n"); /* TODO check */
 	fprintf(fp,"%s","			  dh_testdir\n");
 	fprintf(fp,"%s","			  dh_testroot\n");
 	fprintf(fp,"%s","			  dh_installchangelogs\n");

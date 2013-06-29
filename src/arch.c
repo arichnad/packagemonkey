@@ -59,7 +59,7 @@ static void save_PKGBUILD(char * directory)
     fprintf(fp, "pkgver=%s\n", version);
 	fprintf(fp, "pkgrel=%s\n", release);
 	fprintf(fp, "pkgdesc=\"%s\"\n", description);
-	fprintf(fp, "%s", "arch=('any')\n");
+	fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
 	fprintf(fp, "url=\"%s\"\n",homepage);
 	fprintf(fp, "license=('%s')\n",license);
 	fprintf(fp, "groups=()\n");
@@ -96,7 +96,7 @@ static void save_PKGBUILD(char * directory)
 	fprintf(fp, "install=\n");
 	fprintf(fp, "changelog=\n");
 	if (strlen(source_package) == 0) {
-	    fprintf(fp, "%s", "source=($pkgname_$pkgver.orig.tar.gz)\n");
+	    fprintf(fp, "%s", "source=($pkgname-$pkgver.tar.gz)\n");
     }
 	else {
 	    fprintf(fp, "source=(%s)\n",source_package);
@@ -149,10 +149,10 @@ static int save_script(char * directory)
 	/* alter the version numbers */
 	script_version_numbers(fp,"arch");
 
-	fprintf(fp, "%s", "\n# Set the type of architecture\n");
+	/*fprintf(fp, "%s", "\n# Set the type of architecture\n");
 	fprintf(fp, "sed -i \"s/arch=('any')/" \
 			"arch=('${ARCH_TYPE}')/g\" \"%s/PKGBUILD\"\n",
-			ARCH_SUBDIR);
+			ARCH_SUBDIR);*/
 
 	fprintf(fp, "%s", "\n# Create the source code\n");
 	fprintf(fp, "%s", "make clean\n");

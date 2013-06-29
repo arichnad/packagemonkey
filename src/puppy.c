@@ -113,6 +113,7 @@ static int save_script(char * directory,
 	char commandstr[BLOCK_SIZE];
 	char puppy_desktop_categories[BLOCK_SIZE];
 	char tarball_base[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	char free_main_category[BLOCK_SIZE];
 	char free_additional_category[BLOCK_SIZE];
 	FILE * fp;
@@ -121,6 +122,7 @@ static int save_script(char * directory,
 	get_setting("version",version);
 	get_setting("release",release);
 	get_setting("categories",categories);
+	get_setting("commandline",commandline);
 
 	/* name of the script to build the package */
 	sprintf(script_filename,"%s%cpuppy.sh",
@@ -174,6 +176,16 @@ static int save_script(char * directory,
 			free_main_category,
 			free_additional_category,
 			puppy_desktop_categories);
+
+	/* create puppy-specific directories */
+	fprintf(fp,"%s","\n# create directories specific to puppy\n");
+	fprintf(fp,"%s ${PROJECTDIR}/usr\n", COMMAND_MKDIR);
+	fprintf(fp,"%s ${PROJECTDIR}/usr/local\n", COMMAND_MKDIR);
+	fprintf(fp,"%s ${PROJECTDIR}/usr/local/bin\n", COMMAND_MKDIR);
+
+	/* copy puppy specific files */
+	fprintf(fp,"%s","\n# copy anything in /usr/bin into /usr/local/bin\n");
+	fprintf(fp,"%s ${PROJECTDIR}/usr/bin/* ${PROJECTDIR}/usr/local/bin/\n", COMMAND_COPY);
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
