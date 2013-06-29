@@ -244,8 +244,14 @@ static int copy_mini_icon(char * directory,
 						  int no_of_binaries, char ** binaries,
 						  char * xpm_filename)
 {
+	char commandline[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	int i,ctr=0;
+
+	/* if this is a commandline project
+	   then there is no need to check for an icon */
+	get_setting("commandline",commandline);
+	if (strlen(commandline) > 0) return 0;
 
 	for (i = 0; i < no_of_binaries; i++) {
 		if (strstr(binaries[i],".xpm")!=NULL) {
@@ -280,61 +286,6 @@ static int copy_mini_icon(char * directory,
 	return system(commandstr);
 }
 
-/* Checks that certain files needed by Puppy linux exist */
-int validate_puppy(int no_of_binaries, char ** binaries)
-{
-	char commandline[BLOCK_SIZE];
-	char project_name[BLOCK_SIZE];
-	char str[BLOCK_SIZE];
-	int i,n;
-
-	get_setting("commandline", commandline);
-	if (strlen(commandline) > 0) return 0;
-	
-	get_setting("project name", project_name);
-
-	for (n = 0; n < 2; n++) {
-		switch(n) {
-		case 0: {
-			sprintf(str,"/usr/local/bin/%s",project_name);
-			break;
-		}
-		case 1: {
-			sprintf(str,"%s","/usr/local/lib/X11/mini-icons/");
-			break;
-		}
-		}
-		for (i = 0; i < no_of_binaries; i++) {
-			if (strstr(binaries[i], str) != NULL) {
-				if (i == 1) {
-					if (strstr(binaries[i],".xpm")==NULL) {
-						continue;
-					}
-				}
-				break;
-			}
-		}
-		if (i == no_of_binaries) {
-			if (i == 1) {
-				printf("WARNING: In order for the application " \
-					   "to appear within the Puppy menu the " \
-					   "file %s*.xpm should exist within the " \
-					   "install\n",
-					   str);
-			}
-			else {
-				printf("WARNING: In order for the application " \
-					   "to appear within the Puppy menu the " \
-					   "file %s should exist within the " \
-					   "install\n",
-					   str);
-			}
-			return -1;
-		}
-	}
-	return 0;
-}
-
 int save_puppy(int no_of_binaries, char ** binaries)
 {
 	char xpm_filename[BLOCK_SIZE];
@@ -352,7 +303,6 @@ int save_puppy(int no_of_binaries, char ** binaries)
 		retval = system(commandstr);
 	}
 
-	validate_puppy(no_of_binaries, binaries);
 	save_spec(directory);
 	copy_mini_icon(directory,
 				   no_of_binaries, binaries,
