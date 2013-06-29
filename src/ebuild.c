@@ -40,6 +40,7 @@ int save_file(char * directory)
 	get_setting("homepage",homepage);
 	get_setting("license",license);
 	get_setting("depends ebuild",depends);
+	get_setting("description",description);
 
 	no_of_depends =
 		separate_files(depends,
@@ -50,8 +51,6 @@ int save_file(char * directory)
 			directory, DIRECTORY_SEPARATOR,
 			EBUILD_SUBDIR, DIRECTORY_SEPARATOR,
 			project_name, version, release);
-
-	printf("%s",filename);
 
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
@@ -69,12 +68,9 @@ int save_file(char * directory)
 	fprintf(fp,"%s","KEYWORDS=\"x86\"\n");
 
 	fprintf(fp,"%s","RDEPEND=\"dev-libs/popt\"\n");
-	fprintf(fp,"%s","DEPEND=\"${RDEPEND}\n");
+	fprintf(fp,"%s","DEPEND=\"${RDEPEND}");
 	for (i = 0; i < no_of_depends; i++) {
-		fprintf(fp,"    %s",build_depends[i]);
-		if (i < no_of_depends-1) {
-			fprintf(fp,"%s","\n");
-		}
+		fprintf(fp,"\n    %s", build_depends[i]);
 		free(build_depends[i]);
 	}
 	fprintf(fp,"%s","\"\n");
@@ -86,7 +82,7 @@ int save_file(char * directory)
     fprintf(fp,"%s","src_install() {\n");
     fprintf(fp,"%s","    emake DESTDIR=\"${D}\" install\n");
     fprintf(fp,"%s",
-			"    # Install README and (Debian) changelog");
+			"    # Install README and (Debian) changelog\n");
     fprintf(fp,"    dodoc README.md %s/changelog\n",
 			DEB_SUBDIR);
     fprintf(fp,"%s","}\n");
@@ -111,7 +107,7 @@ static int save_script(char * directory)
 	get_setting("version", version);
 	get_setting("release",release);
 
-	sprintf(filename,"%s%crpm.sh",
+	sprintf(filename,"%s%cebuild.sh",
 			directory, DIRECTORY_SEPARATOR);
 
 	fp = fopen(filename,"w");
