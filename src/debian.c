@@ -907,13 +907,10 @@ static int save_copyright(char * directory)
 static int save_rules(char * directory,
 					  int no_of_binaries, char ** binaries)
 {
-	int i, j, no_of_directories;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
-	char * directories[MAX_FILES];
-	char svg_filename[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
 	FILE * fp;
 
@@ -962,94 +959,7 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		 dh_testroot\n");
 	fprintf(fp,"%s","		 dh_prep\n");
 	fprintf(fp,"%s","		 dh_installdirs\n");
-
-	fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/bin\n", DEB_SUBDIR);
-	if (is_library(project_name) != 0) {
-		fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/lib\n", DEB_SUBDIR);
-		fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/lib/$(APP)\n", DEB_SUBDIR);
-	}
-
-	if (no_of_binaries > 0) {
-		no_of_directories =
-			get_directories(binaries, no_of_binaries,
-							directories);
-		for (i = 0; i < no_of_directories; i++) {
-			if (get_subdirectory_string(directories[i]) != 0) {
-			    fprintf(fp,"		 mkdir -m 755 -p $(CURDIR)\"/%s/$(APP)/%s\"\n",
-						DEB_SUBDIR, get_subdirectory_string(directories[i]));
-			}
-			free(directories[i]);
-		}
-	}
-
-	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share\n", DEB_SUBDIR);
-	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/man\n", DEB_SUBDIR);
-	fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/man/man1\n", DEB_SUBDIR);
-
-	if (strlen(commandline) == 0) {
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/$(APP)\n", DEB_SUBDIR);
-		fprintf(fp, "		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/applications\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/pixmaps\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable/apps\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24\n", DEB_SUBDIR);
-		fprintf(fp,	"		 mkdir -m 755 -p $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24/apps\n", DEB_SUBDIR);
-
-		fprintf(fp,	"		 install -m 644 desktop/$(APP).desktop $(CURDIR)/%s/$(APP)/usr/share/applications/$(APP).desktop\n", DEB_SUBDIR);
-		fprintf(fp,	"		 install -m 644 desktop/icon24.png $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/24x24/apps/$(APP).png\n", DEB_SUBDIR);
-
-		sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
-		if (file_exists(svg_filename) != 0) {
-			fprintf(fp,	"		 install -m 644 desktop/icon.svg $(CURDIR)/%s/$(APP)/usr/share/icons/hicolor/scalable/apps/$(APP).svg\n", DEB_SUBDIR);
-			fprintf(fp,	"		 install -m 644 desktop/icon.svg $(CURDIR)/%s/$(APP)/usr/share/pixmaps/$(APP).svg\n", DEB_SUBDIR);
-		}
-	}
-	if ((strcmp(project_type,"c")==0) ||
-		(strcmp(project_type,"C")==0) ||
-	    (strcmp(project_type,"c++")==0) ||
-		(strcmp(project_type,"C++")==0) ||
-		(strcmp(project_type,"cpp")==0) ||
-		(strcmp(project_type,"CPP")==0)) {
-		fprintf(fp,	"%s", "		 install -m 755 --strip $(APP) $(DESTDIR)/usr/bin\n");
-	}
-
-	if (is_library(project_name) == 0) {
-		/* install binary files from a directory */
-		for (i = 0; i < no_of_binaries; i++) {
-            if (get_subdirectory_string(binaries[i]) != 0){
-				if ((contains_char(get_subdirectory_string(binaries[i]), '.')!=0) ||
-					(is_script(binaries[i])!=0)) {
-					fprintf(fp,	"		 install -m 755 \"%s\" $(DESTDIR)\"/%s\"\n",
-							binaries[i],
-							get_subdirectory_string(binaries[i]));
-				}
-				else {
-					fprintf(fp,	"		 install -m 755 --strip \"%s\" $(DESTDIR)\"/%s\"\n",
-							binaries[i],
-							get_subdirectory_string(binaries[i]));
-				}
-            }
-		}
-	}
-	else {	
-		for (i = 0; i < no_of_binaries; i++) {
-			for (j=strlen(binaries[i])-1; j>=0; j--) {
-				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
-					j++;
-					break;
-				}
-			}
-			fprintf(fp,"		 install -m 755 \"%s\" $(DESTDIR)/usr/lib/$(APP)/%s\n",
-					binaries[i], &binaries[i][j]);
-
-			fprintf(fp,"		 ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) $(DESTDIR)/usr/lib/$(APP)/%s\n",
-					&binaries[i][j], &binaries[i][j]);
-		}
-		fprintf(fp,"%s","		 ldconfig\n");
-	}
-
+	fprintf(fp,"		 ${MAKE} install -B DESTDIR=$(CURDIR)/%s/$(APP)\n",DEB_SUBDIR);
 
 	fprintf(fp,"%s","binary-indep: build install\n");
 	fprintf(fp,"%s","			  dh_shlibdeps\n"); /* TODO check */
