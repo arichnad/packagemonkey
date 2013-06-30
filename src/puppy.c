@@ -163,18 +163,20 @@ static int save_script(char * directory,
 	fprintf(fp,"%s","make\n");
 	fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
 
-	/* alter the category within the .desktop file */
-	free_desktop_to_puppy_desktop(categories,
-								  puppy_desktop_categories);
-	parse_desktop_category(categories,
-						   free_main_category,
-						   free_additional_category);
-	fprintf(fp,"%s","\n# Alter the desktop file categories\n");
-	fprintf(fp,"sed -i \"s/Categories=%s;%s;/Categories=%s/g\" " \
-			"${PROJECTDIR}/usr/share/applications/${APP}.desktop\n",
-			free_main_category,
-			free_additional_category,
-			puppy_desktop_categories);
+	if (strlen(commandline) == 0) {
+		/* alter the category within the .desktop file */
+		free_desktop_to_puppy_desktop(categories,
+									  puppy_desktop_categories);
+		parse_desktop_category(categories,
+							   free_main_category,
+							   free_additional_category);
+		fprintf(fp,"%s","\n# Alter the desktop file categories\n");
+		fprintf(fp,"sed -i \"s/Categories=%s;%s;/Categories=%s/g\" " \
+				"${PROJECTDIR}/usr/share/applications/${APP}.desktop\n",
+				free_main_category,
+				free_additional_category,
+				puppy_desktop_categories);
+	}
 
 	/* create puppy-specific directories */
 	fprintf(fp,"%s","\n# create directories specific to puppy\n");
@@ -194,17 +196,20 @@ static int save_script(char * directory,
 			project_name, version);
 
 	/* copy the xpm mini icon */
-	fprintf(fp,"%s","\n# Copy the XPM mini icon into the build directory\n");
-	if (strlen(xpm_filename) > 0) {
-		fprintf(fp,"%s %s ${PROJECTDIR}%c%s.xpm\n",
-				COMMAND_COPY, xpm_filename,
-				DIRECTORY_SEPARATOR,
-				project_name);
-	}
-	else {
-		fprintf(fp,"%s %s%c*.xpm ${PROJECTDIR}\n",
-				COMMAND_COPY,
-				directory, DIRECTORY_SEPARATOR);
+	if (strlen(commandline) == 0) {
+		fprintf(fp,"%s",
+				"\n# Copy the XPM mini icon into the build directory\n");
+		if (strlen(xpm_filename) > 0) {
+			fprintf(fp,"%s %s ${PROJECTDIR}%c%s.xpm\n",
+					COMMAND_COPY, xpm_filename,
+					DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		else {
+			fprintf(fp,"%s %s%c*.xpm ${PROJECTDIR}\n",
+					COMMAND_COPY,
+					directory, DIRECTORY_SEPARATOR);
+		}
 	}
 
 	/* compress the build directory */
