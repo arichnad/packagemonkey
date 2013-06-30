@@ -448,7 +448,13 @@ int save_desktop()
 	char desktop_categories[BLOCK_SIZE];
 	char category_main[BLOCK_SIZE];
 	char category_additional[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	int retval=0;
+
+	/* if this is a command line project then we don't
+	   need desktop files */
+	get_setting("commandline",commandline);
+	if (strlen(commandline) > 0) return retval;
 
 	get_setting("directory",directory);
 	get_setting("project name",project_name);

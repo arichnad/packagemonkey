@@ -1396,7 +1396,10 @@ int save_debian(int no_of_binaries, char ** binaries)
 	char desktopdir[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
 	int retval=0,i;
+
+	get_setting("commandline",commandline);
 
 	/* create the debian directory */
 	get_setting("directory", directory);
@@ -1428,12 +1431,14 @@ int save_debian(int no_of_binaries, char ** binaries)
 		sprintf(commandstr,"%s %s",COMMAND_MKDIR,mandir);
 		retval = system(commandstr);
 	}
+	if (strlen(commandline)==0) {
 	/* create desktop */
-	sprintf(desktopdir,"%s%cdesktop",
-			directory, DIRECTORY_SEPARATOR);
-	if (directory_exists(desktopdir)==0) {
-		sprintf(commandstr,"%s %s",COMMAND_MKDIR,desktopdir);
-		retval = system(commandstr);
+		sprintf(desktopdir,"%s%cdesktop",
+				directory, DIRECTORY_SEPARATOR);
+		if (directory_exists(desktopdir)==0) {
+			sprintf(commandstr,"%s %s",COMMAND_MKDIR,desktopdir);
+			retval = system(commandstr);
+		}
 	}
 
 	/* move any code into the src directory */

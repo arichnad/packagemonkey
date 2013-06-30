@@ -46,7 +46,6 @@ static int save_spec(char * directory)
 	get_setting("version",version);
 	get_setting("release",release);
 	get_setting("description brief",description);
-	get_setting("depends puppy",depends);
 	get_setting("homepage",homepage);
 
 	sprintf(spec_filename,"%s%c%s-%s.pet.specs",
