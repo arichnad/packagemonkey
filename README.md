@@ -128,6 +128,9 @@ A full description of the project.
 <b>--homepage [url]</b><br>
 URL of the project home page.
 
+<b>--repository [url]</b><br>
+URL of the version control repository.
+
 <b>--src [url]</b><br>
 URL of the compressed source code.
 
