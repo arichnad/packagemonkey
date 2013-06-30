@@ -132,7 +132,7 @@ static int save_script(char * directory,
 			DIRECTORY_SEPARATOR);
 
 	/* base name of the tarball */
-	sprintf(tarball_base,"%s","{APP}-${VERSION}-${RELEASE}.tar");
+	sprintf(tarball_base,"%s","${APP}-${VERSION}-${RELEASE}.tar");
 
 	/* save the script */
 	fp = fopen(script_filename,"w");
@@ -190,10 +190,9 @@ static int save_script(char * directory,
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
-	fprintf(fp,"%s %s%c%s-%s.pet.specs ${PROJECTDIR}\n",
+	fprintf(fp,"%s %s%c${APP}-${VERSION}.pet.specs ${PROJECTDIR}\n",
 			COMMAND_COPY,
-			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
-			project_name, version);
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* copy the xpm mini icon */
 	if (strlen(commandline) == 0) {
