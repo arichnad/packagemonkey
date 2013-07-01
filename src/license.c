@@ -662,6 +662,941 @@ static void save_license_lgpl3(char * filename)
 	fclose(fp);
 }
 
+/* saves a LICENSE file for AGPL1 */
+static void save_license_agpl1(char * filename)
+{
+	FILE * fp;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s","AFFERO GENERAL PUBLIC LICENSE\n\n");
+
+	fprintf(fp,"%s","Version 1, March 2002\n\n");
+
+	fprintf(fp,"%s","Copyright © 2002 Affero Inc.\n");
+	fprintf(fp,"%s","510 Third Street - Suite 225, San Francisco, CA 94107, USA\n\n");
+
+	fprintf(fp,"%s","This license is a modified version of the GNU General Public License\n");
+	fprintf(fp,"%s","copyright (C) 1989, 1991 Free Software Foundation, Inc. made with their\n");
+	fprintf(fp,"%s","permission. Section 2(d) has been added to cover use of software over a\n");
+	fprintf(fp,"%s","computer network.\n\n");
+
+	fprintf(fp,"%s","Everyone is permitted to copy and distribute verbatim copies of this\n");
+	fprintf(fp,"%s","license document, but changing it is not allowed.\n\n");
+
+	fprintf(fp,"%s","Preamble\n\n");
+
+	fprintf(fp,"%s","The licenses for most software are designed to take away your freedom to\n");
+	fprintf(fp,"%s","share and change it. By contrast, the Affero General Public License is\n");
+	fprintf(fp,"%s","intended to guarantee your freedom to share and change free software--to\n");
+	fprintf(fp,"%s","make sure the software is free for all its users. This Public License\n");
+	fprintf(fp,"%s","applies to most of Affero's software and to any other program whose\n");
+	fprintf(fp,"%s","authors commit to using it. (Some other Affero software is covered by\n");
+	fprintf(fp,"%s","the GNU Library General Public License instead.) You can apply it to\n");
+	fprintf(fp,"%s","your programs, too.\n\n");
+
+	fprintf(fp,"%s","When we speak of free software, we are referring to freedom, not price.\n");
+	fprintf(fp,"%s","This General Public License is designed to make sure that you have the\n");
+	fprintf(fp,"%s","freedom to distribute copies of free software (and charge for this\n");
+	fprintf(fp,"%s","service if you wish), that you receive source code or can get it if you\n");
+	fprintf(fp,"%s","want it, that you can change the software or use pieces of it in new\n");
+	fprintf(fp,"%s","free programs; and that you know you can do these things.\n\n");
+
+	fprintf(fp,"%s","To protect your rights, we need to make restrictions that forbid anyone\n");
+	fprintf(fp,"%s","to deny you these rights or to ask you to surrender the rights. These\n");
+	fprintf(fp,"%s","restrictions translate to certain responsibilities for you if you\n");
+	fprintf(fp,"%s","distribute copies of the software, or if you modify it.\n\n");
+
+	fprintf(fp,"%s","For example, if you distribute copies of such a program, whether gratis\n");
+	fprintf(fp,"%s","or for a fee, you must give the recipients all the rights that you have.\n");
+	fprintf(fp,"%s","You must make sure that they, too, receive or can get the source code.\n");
+	fprintf(fp,"%s","And you must show them these terms so they know their rights.\n\n");
+
+	fprintf(fp,"%s","We protect your rights with two steps: (1) copyright the software, and\n");
+	fprintf(fp,"%s","(2) offer you this license which gives you legal permission to copy,\n");
+	fprintf(fp,"%s","distribute and/or modify the software.\n\n");
+
+	fprintf(fp,"%s","Also, for each author's protection and ours, we want to make certain\n");
+	fprintf(fp,"%s","that everyone understands that there is no warranty for this free\n");
+	fprintf(fp,"%s","software. If the software is modified by someone else and passed on, we\n");
+	fprintf(fp,"%s","want its recipients to know that what they have is not the original, so\n");
+	fprintf(fp,"%s","that any problems introduced by others will not reflect on the original\n");
+	fprintf(fp,"%s","authors' reputations.\n\n");
+
+	fprintf(fp,"%s","Finally, any free program is threatened constantly by software patents.\n");
+	fprintf(fp,"%s","We wish to avoid the danger that redistributors of a free program will\n");
+	fprintf(fp,"%s","individually obtain patent licenses, in effect making the program\n");
+	fprintf(fp,"%s","proprietary. To prevent this, we have made it clear that any patent must\n");
+	fprintf(fp,"%s","be licensed for everyone's free use or not licensed at all.\n\n");
+
+	fprintf(fp,"%s","The precise terms and conditions for copying, distribution and\n");
+	fprintf(fp,"%s","modification follow.\n\n");
+
+	fprintf(fp,"%s","TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n\n");
+
+	fprintf(fp,"%s","0. This License applies to any program or other work which contains a\n");
+	fprintf(fp,"%s","notice placed by the copyright holder saying it may be distributed under\n");
+	fprintf(fp,"%s","the terms of this Affero General Public License. The \"Program\", below,\n");
+	fprintf(fp,"%s","refers to any such program or work, and a \"work based on the Program\"\n");
+	fprintf(fp,"%s","means either the Program or any derivative work under copyright law:\n");
+	fprintf(fp,"%s","that is to say, a work containing the Program or a portion of it, either\n");
+	fprintf(fp,"%s","verbatim or with modifications and/or translated into another language.\n");
+	fprintf(fp,"%s","(Hereinafter, translation is included without limitation in the term\n");
+	fprintf(fp,"%s","\"modification\".) Each licensee is addressed as \"you\".\n\n");
+
+	fprintf(fp,"%s","Activities other than copying, distribution and modification are not\n");
+	fprintf(fp,"%s","covered by this License; they are outside its scope. The act of running\n");
+	fprintf(fp,"%s","the Program is not restricted, and the output from the Program is\n");
+	fprintf(fp,"%s","covered only if its contents constitute a work based on the Program\n");
+	fprintf(fp,"%s","(independent of having been made by running the Program). Whether that\n");
+	fprintf(fp,"%s","is true depends on what the Program does.\n\n");
+
+	fprintf(fp,"%s","1. You may copy and distribute verbatim copies of the Program's source\n");
+	fprintf(fp,"%s","code as you receive it, in any medium, provided that you conspicuously\n");
+	fprintf(fp,"%s","and appropriately publish on each copy an appropriate copyright notice\n");
+	fprintf(fp,"%s","and disclaimer of warranty; keep intact all the notices that refer to\n");
+	fprintf(fp,"%s","this License and to the absence of any warranty; and give any other\n");
+	fprintf(fp,"%s","recipients of the Program a copy of this License along with the Program.\n\n");
+
+	fprintf(fp,"%s","You may charge a fee for the physical act of transferring a copy, and\n");
+	fprintf(fp,"%s","you may at your option offer warranty protection in exchange for a fee.\n\n");
+
+	fprintf(fp,"%s","2. You may modify your copy or copies of the Program or any portion of\n");
+	fprintf(fp,"%s","it, thus forming a work based on the Program, and copy and distribute\n");
+	fprintf(fp,"%s","such modifications or work under the terms of Section 1 above, provided\n");
+	fprintf(fp,"%s","that you also meet all of these conditions:\n\n");
+
+	fprintf(fp,"%s","* a) You must cause the modified files to carry prominent notices\n");
+	fprintf(fp,"%s","stating that you changed the files and the date of any change.\n\n");
+
+	fprintf(fp,"%s","* b) You must cause any work that you distribute or publish, that in\n");
+	fprintf(fp,"%s","whole or in part contains or is derived from the Program or any part\n");
+	fprintf(fp,"%s","thereof, to be licensed as a whole at no charge to all third parties\n");
+	fprintf(fp,"%s","under the terms of this License.\n\n");
+
+	fprintf(fp,"%s","* c) If the modified program normally reads commands interactively when\n");
+	fprintf(fp,"%s","run, you must cause it, when started running for such interactive use in\n");
+	fprintf(fp,"%s","the most ordinary way, to print or display an announcement including an\n");
+	fprintf(fp,"%s","appropriate copyright notice and a notice that there is no warranty (or\n");
+	fprintf(fp,"%s","else, saying that you provide a warranty) and that users may\n");
+	fprintf(fp,"%s","redistribute the program under these conditions, and telling the user\n");
+	fprintf(fp,"%s","how to view a copy of this License. (Exception: if the Program itself is\n");
+	fprintf(fp,"%s","interactive but does not normally print such an announcement, your work\n");
+	fprintf(fp,"%s","based on the Program is not required to print an announcement.)\n\n");
+
+	fprintf(fp,"%s","* d) If the Program as you received it is intended to interact with\n");
+	fprintf(fp,"%s","users through a computer network and if, in the version you received,\n");
+	fprintf(fp,"%s","any user interacting with the Program was given the opportunity to\n");
+	fprintf(fp,"%s","request transmission to that user of the Program's complete source code,\n");
+	fprintf(fp,"%s","you must not remove that facility from your modified version of the\n");
+	fprintf(fp,"%s","Program or work based on the Program, and must offer an equivalent\n");
+	fprintf(fp,"%s","opportunity for all users interacting with your Program through a\n");
+	fprintf(fp,"%s","computer network to request immediate transmission by HTTP of the\n");
+	fprintf(fp,"%s","complete source code of your modified version or other derivative work.\n\n");
+
+	fprintf(fp,"%s","These requirements apply to the modified work as a whole. If\n");
+	fprintf(fp,"%s","identifiable sections of that work are not derived from the Program, and\n");
+	fprintf(fp,"%s","can be reasonably considered independent and separate works in\n");
+	fprintf(fp,"%s","themselves, then this License, and its terms, do not apply to those\n");
+	fprintf(fp,"%s","sections when you distribute them as separate works. But when you\n");
+	fprintf(fp,"%s","distribute the same sections as part of a whole which is a work based on\n");
+	fprintf(fp,"%s","the Program, the distribution of the whole must be on the terms of this\n");
+	fprintf(fp,"%s","License, whose permissions for other licensees extend to the entire\n");
+	fprintf(fp,"%s","whole, and thus to each and every part regardless of who wrote it.\n\n");
+
+	fprintf(fp,"%s","Thus, it is not the intent of this section to claim rights or contest\n");
+	fprintf(fp,"%s","your rights to work written entirely by you; rather, the intent is to\n");
+	fprintf(fp,"%s","exercise the right to control the distribution of derivative or\n");
+	fprintf(fp,"%s","collective works based on the Program.\n\n");
+
+	fprintf(fp,"%s","In addition, mere aggregation of another work not based on the Program\n");
+	fprintf(fp,"%s","with the Program (or with a work based on the Program) on a volume of a\n");
+	fprintf(fp,"%s","storage or distribution medium does not bring the other work under the\n");
+	fprintf(fp,"%s","scope of this License.\n\n");
+
+	fprintf(fp,"%s","3. You may copy and distribute the Program (or a work based on it, under\n");
+	fprintf(fp,"%s","Section 2) in object code or executable form under the terms of Sections\n");
+	fprintf(fp,"%s","1 and 2 above provided that you also do one of the following:\n\n");
+
+	fprintf(fp,"%s","* a) Accompany it with the complete corresponding machine-readable\n");
+	fprintf(fp,"%s","source code, which must be distributed under the terms of Sections 1 and\n");
+	fprintf(fp,"%s","2 above on a medium customarily used for software interchange; or,\n\n");
+
+	fprintf(fp,"%s","* b) Accompany it with a written offer, valid for at least three years,\n");
+	fprintf(fp,"%s","to give any third party, for a charge no more than your cost of\n");
+	fprintf(fp,"%s","physically performing source distribution, a complete machine-readable\n");
+	fprintf(fp,"%s","copy of the corresponding source code, to be distributed under the terms\n");
+	fprintf(fp,"%s","of Sections 1 and 2 above on a medium customarily used for software\n");
+	fprintf(fp,"%s","interchange; or,\n\n");
+
+	fprintf(fp,"%s","* c) Accompany it with the information you received as to the offer to\n");
+	fprintf(fp,"%s","distribute corresponding source code. (This alternative is allowed only\n");
+	fprintf(fp,"%s","for noncommercial distribution and only if you received the program in\n");
+	fprintf(fp,"%s","object code or executable form with such an offer, in accord with\n");
+	fprintf(fp,"%s","Subsection b above.)\n\n");
+
+	fprintf(fp,"%s","The source code for a work means the preferred form of the work for\n");
+	fprintf(fp,"%s","making modifications to it. For an executable work, complete source code\n");
+	fprintf(fp,"%s","means all the source code for all modules it contains, plus any\n");
+	fprintf(fp,"%s","associated interface definition files, plus the scripts used to control\n");
+	fprintf(fp,"%s","compilation and installation of the executable. However, as a special\n");
+	fprintf(fp,"%s","exception, the source code distributed need not include anything that is\n");
+	fprintf(fp,"%s","normally distributed (in either source or binary form) with the major\n");
+	fprintf(fp,"%s","components (compiler, kernel, and so on) of the operating system on\n");
+	fprintf(fp,"%s","which the executable runs, unless that component itself accompanies the\n");
+	fprintf(fp,"%s","executable.\n\n");
+
+	fprintf(fp,"%s","If distribution of executable or object code is made by offering access\n");
+	fprintf(fp,"%s","to copy from a designated place, then offering equivalent access to copy\n");
+	fprintf(fp,"%s","the source code from the same place counts as distribution of the source\n");
+	fprintf(fp,"%s","code, even though third parties are not compelled to copy the source\n");
+	fprintf(fp,"%s","along with the object code.\n\n");
+
+	fprintf(fp,"%s","4. You may not copy, modify, sublicense, or distribute the Program\n");
+	fprintf(fp,"%s","except as expressly provided under this License. Any attempt otherwise\n");
+	fprintf(fp,"%s","to copy, modify, sublicense or distribute the Program is void, and will\n");
+	fprintf(fp,"%s","automatically terminate your rights under this License. However, parties\n");
+	fprintf(fp,"%s","who have received copies, or rights, from you under this License will\n");
+	fprintf(fp,"%s","not have their licenses terminated so long as such parties remain in\n");
+	fprintf(fp,"%s","full compliance.\n\n");
+
+	fprintf(fp,"%s","5. You are not required to accept this License, since you have not\n");
+	fprintf(fp,"%s","signed it. However, nothing else grants you permission to modify or\n");
+	fprintf(fp,"%s","distribute the Program or its derivative works. These actions are\n");
+	fprintf(fp,"%s","prohibited by law if you do not accept this License. Therefore, by\n");
+	fprintf(fp,"%s","modifying or distributing the Program (or any work based on the\n");
+	fprintf(fp,"%s","Program), you indicate your acceptance of this License to do so, and all\n");
+	fprintf(fp,"%s","its terms and conditions for copying, distributing or modifying the\n");
+	fprintf(fp,"%s","Program or works based on it.\n\n");
+
+	fprintf(fp,"%s","6. Each time you redistribute the Program (or any work based on the\n");
+	fprintf(fp,"%s","Program), the recipient automatically receives a license from the\n");
+	fprintf(fp,"%s","original licensor to copy, distribute or modify the Program subject to\n");
+	fprintf(fp,"%s","these terms and conditions. You may not impose any further restrictions\n");
+	fprintf(fp,"%s","on the recipients' exercise of the rights granted herein. You are not\n");
+	fprintf(fp,"%s","responsible for enforcing compliance by third parties to this License.\n\n");
+
+	fprintf(fp,"%s","7. If, as a consequence of a court judgment or allegation of patent\n");
+	fprintf(fp,"%s","infringement or for any other reason (not limited to patent issues),\n");
+	fprintf(fp,"%s","conditions are imposed on you (whether by court order, agreement or\n");
+	fprintf(fp,"%s","otherwise) that contradict the conditions of this License, they do not\n");
+	fprintf(fp,"%s","excuse you from the conditions of this License. If you cannot distribute\n");
+	fprintf(fp,"%s","so as to satisfy simultaneously your obligations under this License and\n");
+	fprintf(fp,"%s","any other pertinent obligations, then as a consequence you may not\n");
+	fprintf(fp,"%s","distribute the Program at all. For example, if a patent license would\n");
+	fprintf(fp,"%s","not permit royalty-free redistribution of the Program by all those who\n");
+	fprintf(fp,"%s","receive copies directly or indirectly through you, then the only way you\n");
+	fprintf(fp,"%s","could satisfy both it and this License would be to refrain entirely from\n");
+	fprintf(fp,"%s","distribution of the Program.\n\n");
+
+	fprintf(fp,"%s","If any portion of this section is held invalid or unenforceable under\n");
+	fprintf(fp,"%s","any particular circumstance, the balance of the section is intended to\n");
+	fprintf(fp,"%s","apply and the section as a whole is intended to apply in other\n");
+	fprintf(fp,"%s","circumstances.\n\n");
+
+	fprintf(fp,"%s","It is not the purpose of this section to induce you to infringe any\n");
+	fprintf(fp,"%s","patents or other property right claims or to contest validity of any\n");
+	fprintf(fp,"%s","such claims; this section has the sole purpose of protecting the\n");
+	fprintf(fp,"%s","integrity of the free software distribution system, which is implemented\n");
+	fprintf(fp,"%s","by public license practices. Many people have made generous\n");
+	fprintf(fp,"%s","contributions to the wide range of software distributed through that\n");
+	fprintf(fp,"%s","system in reliance on consistent application of that system; it is up to\n");
+	fprintf(fp,"%s","the author/donor to decide if he or she is willing to distribute\n");
+	fprintf(fp,"%s","software through any other system and a licensee cannot impose that\n");
+	fprintf(fp,"%s","choice.\n\n");
+
+	fprintf(fp,"%s","This section is intended to make thoroughly clear what is believed to be\n");
+	fprintf(fp,"%s","a consequence of the rest of this License.\n\n");
+
+	fprintf(fp,"%s","8. If the distribution and/or use of the Program is restricted in\n");
+	fprintf(fp,"%s","certain countries either by patents or by copyrighted interfaces, the\n");
+	fprintf(fp,"%s","original copyright holder who places the Program under this License may\n");
+	fprintf(fp,"%s","add an explicit geographical distribution limitation excluding those\n");
+	fprintf(fp,"%s","countries, so that distribution is permitted only in or among countries\n");
+	fprintf(fp,"%s","not thus excluded. In such case, this License incorporates the\n");
+	fprintf(fp,"%s","limitation as if written in the body of this License.\n\n");
+
+	fprintf(fp,"%s","9. Affero Inc. may publish revised and/or new versions of the Affero\n");
+	fprintf(fp,"%s","General Public License from time to time. Such new versions will be\n");
+	fprintf(fp,"%s","similar in spirit to the present version, but may differ in detail to\n");
+	fprintf(fp,"%s","address new problems or concerns.\n\n");
+
+	fprintf(fp,"%s","Each version is given a distinguishing version number. If the Program\n");
+	fprintf(fp,"%s","specifies a version number of this License which applies to it and \"any\n");
+	fprintf(fp,"%s","later version\", you have the option of following the terms and\n");
+	fprintf(fp,"%s","conditions either of that version or of any later version published by\n");
+	fprintf(fp,"%s","Affero, Inc. If the Program does not specify a version number of this\n");
+	fprintf(fp,"%s","License, you may choose any version ever published by Affero, Inc.\n\n");
+
+	fprintf(fp,"%s","You may also choose to redistribute modified versions of this program\n");
+	fprintf(fp,"%s","under any version of the Free Software Foundation's GNU General Public\n");
+	fprintf(fp,"%s","License version 3 or higher, so long as that version of the GNU GPL\n");
+	fprintf(fp,"%s","includes terms and conditions substantially equivalent to those of this\n");
+	fprintf(fp,"%s","license.\n\n");
+
+	fprintf(fp,"%s","10. If you wish to incorporate parts of the Program into other free\n");
+	fprintf(fp,"%s","programs whose distribution conditions are different, write to the\n");
+	fprintf(fp,"%s","author to ask for permission. For software which is copyrighted by\n");
+	fprintf(fp,"%s","Affero, Inc., write to us; we sometimes make exceptions for this. Our\n");
+	fprintf(fp,"%s","decision will be guided by the two goals of preserving the free status\n");
+	fprintf(fp,"%s","of all derivatives of our free software and of promoting the sharing and\n");
+	fprintf(fp,"%s","reuse of software generally.\n\n");
+
+	fprintf(fp,"%s","NO WARRANTY\n\n");
+
+	fprintf(fp,"%s","11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY\n");
+	fprintf(fp,"%s","FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN\n");
+	fprintf(fp,"%s","OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES\n");
+	fprintf(fp,"%s","PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER\n");
+	fprintf(fp,"%s","EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n");
+	fprintf(fp,"%s","WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE\n");
+	fprintf(fp,"%s","ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH\n");
+	fprintf(fp,"%s","YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL\n");
+	fprintf(fp,"%s","NECESSARY SERVICING, REPAIR OR CORRECTION.\n\n");
+
+	fprintf(fp,"%s","12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN\n");
+	fprintf(fp,"%s","WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY\n");
+	fprintf(fp,"%s","AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR\n");
+	fprintf(fp,"%s","DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL\n");
+	fprintf(fp,"%s","DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM\n");
+	fprintf(fp,"%s","(INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED\n");
+	fprintf(fp,"%s","INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF\n");
+	fprintf(fp,"%s","THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR\n");
+	fprintf(fp,"%s","OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.\n");
+
+	fclose(fp);
+}
+
+/* saves a LICENSE file for AGPL3 */
+static void save_license_agpl3(char * filename)
+{
+	FILE * fp;
+
+	fp = fopen(filename,"w");
+	if (!fp) return;
+
+	fprintf(fp,"%s","                    GNU AFFERO GENERAL PUBLIC LICENSE\n");
+	fprintf(fp,"%s","                       Version 3, 19 November 2007\n\n");
+
+	fprintf(fp,"%s"," Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>\n");
+	fprintf(fp,"%s"," Everyone is permitted to copy and distribute verbatim copies\n");
+	fprintf(fp,"%s"," of this license document, but changing it is not allowed.\n\n");
+
+	fprintf(fp,"%s","                            Preamble\n\n");
+
+	fprintf(fp,"%s","  The GNU Affero General Public License is a free, copyleft license for\n");
+	fprintf(fp,"%s","software and other kinds of works, specifically designed to ensure\n");
+	fprintf(fp,"%s","cooperation with the community in the case of network server software.\n\n");
+
+	fprintf(fp,"%s","  The licenses for most software and other practical works are designed\n");
+	fprintf(fp,"%s","to take away your freedom to share and change the works.  By contrast,\n");
+	fprintf(fp,"%s","our General Public Licenses are intended to guarantee your freedom to\n");
+	fprintf(fp,"%s","share and change all versions of a program--to make sure it remains free\n");
+	fprintf(fp,"%s","software for all its users.\n\n");
+
+	fprintf(fp,"%s","  When we speak of free software, we are referring to freedom, not\n");
+	fprintf(fp,"%s","price.  Our General Public Licenses are designed to make sure that you\n");
+	fprintf(fp,"%s","have the freedom to distribute copies of free software (and charge for\n");
+	fprintf(fp,"%s","them if you wish), that you receive source code or can get it if you\n");
+	fprintf(fp,"%s","want it, that you can change the software or use pieces of it in new\n");
+	fprintf(fp,"%s","free programs, and that you know you can do these things.\n\n");
+
+	fprintf(fp,"%s","  Developers that use our General Public Licenses protect your rights\n");
+	fprintf(fp,"%s","with two steps: (1) assert copyright on the software, and (2) offer\n");
+	fprintf(fp,"%s","you this License which gives you legal permission to copy, distribute\n");
+	fprintf(fp,"%s","and/or modify the software.\n\n");
+
+	fprintf(fp,"%s","  A secondary benefit of defending all users' freedom is that\n");
+	fprintf(fp,"%s","improvements made in alternate versions of the program, if they\n");
+	fprintf(fp,"%s","receive widespread use, become available for other developers to\n");
+	fprintf(fp,"%s","incorporate.  Many developers of free software are heartened and\n");
+	fprintf(fp,"%s","encouraged by the resulting cooperation.  However, in the case of\n");
+	fprintf(fp,"%s","software used on network servers, this result may fail to come about.\n");
+	fprintf(fp,"%s","The GNU General Public License permits making a modified version and\n");
+	fprintf(fp,"%s","letting the public access it on a server without ever releasing its\n");
+	fprintf(fp,"%s","source code to the public.\n\n");
+
+	fprintf(fp,"%s","  The GNU Affero General Public License is designed specifically to\n");
+	fprintf(fp,"%s","ensure that, in such cases, the modified source code becomes available\n");
+	fprintf(fp,"%s","to the community.  It requires the operator of a network server to\n");
+	fprintf(fp,"%s","provide the source code of the modified version running there to the\n");
+	fprintf(fp,"%s","users of that server.  Therefore, public use of a modified version, on\n");
+	fprintf(fp,"%s","a publicly accessible server, gives the public access to the source\n");
+	fprintf(fp,"%s","code of the modified version.\n\n");
+
+	fprintf(fp,"%s","  An older license, called the Affero General Public License and\n");
+	fprintf(fp,"%s","published by Affero, was designed to accomplish similar goals.  This is\n");
+	fprintf(fp,"%s","a different license, not a version of the Affero GPL, but Affero has\n");
+	fprintf(fp,"%s","released a new version of the Affero GPL which permits relicensing under\n");
+	fprintf(fp,"%s","this license.\n\n");
+
+	fprintf(fp,"%s","  The precise terms and conditions for copying, distribution and\n");
+	fprintf(fp,"%s","modification follow.\n\n");
+
+	fprintf(fp,"%s","                       TERMS AND CONDITIONS\n\n");
+
+	fprintf(fp,"%s","  0. Definitions.\n\n");
+
+	fprintf(fp,"%s","  \"This License\" refers to version 3 of the GNU Affero General Public License.\n\n");
+
+	fprintf(fp,"%s","  \"Copyright\" also means copyright-like laws that apply to other kinds of\n");
+	fprintf(fp,"%s","works, such as semiconductor masks.\n\n");
+
+	fprintf(fp,"%s","  \"The Program\" refers to any copyrightable work licensed under this\n");
+	fprintf(fp,"%s","License.  Each licensee is addressed as \"you\".  \"Licensees\" and\n");
+	fprintf(fp,"%s","\"recipients\" may be individuals or organizations.\n\n");
+
+	fprintf(fp,"%s","  To \"modify\" a work means to copy from or adapt all or part of the work\n");
+	fprintf(fp,"%s","in a fashion requiring copyright permission, other than the making of an\n");
+	fprintf(fp,"%s","exact copy.  The resulting work is called a \"modified version\" of the\n");
+	fprintf(fp,"%s","earlier work or a work \"based on\" the earlier work.\n\n");
+
+	fprintf(fp,"%s","  A \"covered work\" means either the unmodified Program or a work based\n");
+	fprintf(fp,"%s","on the Program.\n\n");
+
+	fprintf(fp,"%s","  To \"propagate\" a work means to do anything with it that, without\n");
+	fprintf(fp,"%s","permission, would make you directly or secondarily liable for\n");
+	fprintf(fp,"%s","infringement under applicable copyright law, except executing it on a\n");
+	fprintf(fp,"%s","computer or modifying a private copy.  Propagation includes copying,\n");
+	fprintf(fp,"%s","distribution (with or without modification), making available to the\n");
+	fprintf(fp,"%s","public, and in some countries other activities as well.\n\n");
+
+	fprintf(fp,"%s","  To \"convey\" a work means any kind of propagation that enables other\n");
+	fprintf(fp,"%s","parties to make or receive copies.  Mere interaction with a user through\n");
+	fprintf(fp,"%s","a computer network, with no transfer of a copy, is not conveying.\n\n");
+
+	fprintf(fp,"%s","  An interactive user interface displays \"Appropriate Legal Notices\"\n");
+	fprintf(fp,"%s","to the extent that it includes a convenient and prominently visible\n");
+	fprintf(fp,"%s","feature that (1) displays an appropriate copyright notice, and (2)\n");
+	fprintf(fp,"%s","tells the user that there is no warranty for the work (except to the\n");
+	fprintf(fp,"%s","extent that warranties are provided), that licensees may convey the\n");
+	fprintf(fp,"%s","work under this License, and how to view a copy of this License.  If\n");
+	fprintf(fp,"%s","the interface presents a list of user commands or options, such as a\n");
+	fprintf(fp,"%s","menu, a prominent item in the list meets this criterion.\n\n");
+
+	fprintf(fp,"%s","  1. Source Code.\n\n");
+
+	fprintf(fp,"%s","  The \"source code\" for a work means the preferred form of the work\n");
+	fprintf(fp,"%s","for making modifications to it.  \"Object code\" means any non-source\n");
+	fprintf(fp,"%s","form of a work.\n\n");
+
+	fprintf(fp,"%s","  A \"Standard Interface\" means an interface that either is an official\n");
+	fprintf(fp,"%s","standard defined by a recognized standards body, or, in the case of\n");
+	fprintf(fp,"%s","interfaces specified for a particular programming language, one that\n");
+	fprintf(fp,"%s","is widely used among developers working in that language.\n\n");
+
+	fprintf(fp,"%s","  The \"System Libraries\" of an executable work include anything, other\n");
+	fprintf(fp,"%s","than the work as a whole, that (a) is included in the normal form of\n");
+	fprintf(fp,"%s","packaging a Major Component, but which is not part of that Major\n");
+	fprintf(fp,"%s","Component, and (b) serves only to enable use of the work with that\n");
+	fprintf(fp,"%s","Major Component, or to implement a Standard Interface for which an\n");
+	fprintf(fp,"%s","implementation is available to the public in source code form.  A\n");
+	fprintf(fp,"%s","\"Major Component\", in this context, means a major essential component\n");
+	fprintf(fp,"%s","(kernel, window system, and so on) of the specific operating system\n");
+	fprintf(fp,"%s","(if any) on which the executable work runs, or a compiler used to\n");
+	fprintf(fp,"%s","produce the work, or an object code interpreter used to run it.\n\n");
+
+	fprintf(fp,"%s","  The \"Corresponding Source\" for a work in object code form means all\n");
+	fprintf(fp,"%s","the source code needed to generate, install, and (for an executable\n");
+	fprintf(fp,"%s","work) run the object code and to modify the work, including scripts to\n");
+	fprintf(fp,"%s","control those activities.  However, it does not include the work's\n");
+	fprintf(fp,"%s","System Libraries, or general-purpose tools or generally available free\n");
+	fprintf(fp,"%s","programs which are used unmodified in performing those activities but\n");
+	fprintf(fp,"%s","which are not part of the work.  For example, Corresponding Source\n");
+	fprintf(fp,"%s","includes interface definition files associated with source files for\n");
+	fprintf(fp,"%s","the work, and the source code for shared libraries and dynamically\n");
+	fprintf(fp,"%s","linked subprograms that the work is specifically designed to require,\n");
+	fprintf(fp,"%s","such as by intimate data communication or control flow between those\n");
+	fprintf(fp,"%s","subprograms and other parts of the work.\n\n");
+
+	fprintf(fp,"%s","  The Corresponding Source need not include anything that users\n");
+	fprintf(fp,"%s","can regenerate automatically from other parts of the Corresponding\n");
+	fprintf(fp,"%s","Source.\n\n");
+
+	fprintf(fp,"%s","  The Corresponding Source for a work in source code form is that\n");
+	fprintf(fp,"%s","same work.\n\n");
+
+	fprintf(fp,"%s","  2. Basic Permissions.\n\n");
+
+	fprintf(fp,"%s","  All rights granted under this License are granted for the term of\n");
+	fprintf(fp,"%s","copyright on the Program, and are irrevocable provided the stated\n");
+	fprintf(fp,"%s","conditions are met.  This License explicitly affirms your unlimited\n");
+	fprintf(fp,"%s","permission to run the unmodified Program.  The output from running a\n");
+	fprintf(fp,"%s","covered work is covered by this License only if the output, given its\n");
+	fprintf(fp,"%s","content, constitutes a covered work.  This License acknowledges your\n");
+	fprintf(fp,"%s","rights of fair use or other equivalent, as provided by copyright law.\n\n");
+
+	fprintf(fp,"%s","  You may make, run and propagate covered works that you do not\n");
+	fprintf(fp,"%s","convey, without conditions so long as your license otherwise remains\n");
+	fprintf(fp,"%s","in force.  You may convey covered works to others for the sole purpose\n");
+	fprintf(fp,"%s","of having them make modifications exclusively for you, or provide you\n");
+	fprintf(fp,"%s","with facilities for running those works, provided that you comply with\n");
+	fprintf(fp,"%s","the terms of this License in conveying all material for which you do\n");
+	fprintf(fp,"%s","not control copyright.  Those thus making or running the covered works\n");
+	fprintf(fp,"%s","for you must do so exclusively on your behalf, under your direction\n");
+	fprintf(fp,"%s","and control, on terms that prohibit them from making any copies of\n");
+	fprintf(fp,"%s","your copyrighted material outside their relationship with you.\n\n");
+
+	fprintf(fp,"%s","  Conveying under any other circumstances is permitted solely under\n");
+	fprintf(fp,"%s","the conditions stated below.  Sublicensing is not allowed; section 10\n");
+	fprintf(fp,"%s","makes it unnecessary.\n\n");
+
+	fprintf(fp,"%s","  3. Protecting Users' Legal Rights From Anti-Circumvention Law.\n\n");
+
+	fprintf(fp,"%s","  No covered work shall be deemed part of an effective technological\n");
+	fprintf(fp,"%s","measure under any applicable law fulfilling obligations under article\n");
+	fprintf(fp,"%s","11 of the WIPO copyright treaty adopted on 20 December 1996, or\n");
+	fprintf(fp,"%s","similar laws prohibiting or restricting circumvention of such\n");
+	fprintf(fp,"%s","measures.\n\n");
+
+	fprintf(fp,"%s","  When you convey a covered work, you waive any legal power to forbid\n");
+	fprintf(fp,"%s","circumvention of technological measures to the extent such circumvention\n");
+	fprintf(fp,"%s","is effected by exercising rights under this License with respect to\n");
+	fprintf(fp,"%s","the covered work, and you disclaim any intention to limit operation or\n");
+	fprintf(fp,"%s","modification of the work as a means of enforcing, against the work's\n");
+	fprintf(fp,"%s","users, your or third parties' legal rights to forbid circumvention of\n");
+	fprintf(fp,"%s","technological measures.\n\n");
+
+	fprintf(fp,"%s","  4. Conveying Verbatim Copies.\n\n");
+
+	fprintf(fp,"%s","  You may convey verbatim copies of the Program's source code as you\n");
+	fprintf(fp,"%s","receive it, in any medium, provided that you conspicuously and\n");
+	fprintf(fp,"%s","appropriately publish on each copy an appropriate copyright notice;\n");
+	fprintf(fp,"%s","keep intact all notices stating that this License and any\n");
+	fprintf(fp,"%s","non-permissive terms added in accord with section 7 apply to the code;\n");
+	fprintf(fp,"%s","keep intact all notices of the absence of any warranty; and give all\n");
+	fprintf(fp,"%s","recipients a copy of this License along with the Program.\n\n");
+
+	fprintf(fp,"%s","  You may charge any price or no price for each copy that you convey,\n");
+	fprintf(fp,"%s","and you may offer support or warranty protection for a fee.\n\n");
+
+	fprintf(fp,"%s","  5. Conveying Modified Source Versions.\n\n");
+
+	fprintf(fp,"%s","  You may convey a work based on the Program, or the modifications to\n");
+	fprintf(fp,"%s","produce it from the Program, in the form of source code under the\n");
+	fprintf(fp,"%s","terms of section 4, provided that you also meet all of these conditions:\n\n");
+
+	fprintf(fp,"%s","    a) The work must carry prominent notices stating that you modified\n");
+	fprintf(fp,"%s","    it, and giving a relevant date.\n\n");
+
+	fprintf(fp,"%s","    b) The work must carry prominent notices stating that it is\n");
+	fprintf(fp,"%s","    released under this License and any conditions added under section\n");
+	fprintf(fp,"%s","    7.  This requirement modifies the requirement in section 4 to\n");
+	fprintf(fp,"%s","    \"keep intact all notices\".\n\n");
+
+	fprintf(fp,"%s","    c) You must license the entire work, as a whole, under this\n");
+	fprintf(fp,"%s","    License to anyone who comes into possession of a copy.  This\n");
+	fprintf(fp,"%s","    License will therefore apply, along with any applicable section 7\n");
+	fprintf(fp,"%s","    additional terms, to the whole of the work, and all its parts,\n");
+	fprintf(fp,"%s","    regardless of how they are packaged.  This License gives no\n");
+	fprintf(fp,"%s","    permission to license the work in any other way, but it does not\n");
+	fprintf(fp,"%s","    invalidate such permission if you have separately received it.\n\n");
+
+	fprintf(fp,"%s","    d) If the work has interactive user interfaces, each must display\n");
+	fprintf(fp,"%s","    Appropriate Legal Notices; however, if the Program has interactive\n");
+	fprintf(fp,"%s","    interfaces that do not display Appropriate Legal Notices, your\n");
+	fprintf(fp,"%s","    work need not make them do so.\n\n");
+
+	fprintf(fp,"%s","  A compilation of a covered work with other separate and independent\n");
+	fprintf(fp,"%s","works, which are not by their nature extensions of the covered work,\n");
+	fprintf(fp,"%s","and which are not combined with it such as to form a larger program,\n");
+	fprintf(fp,"%s","in or on a volume of a storage or distribution medium, is called an\n");
+	fprintf(fp,"%s","\"aggregate\" if the compilation and its resulting copyright are not\n");
+	fprintf(fp,"%s","used to limit the access or legal rights of the compilation's users\n");
+	fprintf(fp,"%s","beyond what the individual works permit.  Inclusion of a covered work\n");
+	fprintf(fp,"%s","in an aggregate does not cause this License to apply to the other\n");
+	fprintf(fp,"%s","parts of the aggregate.\n\n");
+
+	fprintf(fp,"%s","  6. Conveying Non-Source Forms.\n\n");
+
+	fprintf(fp,"%s","  You may convey a covered work in object code form under the terms\n");
+	fprintf(fp,"%s","of sections 4 and 5, provided that you also convey the\n");
+	fprintf(fp,"%s","machine-readable Corresponding Source under the terms of this License,\n");
+	fprintf(fp,"%s","in one of these ways:\n\n");
+
+	fprintf(fp,"%s","    a) Convey the object code in, or embodied in, a physical product\n");
+	fprintf(fp,"%s","    (including a physical distribution medium), accompanied by the\n");
+	fprintf(fp,"%s","    Corresponding Source fixed on a durable physical medium\n");
+	fprintf(fp,"%s","    customarily used for software interchange.\n\n");
+
+	fprintf(fp,"%s","    b) Convey the object code in, or embodied in, a physical product\n");
+	fprintf(fp,"%s","    (including a physical distribution medium), accompanied by a\n");
+	fprintf(fp,"%s","    written offer, valid for at least three years and valid for as\n");
+	fprintf(fp,"%s","    long as you offer spare parts or customer support for that product\n");
+	fprintf(fp,"%s","    model, to give anyone who possesses the object code either (1) a\n");
+	fprintf(fp,"%s","    copy of the Corresponding Source for all the software in the\n");
+	fprintf(fp,"%s","    product that is covered by this License, on a durable physical\n");
+	fprintf(fp,"%s","    medium customarily used for software interchange, for a price no\n");
+	fprintf(fp,"%s","    more than your reasonable cost of physically performing this\n");
+	fprintf(fp,"%s","    conveying of source, or (2) access to copy the\n");
+	fprintf(fp,"%s","    Corresponding Source from a network server at no charge.\n\n");
+
+	fprintf(fp,"%s","    c) Convey individual copies of the object code with a copy of the\n");
+	fprintf(fp,"%s","    written offer to provide the Corresponding Source.  This\n");
+	fprintf(fp,"%s","    alternative is allowed only occasionally and noncommercially, and\n");
+	fprintf(fp,"%s","    only if you received the object code with such an offer, in accord\n");
+	fprintf(fp,"%s","    with subsection 6b.\n\n");
+
+	fprintf(fp,"%s","    d) Convey the object code by offering access from a designated\n");
+	fprintf(fp,"%s","    place (gratis or for a charge), and offer equivalent access to the\n");
+	fprintf(fp,"%s","    Corresponding Source in the same way through the same place at no\n");
+	fprintf(fp,"%s","    further charge.  You need not require recipients to copy the\n");
+	fprintf(fp,"%s","    Corresponding Source along with the object code.  If the place to\n");
+	fprintf(fp,"%s","    copy the object code is a network server, the Corresponding Source\n");
+	fprintf(fp,"%s","    may be on a different server (operated by you or a third party)\n");
+	fprintf(fp,"%s","    that supports equivalent copying facilities, provided you maintain\n");
+	fprintf(fp,"%s","    clear directions next to the object code saying where to find the\n");
+	fprintf(fp,"%s","    Corresponding Source.  Regardless of what server hosts the\n");
+	fprintf(fp,"%s","    Corresponding Source, you remain obligated to ensure that it is\n");
+	fprintf(fp,"%s","    available for as long as needed to satisfy these requirements.\n\n");
+
+	fprintf(fp,"%s","    e) Convey the object code using peer-to-peer transmission, provided\n");
+	fprintf(fp,"%s","    you inform other peers where the object code and Corresponding\n");
+	fprintf(fp,"%s","    Source of the work are being offered to the general public at no\n");
+	fprintf(fp,"%s","    charge under subsection 6d.\n\n");
+
+	fprintf(fp,"%s","  A separable portion of the object code, whose source code is excluded\n");
+	fprintf(fp,"%s","from the Corresponding Source as a System Library, need not be\n");
+	fprintf(fp,"%s","included in conveying the object code work.\n\n");
+
+	fprintf(fp,"%s","  A \"User Product\" is either (1) a \"consumer product\", which means any\n");
+	fprintf(fp,"%s","tangible personal property which is normally used for personal, family,\n");
+	fprintf(fp,"%s","or household purposes, or (2) anything designed or sold for incorporation\n");
+	fprintf(fp,"%s","into a dwelling.  In determining whether a product is a consumer product,\n");
+	fprintf(fp,"%s","doubtful cases shall be resolved in favor of coverage.  For a particular\n");
+	fprintf(fp,"%s","product received by a particular user, \"normally used\" refers to a\n");
+	fprintf(fp,"%s","typical or common use of that class of product, regardless of the status\n");
+	fprintf(fp,"%s","of the particular user or of the way in which the particular user\n");
+	fprintf(fp,"%s","actually uses, or expects or is expected to use, the product.  A product\n");
+	fprintf(fp,"%s","is a consumer product regardless of whether the product has substantial\n");
+	fprintf(fp,"%s","commercial, industrial or non-consumer uses, unless such uses represent\n");
+	fprintf(fp,"%s","the only significant mode of use of the product.\n\n");
+
+	fprintf(fp,"%s","  \"Installation Information\" for a User Product means any methods,\n");
+	fprintf(fp,"%s","procedures, authorization keys, or other information required to install\n");
+	fprintf(fp,"%s","and execute modified versions of a covered work in that User Product from\n");
+	fprintf(fp,"%s","a modified version of its Corresponding Source.  The information must\n");
+	fprintf(fp,"%s","suffice to ensure that the continued functioning of the modified object\n");
+	fprintf(fp,"%s","code is in no case prevented or interfered with solely because\n");
+	fprintf(fp,"%s","modification has been made.\n\n");
+
+	fprintf(fp,"%s","  If you convey an object code work under this section in, or with, or\n");
+	fprintf(fp,"%s","specifically for use in, a User Product, and the conveying occurs as\n");
+	fprintf(fp,"%s","part of a transaction in which the right of possession and use of the\n");
+	fprintf(fp,"%s","User Product is transferred to the recipient in perpetuity or for a\n");
+	fprintf(fp,"%s","fixed term (regardless of how the transaction is characterized), the\n");
+	fprintf(fp,"%s","Corresponding Source conveyed under this section must be accompanied\n");
+	fprintf(fp,"%s","by the Installation Information.  But this requirement does not apply\n");
+	fprintf(fp,"%s","if neither you nor any third party retains the ability to install\n");
+	fprintf(fp,"%s","modified object code on the User Product (for example, the work has\n");
+	fprintf(fp,"%s","been installed in ROM).\n\n");
+
+	fprintf(fp,"%s","  The requirement to provide Installation Information does not include a\n");
+	fprintf(fp,"%s","requirement to continue to provide support service, warranty, or updates\n");
+	fprintf(fp,"%s","for a work that has been modified or installed by the recipient, or for\n");
+	fprintf(fp,"%s","the User Product in which it has been modified or installed.  Access to a\n");
+	fprintf(fp,"%s","network may be denied when the modification itself materially and\n");
+	fprintf(fp,"%s","adversely affects the operation of the network or violates the rules and\n");
+	fprintf(fp,"%s","protocols for communication across the network.\n\n");
+
+	fprintf(fp,"%s","  Corresponding Source conveyed, and Installation Information provided,\n");
+	fprintf(fp,"%s","in accord with this section must be in a format that is publicly\n");
+	fprintf(fp,"%s","documented (and with an implementation available to the public in\n");
+	fprintf(fp,"%s","source code form), and must require no special password or key for\n");
+	fprintf(fp,"%s","unpacking, reading or copying.\n\n");
+
+	fprintf(fp,"%s","  7. Additional Terms.\n\n");
+
+	fprintf(fp,"%s","  \"Additional permissions\" are terms that supplement the terms of this\n");
+	fprintf(fp,"%s","License by making exceptions from one or more of its conditions.\n");
+	fprintf(fp,"%s","Additional permissions that are applicable to the entire Program shall\n");
+	fprintf(fp,"%s","be treated as though they were included in this License, to the extent\n");
+	fprintf(fp,"%s","that they are valid under applicable law.  If additional permissions\n");
+	fprintf(fp,"%s","apply only to part of the Program, that part may be used separately\n");
+	fprintf(fp,"%s","under those permissions, but the entire Program remains governed by\n");
+	fprintf(fp,"%s","this License without regard to the additional permissions.\n\n");
+
+	fprintf(fp,"%s","  When you convey a copy of a covered work, you may at your option\n");
+	fprintf(fp,"%s","remove any additional permissions from that copy, or from any part of\n");
+	fprintf(fp,"%s","it.  (Additional permissions may be written to require their own\n");
+	fprintf(fp,"%s","removal in certain cases when you modify the work.)  You may place\n");
+	fprintf(fp,"%s","additional permissions on material, added by you to a covered work,\n");
+	fprintf(fp,"%s","for which you have or can give appropriate copyright permission.\n\n");
+
+	fprintf(fp,"%s","  Notwithstanding any other provision of this License, for material you\n");
+	fprintf(fp,"%s","add to a covered work, you may (if authorized by the copyright holders of\n");
+	fprintf(fp,"%s","that material) supplement the terms of this License with terms:\n\n");
+
+	fprintf(fp,"%s","    a) Disclaiming warranty or limiting liability differently from the\n");
+	fprintf(fp,"%s","    terms of sections 15 and 16 of this License; or\n\n");
+
+	fprintf(fp,"%s","    b) Requiring preservation of specified reasonable legal notices or\n");
+	fprintf(fp,"%s","    author attributions in that material or in the Appropriate Legal\n");
+	fprintf(fp,"%s","    Notices displayed by works containing it; or\n\n");
+
+	fprintf(fp,"%s","    c) Prohibiting misrepresentation of the origin of that material, or\n");
+	fprintf(fp,"%s","    requiring that modified versions of such material be marked in\n");
+	fprintf(fp,"%s","    reasonable ways as different from the original version; or\n\n");
+
+	fprintf(fp,"%s","    d) Limiting the use for publicity purposes of names of licensors or\n");
+	fprintf(fp,"%s","    authors of the material; or\n\n");
+
+	fprintf(fp,"%s","    e) Declining to grant rights under trademark law for use of some\n");
+	fprintf(fp,"%s","    trade names, trademarks, or service marks; or\n\n");
+
+	fprintf(fp,"%s","    f) Requiring indemnification of licensors and authors of that\n");
+	fprintf(fp,"%s","    material by anyone who conveys the material (or modified versions of\n");
+	fprintf(fp,"%s","    it) with contractual assumptions of liability to the recipient, for\n");
+	fprintf(fp,"%s","    any liability that these contractual assumptions directly impose on\n");
+	fprintf(fp,"%s","    those licensors and authors.\n\n");
+
+	fprintf(fp,"%s","  All other non-permissive additional terms are considered \"further\n");
+	fprintf(fp,"%s","restrictions\" within the meaning of section 10.  If the Program as you\n");
+	fprintf(fp,"%s","received it, or any part of it, contains a notice stating that it is\n");
+	fprintf(fp,"%s","governed by this License along with a term that is a further\n");
+	fprintf(fp,"%s","restriction, you may remove that term.  If a license document contains\n");
+	fprintf(fp,"%s","a further restriction but permits relicensing or conveying under this\n");
+	fprintf(fp,"%s","License, you may add to a covered work material governed by the terms\n");
+	fprintf(fp,"%s","of that license document, provided that the further restriction does\n");
+	fprintf(fp,"%s","not survive such relicensing or conveying.\n\n");
+
+	fprintf(fp,"%s","  If you add terms to a covered work in accord with this section, you\n");
+	fprintf(fp,"%s","must place, in the relevant source files, a statement of the\n");
+	fprintf(fp,"%s","additional terms that apply to those files, or a notice indicating\n");
+	fprintf(fp,"%s","where to find the applicable terms.\n\n");
+
+	fprintf(fp,"%s","  Additional terms, permissive or non-permissive, may be stated in the\n");
+	fprintf(fp,"%s","form of a separately written license, or stated as exceptions;\n");
+	fprintf(fp,"%s","the above requirements apply either way.\n\n");
+
+	fprintf(fp,"%s","  8. Termination.\n\n");
+
+	fprintf(fp,"%s","  You may not propagate or modify a covered work except as expressly\n");
+	fprintf(fp,"%s","provided under this License.  Any attempt otherwise to propagate or\n");
+	fprintf(fp,"%s","modify it is void, and will automatically terminate your rights under\n");
+	fprintf(fp,"%s","this License (including any patent licenses granted under the third\n");
+	fprintf(fp,"%s","paragraph of section 11).\n\n");
+
+	fprintf(fp,"%s","  However, if you cease all violation of this License, then your\n");
+	fprintf(fp,"%s","license from a particular copyright holder is reinstated (a)\n");
+	fprintf(fp,"%s","provisionally, unless and until the copyright holder explicitly and\n");
+	fprintf(fp,"%s","finally terminates your license, and (b) permanently, if the copyright\n");
+	fprintf(fp,"%s","holder fails to notify you of the violation by some reasonable means\n");
+	fprintf(fp,"%s","prior to 60 days after the cessation.\n\n");
+
+	fprintf(fp,"%s","  Moreover, your license from a particular copyright holder is\n");
+	fprintf(fp,"%s","reinstated permanently if the copyright holder notifies you of the\n");
+	fprintf(fp,"%s","violation by some reasonable means, this is the first time you have\n");
+	fprintf(fp,"%s","received notice of violation of this License (for any work) from that\n");
+	fprintf(fp,"%s","copyright holder, and you cure the violation prior to 30 days after\n");
+	fprintf(fp,"%s","your receipt of the notice.\n\n");
+
+	fprintf(fp,"%s","  Termination of your rights under this section does not terminate the\n");
+	fprintf(fp,"%s","licenses of parties who have received copies or rights from you under\n");
+	fprintf(fp,"%s","this License.  If your rights have been terminated and not permanently\n");
+	fprintf(fp,"%s","reinstated, you do not qualify to receive new licenses for the same\n");
+	fprintf(fp,"%s","material under section 10.\n\n");
+
+	fprintf(fp,"%s","  9. Acceptance Not Required for Having Copies.\n\n");
+
+	fprintf(fp,"%s","  You are not required to accept this License in order to receive or\n");
+	fprintf(fp,"%s","run a copy of the Program.  Ancillary propagation of a covered work\n");
+	fprintf(fp,"%s","occurring solely as a consequence of using peer-to-peer transmission\n");
+	fprintf(fp,"%s","to receive a copy likewise does not require acceptance.  However,\n");
+	fprintf(fp,"%s","nothing other than this License grants you permission to propagate or\n");
+	fprintf(fp,"%s","modify any covered work.  These actions infringe copyright if you do\n");
+	fprintf(fp,"%s","not accept this License.  Therefore, by modifying or propagating a\n");
+	fprintf(fp,"%s","covered work, you indicate your acceptance of this License to do so.\n\n");
+
+	fprintf(fp,"%s","  10. Automatic Licensing of Downstream Recipients.\n\n");
+
+	fprintf(fp,"%s","  Each time you convey a covered work, the recipient automatically\n");
+	fprintf(fp,"%s","receives a license from the original licensors, to run, modify and\n");
+	fprintf(fp,"%s","propagate that work, subject to this License.  You are not responsible\n");
+	fprintf(fp,"%s","for enforcing compliance by third parties with this License.\n\n");
+
+	fprintf(fp,"%s","  An \"entity transaction\" is a transaction transferring control of an\n");
+	fprintf(fp,"%s","organization, or substantially all assets of one, or subdividing an\n");
+	fprintf(fp,"%s","organization, or merging organizations.  If propagation of a covered\n");
+	fprintf(fp,"%s","work results from an entity transaction, each party to that\n");
+	fprintf(fp,"%s","transaction who receives a copy of the work also receives whatever\n");
+	fprintf(fp,"%s","licenses to the work the party's predecessor in interest had or could\n");
+	fprintf(fp,"%s","give under the previous paragraph, plus a right to possession of the\n");
+	fprintf(fp,"%s","Corresponding Source of the work from the predecessor in interest, if\n");
+	fprintf(fp,"%s","the predecessor has it or can get it with reasonable efforts.\n\n");
+
+	fprintf(fp,"%s","  You may not impose any further restrictions on the exercise of the\n");
+	fprintf(fp,"%s","rights granted or affirmed under this License.  For example, you may\n");
+	fprintf(fp,"%s","not impose a license fee, royalty, or other charge for exercise of\n");
+	fprintf(fp,"%s","rights granted under this License, and you may not initiate litigation\n");
+	fprintf(fp,"%s","(including a cross-claim or counterclaim in a lawsuit) alleging that\n");
+	fprintf(fp,"%s","any patent claim is infringed by making, using, selling, offering for\n");
+	fprintf(fp,"%s","sale, or importing the Program or any portion of it.\n\n");
+
+	fprintf(fp,"%s","  11. Patents.\n\n");
+
+	fprintf(fp,"%s","  A \"contributor\" is a copyright holder who authorizes use under this\n");
+	fprintf(fp,"%s","License of the Program or a work on which the Program is based.  The\n");
+	fprintf(fp,"%s","work thus licensed is called the contributor's \"contributor version\".\n\n");
+
+	fprintf(fp,"%s","  A contributor's \"essential patent claims\" are all patent claims\n");
+	fprintf(fp,"%s","owned or controlled by the contributor, whether already acquired or\n");
+	fprintf(fp,"%s","hereafter acquired, that would be infringed by some manner, permitted\n");
+	fprintf(fp,"%s","by this License, of making, using, or selling its contributor version,\n");
+	fprintf(fp,"%s","but do not include claims that would be infringed only as a\n");
+	fprintf(fp,"%s","consequence of further modification of the contributor version.  For\n");
+	fprintf(fp,"%s","purposes of this definition, \"control\" includes the right to grant\n");
+	fprintf(fp,"%s","patent sublicenses in a manner consistent with the requirements of\n");
+	fprintf(fp,"%s","this License.\n\n");
+
+	fprintf(fp,"%s","  Each contributor grants you a non-exclusive, worldwide, royalty-free\n");
+	fprintf(fp,"%s","patent license under the contributor's essential patent claims, to\n");
+	fprintf(fp,"%s","make, use, sell, offer for sale, import and otherwise run, modify and\n");
+	fprintf(fp,"%s","propagate the contents of its contributor version.\n\n");
+
+	fprintf(fp,"%s","  In the following three paragraphs, a \"patent license\" is any express\n");
+	fprintf(fp,"%s","agreement or commitment, however denominated, not to enforce a patent\n");
+	fprintf(fp,"%s","(such as an express permission to practice a patent or covenant not to\n");
+	fprintf(fp,"%s","sue for patent infringement).  To \"grant\" such a patent license to a\n");
+	fprintf(fp,"%s","party means to make such an agreement or commitment not to enforce a\n");
+	fprintf(fp,"%s","patent against the party.\n\n");
+
+	fprintf(fp,"%s","  If you convey a covered work, knowingly relying on a patent license,\n");
+	fprintf(fp,"%s","and the Corresponding Source of the work is not available for anyone\n");
+	fprintf(fp,"%s","to copy, free of charge and under the terms of this License, through a\n");
+	fprintf(fp,"%s","publicly available network server or other readily accessible means,\n");
+	fprintf(fp,"%s","then you must either (1) cause the Corresponding Source to be so\n");
+	fprintf(fp,"%s","available, or (2) arrange to deprive yourself of the benefit of the\n");
+	fprintf(fp,"%s","patent license for this particular work, or (3) arrange, in a manner\n");
+	fprintf(fp,"%s","consistent with the requirements of this License, to extend the patent\n");
+	fprintf(fp,"%s","license to downstream recipients.  \"Knowingly relying\" means you have\n");
+	fprintf(fp,"%s","actual knowledge that, but for the patent license, your conveying the\n");
+	fprintf(fp,"%s","covered work in a country, or your recipient's use of the covered work\n");
+	fprintf(fp,"%s","in a country, would infringe one or more identifiable patents in that\n");
+	fprintf(fp,"%s","country that you have reason to believe are valid.\n\n");
+
+	fprintf(fp,"%s","  If, pursuant to or in connection with a single transaction or\n");
+	fprintf(fp,"%s","arrangement, you convey, or propagate by procuring conveyance of, a\n");
+	fprintf(fp,"%s","covered work, and grant a patent license to some of the parties\n");
+	fprintf(fp,"%s","receiving the covered work authorizing them to use, propagate, modify\n");
+	fprintf(fp,"%s","or convey a specific copy of the covered work, then the patent license\n");
+	fprintf(fp,"%s","you grant is automatically extended to all recipients of the covered\n");
+	fprintf(fp,"%s","work and works based on it.\n\n");
+
+	fprintf(fp,"%s","  A patent license is \"discriminatory\" if it does not include within\n");
+	fprintf(fp,"%s","the scope of its coverage, prohibits the exercise of, or is\n");
+	fprintf(fp,"%s","conditioned on the non-exercise of one or more of the rights that are\n");
+	fprintf(fp,"%s","specifically granted under this License.  You may not convey a covered\n");
+	fprintf(fp,"%s","work if you are a party to an arrangement with a third party that is\n");
+	fprintf(fp,"%s","in the business of distributing software, under which you make payment\n");
+	fprintf(fp,"%s","to the third party based on the extent of your activity of conveying\n");
+	fprintf(fp,"%s","the work, and under which the third party grants, to any of the\n");
+	fprintf(fp,"%s","parties who would receive the covered work from you, a discriminatory\n");
+	fprintf(fp,"%s","patent license (a) in connection with copies of the covered work\n");
+	fprintf(fp,"%s","conveyed by you (or copies made from those copies), or (b) primarily\n");
+	fprintf(fp,"%s","for and in connection with specific products or compilations that\n");
+	fprintf(fp,"%s","contain the covered work, unless you entered into that arrangement,\n");
+	fprintf(fp,"%s","or that patent license was granted, prior to 28 March 2007.\n\n");
+
+	fprintf(fp,"%s","  Nothing in this License shall be construed as excluding or limiting\n");
+	fprintf(fp,"%s","any implied license or other defenses to infringement that may\n");
+	fprintf(fp,"%s","otherwise be available to you under applicable patent law.\n\n");
+
+	fprintf(fp,"%s","  12. No Surrender of Others' Freedom.\n\n");
+
+	fprintf(fp,"%s","  If conditions are imposed on you (whether by court order, agreement or\n");
+	fprintf(fp,"%s","otherwise) that contradict the conditions of this License, they do not\n");
+	fprintf(fp,"%s","excuse you from the conditions of this License.  If you cannot convey a\n");
+	fprintf(fp,"%s","covered work so as to satisfy simultaneously your obligations under this\n");
+	fprintf(fp,"%s","License and any other pertinent obligations, then as a consequence you may\n");
+	fprintf(fp,"%s","not convey it at all.  For example, if you agree to terms that obligate you\n");
+	fprintf(fp,"%s","to collect a royalty for further conveying from those to whom you convey\n");
+	fprintf(fp,"%s","the Program, the only way you could satisfy both those terms and this\n");
+	fprintf(fp,"%s","License would be to refrain entirely from conveying the Program.\n\n");
+
+	fprintf(fp,"%s","  13. Remote Network Interaction; Use with the GNU General Public License.\n\n");
+
+	fprintf(fp,"%s","  Notwithstanding any other provision of this License, if you modify the\n");
+	fprintf(fp,"%s","Program, your modified version must prominently offer all users\n");
+	fprintf(fp,"%s","interacting with it remotely through a computer network (if your version\n");
+	fprintf(fp,"%s","supports such interaction) an opportunity to receive the Corresponding\n");
+	fprintf(fp,"%s","Source of your version by providing access to the Corresponding Source\n");
+	fprintf(fp,"%s","from a network server at no charge, through some standard or customary\n");
+	fprintf(fp,"%s","means of facilitating copying of software.  This Corresponding Source\n");
+	fprintf(fp,"%s","shall include the Corresponding Source for any work covered by version 3\n");
+	fprintf(fp,"%s","of the GNU General Public License that is incorporated pursuant to the\n");
+	fprintf(fp,"%s","following paragraph.\n\n");
+
+	fprintf(fp,"%s","  Notwithstanding any other provision of this License, you have\n");
+	fprintf(fp,"%s","permission to link or combine any covered work with a work licensed\n");
+	fprintf(fp,"%s","under version 3 of the GNU General Public License into a single\n");
+	fprintf(fp,"%s","combined work, and to convey the resulting work.  The terms of this\n");
+	fprintf(fp,"%s","License will continue to apply to the part which is the covered work,\n");
+	fprintf(fp,"%s","but the work with which it is combined will remain governed by version\n");
+	fprintf(fp,"%s","3 of the GNU General Public License.\n\n");
+
+	fprintf(fp,"%s","  14. Revised Versions of this License.\n\n");
+
+	fprintf(fp,"%s","  The Free Software Foundation may publish revised and/or new versions of\n");
+	fprintf(fp,"%s","the GNU Affero General Public License from time to time.  Such new versions\n");
+	fprintf(fp,"%s","will be similar in spirit to the present version, but may differ in detail to\n");
+	fprintf(fp,"%s","address new problems or concerns.\n\n");
+
+	fprintf(fp,"%s","  Each version is given a distinguishing version number.  If the\n");
+	fprintf(fp,"%s","Program specifies that a certain numbered version of the GNU Affero General\n");
+	fprintf(fp,"%s","Public License \"or any later version\" applies to it, you have the\n");
+	fprintf(fp,"%s","option of following the terms and conditions either of that numbered\n");
+	fprintf(fp,"%s","version or of any later version published by the Free Software\n");
+	fprintf(fp,"%s","Foundation.  If the Program does not specify a version number of the\n");
+	fprintf(fp,"%s","GNU Affero General Public License, you may choose any version ever published\n");
+	fprintf(fp,"%s","by the Free Software Foundation.\n\n");
+
+	fprintf(fp,"%s","  If the Program specifies that a proxy can decide which future\n");
+	fprintf(fp,"%s","versions of the GNU Affero General Public License can be used, that proxy's\n");
+	fprintf(fp,"%s","public statement of acceptance of a version permanently authorizes you\n");
+	fprintf(fp,"%s","to choose that version for the Program.\n\n");
+
+	fprintf(fp,"%s","  Later license versions may give you additional or different\n");
+	fprintf(fp,"%s","permissions.  However, no additional obligations are imposed on any\n");
+	fprintf(fp,"%s","author or copyright holder as a result of your choosing to follow a\n");
+	fprintf(fp,"%s","later version.\n\n");
+
+	fprintf(fp,"%s","  15. Disclaimer of Warranty.\n\n");
+
+	fprintf(fp,"%s","  THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY\n");
+	fprintf(fp,"%s","APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT\n");
+	fprintf(fp,"%s","HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY\n");
+	fprintf(fp,"%s","OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO,\n");
+	fprintf(fp,"%s","THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR\n");
+	fprintf(fp,"%s","PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM\n");
+	fprintf(fp,"%s","IS WITH YOU.  SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF\n");
+	fprintf(fp,"%s","ALL NECESSARY SERVICING, REPAIR OR CORRECTION.\n\n");
+
+	fprintf(fp,"%s","  16. Limitation of Liability.\n\n");
+
+	fprintf(fp,"%s","  IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n");
+	fprintf(fp,"%s","WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS\n");
+	fprintf(fp,"%s","THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY\n");
+	fprintf(fp,"%s","GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE\n");
+	fprintf(fp,"%s","USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF\n");
+	fprintf(fp,"%s","DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD\n");
+	fprintf(fp,"%s","PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS),\n");
+	fprintf(fp,"%s","EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF\n");
+	fprintf(fp,"%s","SUCH DAMAGES.\n\n");
+
+	fprintf(fp,"%s","  17. Interpretation of Sections 15 and 16.\n\n");
+
+	fprintf(fp,"%s","  If the disclaimer of warranty and limitation of liability provided\n");
+	fprintf(fp,"%s","above cannot be given local legal effect according to their terms,\n");
+	fprintf(fp,"%s","reviewing courts shall apply local law that most closely approximates\n");
+	fprintf(fp,"%s","an absolute waiver of all civil liability in connection with the\n");
+	fprintf(fp,"%s","Program, unless a warranty or assumption of liability accompanies a\n");
+	fprintf(fp,"%s","copy of the Program in return for a fee.\n");
+
+	fclose(fp);
+}
+
 /* saves a LICENSE file for Mozilla */
 static void save_license_mozilla(char * filename)
 {
@@ -2124,6 +3059,8 @@ int valid_license(char * license)
 		(strcmp(license,"lgpl2")==0) ||
 		(strcmp(license,"gpl3")==0) ||
 		(strcmp(license,"lgpl3")==0) ||
+		(strcmp(license,"agpl")==0) ||
+		(strcmp(license,"agpl3")==0) ||
 		(strcmp(license,"mit")==0) ||
 		(strcmp(license,"bsd")==0) ||
 		(strcmp(license,"apache")==0) ||
@@ -2168,6 +3105,14 @@ int save_license(char * directory)
 	}
 	if (strcmp(license,"lgpl3")==0) {
 		save_license_lgpl3(filename);
+		return 0;
+	}
+	if (strcmp(license,"agpl")==0) {
+		save_license_agpl1(filename);
+		return 0;
+	}
+	if (strcmp(license,"agpl3")==0) {
+		save_license_agpl3(filename);
 		return 0;
 	}
 	if (strcmp(license,"mit")==0) {

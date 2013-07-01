@@ -520,7 +520,8 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	/* convert license to upper case */
-	if (strcmp(license,"mozilla")!=0) {
+	if ((strcmp(license,"mozilla")!=0) &&
+		(strcmp(license,"apache")!=0)) {
 		for (i = 0; i < strlen(license); i++) {
 			license[i] = toupper(license[i]);
 		}

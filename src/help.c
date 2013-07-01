@@ -34,8 +34,9 @@ void show_help()
 	printf("     --compile <args>           " \
 		   "Additional arguments to add to the compilation\n");
 	printf(" -l  --license <type>           " \
-		   "The license type (gpl2|gpl3|lgpl2|lgpl3|mit|" \
-		   "bsd|apache|mozilla)\n");
+		   "The license type (gpl2|gpl3|lgpl2|lgpl3|agpl|\n" \
+		   "                                " \
+		   "agpl3|mit|bsd|apache|mozilla)\n");
 	printf(" -e  --email <address>          " \
 		   "Set full name and email address\n");
 	printf("     --brief <description>      " \

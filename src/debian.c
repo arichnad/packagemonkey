@@ -181,6 +181,7 @@ int debian_valid_section(char * section)
 	return 1;
 }
 
+/* saves the compat file */
 static void save_compat()
 {
 	FILE * fp;
@@ -548,6 +549,125 @@ static int save_copyright_lgpl3(char * filename)
 	return 0;
 }
 
+/* AGPL version 1 copyright file */
+static int save_copyright_agpl1(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: AGPL-1.0\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: AGPL-1.0\n\n");
+
+	fprintf(fp,"%s","License: AGPL-1.0\n");
+	fprintf(fp,"%s"," This program is free software: you can redistribute it and/or modify\n");
+	fprintf(fp,"%s"," it under the terms of the Affero General Public License as\n");
+	fprintf(fp,"%s"," published by Affero, Inc.\n\n");
+
+	fprintf(fp,"%s"," This program is distributed in the hope that it will be useful,\n");
+	fprintf(fp,"%s"," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	fprintf(fp,"%s"," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	fprintf(fp,"%s"," GNU Affero General Public License for more details.\n\n");
+
+	fprintf(fp,"%s"," You should have received a copy of the Affero General Public License\n");
+	fprintf(fp,"%s"," along with this program.  If not, see <http://www.affero.org/oagpl.html>.\n");
+
+	fclose(fp);
+	return 0;
+}
+
+/* AGPL version 3 copyright file */
+static int save_copyright_agpl3(char * filename)
+{
+	FILE * fp;
+	char email_address[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char vcs_browser[BLOCK_SIZE];
+	time_t rawtime;
+	struct tm * timeinfo;
+	int year;
+
+	/* get the current year */
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	year = timeinfo->tm_year + 1900;
+
+	email_address[0]=0;
+	project_name[0]=0;
+    vcs_browser[0]=0;
+
+	get_setting("email", email_address);
+	get_setting("project", project_name);
+	get_setting("vcs browser", vcs_browser);
+
+	fp = fopen(filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"Format: http://www.debian.org/doc/" \
+			"packaging-manuals/copyright-format/1.0/\n");
+	fprintf(fp,"Upstream-Name: %s\n",project_name);
+	fprintf(fp,"Source: %s\n\n",vcs_browser);
+
+	fprintf(fp,"Files: *\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: AGPL-3.0+\n\n");
+
+	fprintf(fp,"Files: debian/*\n");
+	fprintf(fp,"Copyright: Copyright %d %s\n",
+			year,email_address);
+	fprintf(fp,"%s","License: AGPL-3.0+\n\n");
+
+	fprintf(fp,"%s","License: AGPL-3.0+\n");
+	fprintf(fp,"%s"," This program is free software: you can redistribute it and/or modify\n");
+	fprintf(fp,"%s"," it under the terms of the GNU Affero General Public License as\n");
+	fprintf(fp,"%s"," published by the Free Software Foundation, either version 3 of the\n");
+	fprintf(fp,"%s"," License, or (at your option) any later version.\n\n");
+
+	fprintf(fp,"%s"," This program is distributed in the hope that it will be useful,\n");
+	fprintf(fp,"%s"," but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+	fprintf(fp,"%s"," MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+	fprintf(fp,"%s"," GNU Affero General Public License for more details.\n\n");
+
+	fprintf(fp,"%s"," You should have received a copy of the GNU Affero General Public License\n");
+	fprintf(fp,"%s"," along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");
+
+	fclose(fp);
+	return 0;
+}
+
 /* BSD version of the copyright file */
 static int save_copyright_bsd(char * filename)
 {
@@ -878,6 +998,16 @@ static int save_copyright(char * directory)
 	/* LGPL version 3 */
 	if (strstr(license,"lgpl3") != NULL) {
 		return save_copyright_lgpl3(filename);
+	}
+
+	/* AGPL version 1 */
+	if (strstr(license,"agpl") != NULL) {
+		return save_copyright_agpl1(filename);
+	}
+
+	/* AGPL version 3 */
+	if (strstr(license,"agpl3") != NULL) {
+		return save_copyright_agpl3(filename);
 	}
 
 	/* BSD */
