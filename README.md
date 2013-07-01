@@ -3,6 +3,8 @@ packagemonkey
 
 <b>A tool to make packaging easier</b>
 
+<img src="https://github.com/fuzzgun/packagemonkey/blob/master/img/packagemonkey320.png">
+
 Description
 -----------
 
