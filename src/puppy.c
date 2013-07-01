@@ -99,6 +99,26 @@ static int save_spec(char * directory)
 	return 0;
 }
 
+/* Takes an absolute path/filename and returns the
+   relative path/filename to the project directory.
+   This avoids having hardcoded absolute paths in
+   the script */
+static void relative_install_path(char * filename,
+								  char * relative)
+{
+	char binaries[BLOCK_SIZE];
+	char str[BLOCK_SIZE];
+	char * rel;
+
+	get_setting("binaries",binaries);
+	sprintf(str,"/%s/",binaries);
+	rel = strstr(filename,str);
+	if (rel == NULL) {
+		sprintf(relative,"%s",filename);
+		return;
+	}
+	sprintf(relative,"%s",&rel[1]);
+}
 
 static int save_script(char * directory,
 					   char * xpm_filename)
@@ -115,6 +135,7 @@ static int save_script(char * directory,
 	char commandline[BLOCK_SIZE];
 	char free_main_category[BLOCK_SIZE];
 	char free_additional_category[BLOCK_SIZE];
+	char relative_xpm_filename[BLOCK_SIZE];
 	FILE * fp;
 
 	get_setting("project name",project_name);
@@ -179,19 +200,20 @@ static int save_script(char * directory,
 	}
 
 	/* create puppy-specific directories */
-	fprintf(fp,"%s","\n# create directories specific to puppy\n");
+	fprintf(fp,"%s","\n# Create directories specific to puppy\n");
 	fprintf(fp,"%s ${PROJECTDIR}/usr\n", COMMAND_MKDIR);
 	fprintf(fp,"%s ${PROJECTDIR}/usr/local\n", COMMAND_MKDIR);
 	fprintf(fp,"%s ${PROJECTDIR}/usr/local/bin\n", COMMAND_MKDIR);
 
 	/* copy puppy specific files */
-	fprintf(fp,"%s","\n# copy anything in /usr/bin into /usr/local/bin\n");
+	fprintf(fp,"%s","\n# Copy anything in /usr/bin into /usr/local/bin\n");
 	fprintf(fp,"%s ${PROJECTDIR}/usr/bin/* ${PROJECTDIR}/usr/local/bin/\n", COMMAND_COPY);
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");
-	fprintf(fp,"%s %s%c${APP}-${VERSION}.pet.specs ${PROJECTDIR}\n",
+	fprintf(fp,"%s ${CURRDIR}%c%s%c${APP}-${VERSION}.pet.specs ${PROJECTDIR}\n",
 			COMMAND_COPY,
+			DIRECTORY_SEPARATOR,
 			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
 	/* copy the xpm mini icon */
@@ -199,15 +221,22 @@ static int save_script(char * directory,
 		fprintf(fp,"%s",
 				"\n# Copy the XPM mini icon into the build directory\n");
 		if (strlen(xpm_filename) > 0) {
-			fprintf(fp,"%s %s ${PROJECTDIR}%c%s.xpm\n",
-					COMMAND_COPY, xpm_filename,
+			/* get the relative path/filename for the XPM file */
+			relative_install_path(xpm_filename,
+								  relative_xpm_filename);
+
+			fprintf(fp,"%s ${CURRDIR}%c%s ${PROJECTDIR}%c%s.xpm\n",
+					COMMAND_COPY,
+					DIRECTORY_SEPARATOR,
+					relative_xpm_filename,
 					DIRECTORY_SEPARATOR,
 					project_name);
 		}
 		else {
-			fprintf(fp,"%s %s%c*.xpm ${PROJECTDIR}\n",
+			fprintf(fp,"%s ${CURRDIR}%c%s%c*.xpm ${PROJECTDIR}\n",
 					COMMAND_COPY,
-					directory, DIRECTORY_SEPARATOR);
+					DIRECTORY_SEPARATOR,
+					PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 		}
 	}
 
