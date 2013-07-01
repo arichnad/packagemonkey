@@ -23,61 +23,63 @@ void show_help()
 	printf("%s v%s - because packaging is harder than " \
 		   "it needs to be\n\n", PROJECT_NAME, VERSION);
 
-	printf(" -n  --name <project name>     " \
+	printf(" -n  --name <project name>      " \
 		   "The full name or title of the project\n");
-	printf(" -d  --dir <directory>         " \
+	printf(" -d  --dir <directory>          " \
 		   "Directory of the project to be packaged\n");
-	printf(" -c  --cmd                     " \
+	printf(" -c  --cmd                      " \
 		   "Used to indicate this is a command line project\n");
-	printf(" -b  --binaries <files>        " \
+	printf(" -b  --binaries <files>         " \
 		   "Directory containing binaries to be packaged\n");
-	printf("     --compile <args>          " \
+	printf("     --compile <args>           " \
 		   "Additional arguments to add to the compilation\n");
-	printf(" -l  --license <type>          " \
+	printf(" -l  --license <type>           " \
 		   "The license type (gpl2|gpl3|lgpl2|lgpl3|mit|" \
 		   "bsd|apache|mozilla)\n");
-	printf(" -e  --email <address>         " \
+	printf(" -e  --email <address>          " \
 		   "Set full name and email address\n");
-	printf("     --brief <description>     " \
+	printf("     --brief <description>      " \
 		   "A brief one line description of the project\n");
-	printf("     --desc <description>      " \
+	printf("     --desc <description>       " \
 		   "A full description of the project\n");
-	printf("     --homepage <url>          " \
+	printf("     --homepage <url>           " \
 		   "URL of the project home page\n");
-	printf("     --src <url>          " \
+	printf("     --src <url>                " \
 		   "URL of the compressed source code\n");
-	printf("     --section <sections>      " \
+	printf("     --section <sections>       " \
 		   "Debian sections\n");
-	printf("     --categories <cat>        " \
+	printf("     --categories <cat>         " \
 		   ".desktop file categories\n");
-	printf("     --dependsdeb <packages>   " \
+	printf(" -m  --mime <types>             " \
+		   "Mime types which the project can handle\n");
+	printf("     --dependsdeb <packages>    " \
 		   "Deb packages which the project depends upon\n");
-	printf("     --builddeb <packages>     " \
+	printf("     --builddeb <packages>      " \
 		   "Deb packages required to build the project\n");
-	printf("     --dependsrpm <packages>   " \
+	printf("     --dependsrpm <packages>    " \
 		   "RPM packages which the project depends upon\n");
 	printf("     --dependsarch <packages>   " \
 		   "Arch packages which the project depends upon\n");
-	printf("     --dependspuppy <packages>   " \
+	printf("     --dependspuppy <packages>  " \
 		   "Puppy packages which the project depends upon\n");
-	printf("     --dependsebuild <packages>   " \
+	printf("     --dependsebuild <packages> " \
 		   "Ebuild packages which the project depends upon\n");
-	printf("     --buildrpm <packages>     " \
+	printf("     --buildrpm <packages>      " \
 		   "RPM packages required to build the project\n");
 	printf("     --buildarch <packages>     " \
 		   "Arch packages required to build the project\n");
-	printf("     --list-sections           " \
+	printf("     --list-sections            " \
 		   "List the possible Debian sections\n");
-	printf("     --list-desktop            " \
+	printf("     --list-desktop             " \
 		   "List the possible desktop file categories\n");
-	printf("     --debian <version>        " \
+	printf("     --debian <version>         " \
 		   "Set the Debian version\n");
-	printf(" -t  --tests                   " \
+	printf(" -t  --tests                    " \
 		   "Run unit tests\n");
-	printf(" -v  --version                 " \
+	printf(" -v  --version                  " \
 		   "Show or set the project version number\n");
-	printf(" -r  --release                 " \
+	printf(" -r  --release                  " \
 		   "Set the project release number\n");
-	printf(" -h  --help                    " \
+	printf(" -h  --help                     " \
 		   "Show help\n");
 }

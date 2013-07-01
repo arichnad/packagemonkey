@@ -142,6 +142,9 @@ Debian sections.
 <b>--categories [cat]</b><br>
 desktop file categories.
 
+<b>-m, --mime [types]</b><br>
+Mime types which the project can handle.
+
 <b>--dependsdeb [packages]</b><br>
 Deb packages which the project depends upon.
 

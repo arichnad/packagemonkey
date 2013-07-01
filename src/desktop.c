@@ -449,7 +449,9 @@ int save_desktop()
 	char category_main[BLOCK_SIZE];
 	char category_additional[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
-	int retval=0;
+	char mimetypes[BLOCK_SIZE];
+	char * mimetypeslist[MAX_FILES];
+	int no_of_mime_types=0, i, retval=0;
 
 	/* if this is a command line project then we don't
 	   need desktop files */
@@ -461,6 +463,14 @@ int save_desktop()
 	get_setting("project full name",project_full_name);
 	get_setting("description brief",description_brief);
 	get_setting("categories",desktop_categories);
+	get_setting("mime types",mimetypes);
+
+	/* get a list of Mime types */
+	if (strlen(mimetypes) > 0) {
+		no_of_mime_types =
+			separate_files(mimetypes,
+						   mimetypeslist, MAX_FILES);
+	}
 
 	/* create a desktop directory */
 	sprintf(desktopdir,"%s%cdesktop",
@@ -486,9 +496,19 @@ int save_desktop()
 		fprintf(fp,"Name=%s\n",project_full_name);
 		fprintf(fp,"GenericName=%s\n",project_full_name);
 		fprintf(fp,"Comment=%s\n",description_brief);
-		fprintf(fp,"Exec=%s %%U\n",project_name);
+		fprintf(fp,"Exec=%s %%F\n",project_name);
 		fprintf(fp,"Icon=%s\n",project_name);
 		fprintf(fp,"Terminal=false\n");
+
+		if (no_of_mime_types > 0) {
+			fprintf(fp,"%s","MimeType=");
+			for (i = 0; i < no_of_mime_types; i++) {
+				fprintf(fp,"%s;",mimetypeslist[i]);
+				free(mimetypeslist[i]);
+			}
+			fprintf(fp,"%s","\n");
+		}
+
 		if (strlen(desktop_categories) == 0) {
 			fprintf(fp,"Categories=Utility;\n");
 		}

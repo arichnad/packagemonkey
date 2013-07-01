@@ -119,6 +119,7 @@ int main(int argc, char* argv[])
 	add_setting("build arch","");
 	add_setting("source package", "");
 	add_setting("project full name", "");
+	add_setting("mime types","");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -154,6 +155,19 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No release number given\n");
+			}
+		}
+		/* mime types */
+		if ((strcmp(argv[i],"-m")==0) ||
+			(strcmp(argv[i],"--mime")==0) ||
+			(strcmp(argv[i],"--mimetype")==0) ||
+			(strcmp(argv[i],"--mimetypes")==0)) {
+			i++;
+			if (i < argc) {
+				add_setting("mime types", argv[i]);
+			}
+			else {
+				printf("No Mime types given\n");
 			}
 		}
 		/* Full project name */
