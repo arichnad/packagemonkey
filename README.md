@@ -8,7 +8,7 @@ Description
 
 Creating installable packages for Linux distros has always been a bit of a black art.  There is a lot of documentation out there and it's often voluminous and not especially easy to interpret.  When doing packaging by hand there are also many ways to go wrong.
 
-Packagemonkey is intended to make packaging simpler, and enable the creation of multiple different types of package.
+Packagemonkey is intended to make packaging simpler, and enable the creation of multiple different types of package including deb, RPM, ebuild, Arch and PET.
 
 Installation
 ------------
