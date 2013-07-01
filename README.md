@@ -116,7 +116,7 @@ Directory containing binaries or scripts to be packaged.  By default this is a s
 Additional arguments to add to the compilation.
 
 <b>-l, --license [type]</b><br>
-The license type (gpl2|gpl3|lgpl2|lgpl3|mit|bsd|apache|mozilla)
+The license type (gpl2|gpl3|lgpl2|lgpl3|agpl|agpl3|mit|bsd|apache|mozilla)
 
 <b>-e, --email [address]</b><br>
 Set full name and email address.
