@@ -3,8 +3,7 @@ packagemonkey
 
 <b>A tool to make packaging easier</b>
 
-![Logo](https://github.com/fuzzgun/packagemonkey/blob/master/img/packagemonkey320.png)
-<img src="https://github.com/fuzzgun/packagemonkey/blob/master/img/packagemonkey320.png?raw=true"/>
+<img src="https://github.com/fuzzgun/packagemonkey/blob/master/img/packagemonkey320.png?raw=true" width=200/>
 
 Description
 -----------
