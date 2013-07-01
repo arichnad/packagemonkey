@@ -27,7 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define VERSION "0.10"
+#define VERSION "1.00"
 
 #define PROJECT_NAME "packagemonkey"
 
