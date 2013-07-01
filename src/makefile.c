@@ -265,6 +265,7 @@ int add_makefile_entry_to_file(char * makefilename,
 	return retval;
 }
 
+/* adds an entry to a makefile section */
 int add_makefile_entry(char * section, char * entry)
 {
 	char directory[BLOCK_SIZE];

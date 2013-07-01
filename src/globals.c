@@ -29,6 +29,7 @@ int file_exists(char * filename)
 	return 0;
 }
 
+/* returns a non-zero value if the given directory exists */
 int directory_exists(char * name)
 {
 	struct stat sts;
@@ -38,7 +39,7 @@ int directory_exists(char * name)
 	return 1;
 }
 
-/* returns teh extension of a filename */
+/* returns the extension of a filename */
 void get_file_extension(char * filename, char * extension)
 {
 	int i, j, ctr=0;

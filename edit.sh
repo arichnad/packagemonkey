@@ -1,1 +1,1 @@
-emacs README.md LICENSE man/*.gz Makefile src/*.c src/*.h
+emacs generate.sh edit.sh README.md LICENSE Makefile man/*.gz src/*.c src/*.h
