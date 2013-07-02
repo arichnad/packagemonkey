@@ -1427,6 +1427,132 @@ static int save_debian_build_script(char * directory)
 	return system(commandstr);
 }
 
+/* creates dirs files for libraries */
+static int save_library_dirs(char * directory)
+{
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	FILE * fp;
+	int i;
+
+	get_setting("project name", project_name);
+
+	if (is_library(project_name) == 0) return 0;
+
+	get_setting("version", version);
+	
+	for (i = 0; i < 2; i++) {
+		if (i == 0) {
+			sprintf(filename,"%s%c%s%c%s0.dirs",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		else {
+			sprintf(filename,"%s%c%s%c%s-dev.dirs",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		fp = fopen(filename, "w");
+		if (!fp) return -1;
+
+		fprintf(fp,"%s","usr/lib\n");
+		if (i == 1) {
+			fprintf(fp,"usr/include/%s\n",project_name);
+		}
+
+		fclose(fp);
+	}
+	return 1;
+}
+
+/* creates links files for libraries */
+static int save_library_links(char * directory)
+{
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	FILE * fp;
+	int i;
+
+	get_setting("project name", project_name);
+
+	if (is_library(project_name) == 0) return 0;
+
+	get_setting("version", version);
+	
+	for (i = 0; i < 2; i++) {
+		if (i == 0) {
+			sprintf(filename,"%s%c%s%c%s0.links",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		else {
+			sprintf(filename,"%s%c%s%c%s0-dev.links",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		fp = fopen(filename, "w");
+		if (!fp) return -1;
+
+		fprintf(fp,"usr/lib/%s-%s.so.0.0.1 usr/lib/%s.so.0\n",
+				project_name, version, project_name);
+
+		fclose(fp);
+	}
+	return 1;
+}
+
+/* creates install files for libraries */
+static int save_library_install(char * directory)
+{
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	FILE * fp;
+	int i;
+
+	get_setting("project name", project_name);
+
+	if (is_library(project_name) == 0) return 0;
+
+	get_setting("version", version);
+	
+	for (i = 0; i < 2; i++) {
+		if (i == 0) {
+			sprintf(filename,"%s%c%s%c%s0.install",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		else {
+			sprintf(filename,"%s%c%s%c%s-dev.install",
+					directory, DIRECTORY_SEPARATOR,
+					DEB_SUBDIR, DIRECTORY_SEPARATOR,
+					project_name);
+		}
+		fp = fopen(filename, "w");
+		if (!fp) return -1;
+
+		fprintf(fp,"%s","usr/lib/lib*.so\n");
+		fprintf(fp,"%s","usr/lib/lib*.so.*\n");
+		if (i == 1) {
+			fprintf(fp,"usr/include/%s/*\n",project_name);
+			fprintf(fp,"%s","usr/lib*.a\n");
+			fprintf(fp,"%s","usr/lib/*.la\n");
+			fprintf(fp,"%s","usr/lib/pkgconfig/*\n");
+			fprintf(fp,"%s","usr/share/pkgconfig/*\n");
+		}
+
+		fclose(fp);
+	}
+	return 1;
+}
+
 int save_debian(int no_of_binaries, char ** binaries)
 {
 	char debdir[BLOCK_SIZE];
@@ -1515,6 +1641,9 @@ int save_debian(int no_of_binaries, char ** binaries)
 	save_readme(directory);
 	save_docs(directory);
     save_debian_build_script(directory);
+	save_library_links(directory);
+	save_library_dirs(directory);
+	save_library_install(directory);
 
 	return retval;
 }
