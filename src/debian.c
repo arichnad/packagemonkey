@@ -210,12 +210,65 @@ static void save_compat()
 	fclose(fp);
 }
 
+/* displays a description with line length
+   of 76 characters */
+static void save_description(FILE * fp,
+							 char * description)
+{
+	int i, ctr, j, k;
+	char str[77];
+
+	ctr = 0;
+	str[ctr++] = ' ';
+	for (i = 0; i < strlen(description); i++) {
+		str[ctr++] = description[i];
+		if (ctr == 76) {
+			j = ctr-1;
+			if (str[j] != ' ') {
+				while (str[j] != ' ') {
+					j--;
+				}
+			}
+			while (str[j] == ' ') {
+				j--;
+			}
+			j++;
+			for (k = 0; k < j; k++) {
+				fprintf(fp,"%c", str[k]);
+			}
+			fprintf(fp,"\n");
+			i -= ctr-j-1;
+			str[0] = ' ';
+			ctr = 1;			
+		}
+		else {
+			if (description[i] == '\n') {
+				if (ctr > 0) {
+					str[ctr] = 0;
+					if (strlen(str) > 0) {
+						fprintf(fp, "%s\n", str);
+						fprintf(fp, " .\n");
+					}
+					ctr = 0;
+					str[ctr++] = ' ';
+				}
+			}
+		}
+	}
+
+	/* print the anything left over */
+	if (ctr > 0) {
+		str[ctr] = 0;
+		if (strlen(str) > 1) {
+			fprintf(fp, "%s\n", str);
+		}
+	}
+}
+
 /* save a debian control file */
 static void save_control()
 {
 	FILE * fp;
-	int i, ctr, j, k;
-	char str[77];
 	char standard[BLOCK_SIZE], dh_version[BLOCK_SIZE];
 
 	char directory[BLOCK_SIZE];
@@ -266,82 +319,68 @@ static void save_control()
 	fp = fopen(filename,"w");
 	if (!fp) return;
 
-    fprintf(fp,"Source: %s\n", project_name);
-	if (strlen(section)==0) {
-		fprintf(fp,"Section: contrib/utils\n");
-	}
-	else {
-		fprintf(fp,"Section: %s\n",section);
-	}
-    fprintf(fp,"Priority: extra\n");
-    fprintf(fp,"Maintainer: %s\n",email_address);
-    fprintf(fp,"Build-Depends: debhelper (>= %s)", dh_version);
+    fprintf(fp, "Source: %s\n", project_name);
+    fprintf(fp, "%s", "Priority: extra\n");
+    fprintf(fp, "Maintainer: %s\n", email_address);
+    fprintf(fp, "Build-Depends: debhelper (>= %s)", dh_version);
 	if (strlen(build_depends) > 0) {
-		fprintf(fp,", %s",build_depends);
+		fprintf(fp, ", %s", build_depends);
 	}
-	fprintf(fp,"\n");
-	fprintf(fp,"Standards-Version: %s\n", standard);
-	fprintf(fp,"Homepage: %s\n",homepage);
+	fprintf(fp, "%s", "\n");
+	fprintf(fp, "Standards-Version: %s\n", standard);
+	fprintf(fp, "Homepage: %s\n", homepage);
 	if (strlen(vcs_browser) > 0) {
-		fprintf(fp,"Vcs-Browser: %s\n", vcs_browser);
+		fprintf(fp, "Vcs-Browser: %s\n", vcs_browser);
 	}
 	if (strlen(vcs_repository) > 0) {
-		fprintf(fp,"Vcs-Git: %s\n",vcs_repository);
+		fprintf(fp, "Vcs-Git: %s\n", vcs_repository);
 	}
-	fprintf(fp,"\n");
-    fprintf(fp,"Package: %s\n",project_name);
-    fprintf(fp,"Architecture: any\n");
-    fprintf(fp,"Depends: ${shlibs:Depends}, ${misc:Depends}");
-	if (strlen(depends) > 0) {
-		fprintf(fp,", %s",depends);
-	}
-	fprintf(fp,"\n");
-    fprintf(fp,"Description: %s\n",description_brief);
 
-	ctr = 0;
-	str[ctr++] = ' ';
-	for (i = 0; i < strlen(description); i++) {
-		str[ctr++] = description[i];
-		if (ctr == 76) {
-			j = ctr-1;
-			if (str[j] != ' ') {
-				while (str[j] != ' ') {
-					j--;
-				}
-			}
-			while (str[j] == ' ') {
-				j--;
-			}
-			j++;
-			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c", str[k]);
-			}
-			fprintf(fp,"\n");
-			i -= ctr-j-1;
-			str[0] = ' ';
-			ctr = 1;			
+	fprintf(fp, "%s", "\n");
+	if (is_library(project_name) == 0) {
+		/* not a library */
+		fprintf(fp, "Package: %s\n", project_name);
+		if (strlen(section)==0) {
+			fprintf(fp, "%s",
+					"Section: contrib/utils\n");
 		}
 		else {
-			if (description[i] == '\n') {
-				if (ctr > 0) {
-					str[ctr] = 0;
-					if (strlen(str) > 0) {
-						fprintf(fp, "%s\n", str);
-						fprintf(fp, " .\n");
-					}
-					ctr = 0;
-					str[ctr++] = ' ';
-				}
-			}
+			fprintf(fp, "Section: %s\n", section);
 		}
 	}
+	else {
+		/* library */
+		fprintf(fp, "Package: %s0\n", project_name);
+		fprintf(fp, "%s", "Section: libs\n");
+	}
+    fprintf(fp, "%s", "Architecture: any\n");
+    fprintf(fp, "%s", "Depends: ${shlibs:Depends}, ${misc:Depends}");
+	if (strlen(depends) > 0) {
+		fprintf(fp, ", %s", depends);
+	}
+	fprintf(fp, "%s", "\n");
+    fprintf(fp, "Description: %s\n",description_brief);
 
-	/* print the anything left over */
-	if (ctr > 0) {
-		str[ctr] = 0;
-		if (strlen(str) > 1) {
-			fprintf(fp, "%s\n", str);
+	save_description(fp, description);
+
+	/* library headers package */
+	if (is_library(project_name) != 0) {
+		fprintf(fp, "%s", "\n");
+		fprintf(fp, "Package: %s0-dev\n", project_name);
+		fprintf(fp, "%s", "Section: libdevel\n");
+		fprintf(fp, "%s", "Architecture: any\n");
+		fprintf(fp, "Depends: %s0 " \
+				"(= ${binary:Version}), " \
+				"${shlibs:Depends}, ${misc:Depends}",
+				project_name);
+		if (strlen(depends) > 0) {
+			fprintf(fp,", %s",depends);
 		}
+		fprintf(fp, "%s", "\n");
+		fprintf(fp, "Description: %s\n",
+				description_brief);
+
+		save_description(fp, description);
 	}
 
     fclose(fp);

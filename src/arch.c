@@ -62,7 +62,7 @@ static void save_PKGBUILD(char * directory)
 	fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
 	fprintf(fp, "url=\"%s\"\n",homepage);
 	fprintf(fp, "license=('%s')\n",license);
-	fprintf(fp, "groups=()\n");
+	fprintf(fp, "%s","groups=()\n");
 
 	fprintf(fp, "%s", "depends=(");
 	no_of_packages =
@@ -81,37 +81,48 @@ static void save_PKGBUILD(char * directory)
 	for (i = 0; i < no_of_packages; i++) {
 		fprintf(fp, " '%s'", package_list[i]);
 		if (i < no_of_packages-1) {
-			fprintf(fp,"%s"," ");
+			fprintf(fp, "%s"," ");
 		}
 		free(package_list[i]);
 	}
 	fprintf(fp,"%s",")\n");
 
-	fprintf(fp, "optdepends=()\n");
-	fprintf(fp, "provides=()\n");
-	fprintf(fp, "conflicts=()\n");
-	fprintf(fp, "replaces=()\n");
-	fprintf(fp, "backup=()\n");
-	fprintf(fp, "options=()\n");
-	fprintf(fp, "install=\n");
-	fprintf(fp, "changelog=\n");
+	fprintf(fp, "%s", "optdepends=()\n");
+	fprintf(fp, "%s", "provides=()\n");
+	fprintf(fp, "%s", "conflicts=()\n");
+	fprintf(fp, "%s", "replaces=()\n");
+	fprintf(fp, "%s", "backup=()\n");
+	fprintf(fp, "%s", "options=()\n");
+	fprintf(fp, "%s", "install=\n");
+	fprintf(fp, "%s", "changelog=\n");
 	if (strlen(source_package) == 0) {
 	    fprintf(fp, "%s", "source=($pkgname-$pkgver.tar.gz)\n");
     }
 	else {
 	    fprintf(fp, "source=(%s)\n",source_package);
     }
-	fprintf(fp, "noextract=()\n");
-	fprintf(fp, "md5sums=()\n");
-	fprintf(fp, "build() {\n");
-	fprintf(fp, "  cd \"$srcdir/$pkgname-$pkgver\"\n");
-	fprintf(fp, "  ./configure --prefix=/usr\n");
-	fprintf(fp, "  make\n");
-	fprintf(fp, "}\n");
-	fprintf(fp, "package() {\n");
-	fprintf(fp, "  cd \"$srcdir/$pkgname-$pkgver\"\n");
-	fprintf(fp, "  make DESTDIR=\"$pkgdir/\" install\n");
-	fprintf(fp, "}\n");
+	fprintf(fp, "%s", "noextract=()\n");
+	fprintf(fp, "%s", "md5sums=()\n");
+	fprintf(fp, "%s", "build() {\n");
+	fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
+	fprintf(fp, "%s", "  ./configure --prefix=/usr\n");
+	fprintf(fp, "%s", "  make\n");
+	fprintf(fp, "%s", "}\n");
+	fprintf(fp, "%s", "package() {\n");
+	fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
+	fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" install\n");
+	fprintf(fp, "%s", "}\n");
+
+	if (is_library(project_name) != 0) {
+		fprintf(fp, "%s", "post_install() {\n");
+		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel /usr/lib/$pkgname.so.0\n");
+		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel /usr/lib/$pkgname.so\n");
+		fprintf(fp, "%s", "  ldconfig\n");
+		fprintf(fp, "%s", "}\n");
+		fprintf(fp, "%s", "post_remove() {\n");
+		fprintf(fp, "%s", "  ldconfig\n");
+		fprintf(fp, "%s", "}\n");
+	}
 
     fclose(fp);
 }

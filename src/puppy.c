@@ -216,6 +216,24 @@ static int save_script(char * directory,
 			DIRECTORY_SEPARATOR,
 			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
+	if (is_library(project_name) != 0) {
+		/* pinstall to link libraries */
+		fprintf(fp,"%s","\n# Copy pinstall file \n");
+		fprintf(fp,"%s ${CURRDIR}%c%s%cpinstall.sh ${PROJECTDIR}\n",
+				COMMAND_COPY, DIRECTORY_SEPARATOR,
+				PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+		fprintf(fp,"chmod +x ${PROJECTDIR}%cpinstall.sh",
+				DIRECTORY_SEPARATOR);
+
+		/* puninstall */
+		fprintf(fp,"%s","\n# Copy puninstall file \n");
+		fprintf(fp,"%s ${CURRDIR}%c%s%cpuninstall.sh ${PROJECTDIR}\n",
+				COMMAND_COPY, DIRECTORY_SEPARATOR,
+				PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+		fprintf(fp,"chmod +x ${PROJECTDIR}%cpuninstall.sh",
+				DIRECTORY_SEPARATOR);
+	}
+
 	/* copy the xpm mini icon */
 	if (strlen(commandline) == 0) {
 		fprintf(fp,"%s",
@@ -318,6 +336,69 @@ static int copy_mini_icon(char * directory,
 	return system(commandstr);
 }
 
+/* save a pinstall script to be run after installation */
+int save_install(char * directory)
+{
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
+	FILE * fp;
+
+	get_setting("project name", project_name);
+
+	if (is_library(project_name) == 0) return 0;
+
+	get_setting("version", version);
+	get_setting("release", release);
+
+	sprintf(filename,"%s%c%s%cpinstall.sh",
+			directory, DIRECTORY_SEPARATOR,
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+	fp = fopen(filename, "w");
+	if (!fp) return -1;
+
+	fprintf(fp,"%s","#!/bin/bash\n\n");
+
+	fprintf(fp,"APP=%s\n",project_name);
+	fprintf(fp,"VERSION=%s\n",version);
+	fprintf(fp,"RELEASE=%s\n",release);
+	fprintf(fp,"%s","SONAME=$(APP).so.0\n");
+	fprintf(fp,"%s","LIBNAME=$(APP)-$(VERSION).so.0.0.$(RELEASE)\n\n");
+
+	fprintf(fp,"%s","ln -sf /usr/lib/$(LIBNAME) /usr/lib/$(SONAME)\n");
+	fprintf(fp,"%s","ln -sf /usr/lib/$(LIBNAME) /usr/lib/$(APP).so\n");
+	fprintf(fp,"%s","ldconfig\n");
+
+	fclose(fp);
+	return 0;
+}
+
+/* save a puninstall script to be run after uninstallation */
+int save_uninstall(char * directory)
+{
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	FILE * fp;
+
+	get_setting("project name", project_name);
+
+	if (is_library(project_name) == 0) return 0;
+
+	sprintf(filename,"%s%c%s%cpuninstall.sh",
+			directory, DIRECTORY_SEPARATOR,
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
+	fp = fopen(filename, "w");
+	if (!fp) return -1;
+
+	fprintf(fp,"%s","#!/bin/bash\n\n");
+
+	fprintf(fp,"%s","ldconfig\n");
+
+	fclose(fp);
+	return 0;
+}
+
 int save_puppy(int no_of_binaries, char ** binaries)
 {
 	char xpm_filename[BLOCK_SIZE];
@@ -339,6 +420,8 @@ int save_puppy(int no_of_binaries, char ** binaries)
 	copy_mini_icon(directory,
 				   no_of_binaries, binaries,
 				   xpm_filename);
+	save_install(directory);
+	save_uninstall(directory);
 	save_script(directory, xpm_filename);
 	return retval;
 }

@@ -500,6 +500,12 @@ int main(int argc, char* argv[])
 	add_setting("project name",project_name);
 	add_setting("version",project_version);
 
+	/* if this is a librray then use the commandline
+	   option to avoid generating desktop files */
+	if (is_library(project_name) != 0) {
+		add_setting("commandline", "1");
+	}
+
 	/* Check that a full project name was specified.
 	   If not the use the name from the project directory */
 	get_setting("project full name",project_full_name);

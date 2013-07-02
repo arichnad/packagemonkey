@@ -451,16 +451,24 @@ void save_makefile(int no_of_binaries, char ** binaries)
 				}
 			}
 			if (contains_char(binaries[i],' ')==0) {
-				sprintf(str,"install -m 755 %s $(DESTDIR)/usr/lib/$(APP)/%s",
+				sprintf(str,"install -m 755 %s " \
+						"$(DESTDIR)/usr/lib/$(APP)/%s",
 						binaries[i], &binaries[i][j]);
 			}
 			else {
-				sprintf(str,"install -m 755 \"%s\" $(DESTDIR)\"/usr/lib/$(APP)/%s\"",
+				sprintf(str,"install -m 755 \"%s\" " \
+						"$(DESTDIR)\"/usr/lib/$(APP)/%s\"",
 						binaries[i], &binaries[i][j]);
 			}
 			add_makefile_entry_to_file(filename, "install", str);
 
-			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) $(DESTDIR)/usr/lib/$(APP)/%s",
+			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) " \
+					"$(DESTDIR)/usr/lib/%s.so.0",
+					&binaries[i][j], &binaries[i][j]);
+			add_makefile_entry_to_file(filename, "install",str);
+
+			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) " \
+					"$(DESTDIR)/usr/lib/$(APP)/%s.so",
 					&binaries[i][j], &binaries[i][j]);
 			add_makefile_entry_to_file(filename, "install",str);
 		}
