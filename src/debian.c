@@ -277,8 +277,26 @@ static void save_control()
 	if (strlen(vcs_browser) > 0) {
 		fprintf(fp, "Vcs-Browser: %s\n", vcs_browser);
 	}
+
+	/* different types of version control repository */
 	if (strlen(vcs_repository) > 0) {
-		fprintf(fp, "Vcs-Git: %s\n", vcs_repository);
+		if ((strstr(vcs_repository,"bzr") != NULL) ||
+			(strstr(vcs_repository,"launchpad") != NULL)) {
+			fprintf(fp, "Vcs-Bzr: %s\n",
+					vcs_repository);
+		}
+		else {
+			if (strstr(vcs_repository,"svn") != NULL) {
+				fprintf(fp, "Vcs-Svn: %s\n",
+						vcs_repository);
+			}
+			else {
+				if (strstr(vcs_repository,"git") != NULL) {
+					fprintf(fp, "Vcs-Git: %s\n",
+							vcs_repository);
+				}
+			}
+		}
 	}
 
 	fprintf(fp, "%s", "\n");

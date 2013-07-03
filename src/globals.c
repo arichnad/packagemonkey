@@ -746,9 +746,9 @@ void save_description(FILE * fp,
 			}
 			j++;
 			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c", str[k]);
+				fprintf(fp, "%c", str[k]);
 			}
-			fprintf(fp,"\n");
+			fprintf(fp, "\n");
 			i -= ctr-j-1;
 			ctr = 0;
 			if (leading_space != 0) {
