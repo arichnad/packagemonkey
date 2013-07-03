@@ -404,7 +404,9 @@ void show_categories_additional()
 	printf("\n");
 }
 
-static int write_png_file(char* filename, int width, int height, unsigned char *buffer)
+static int write_png_file(char* filename,
+						  int width, int height,
+						  unsigned char *buffer)
 {
 	png_t png;
 	FILE * fp = fopen(filename, "wb");

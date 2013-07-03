@@ -174,7 +174,8 @@ static int save_script(char * directory,
 	script_version_numbers(fp,"puppy");
 
 	/* make directories */
-	fprintf(fp,"%s","\n# Make directories within which the project will be built\n");
+	fprintf(fp,"%s","\n# Make directories within which the project " \
+			"will be built\n");
 	fprintf(fp,"%s -p ${BUILDDIR}\n",COMMAND_MKDIR);
 	fprintf(fp,"%s -p ${PROJECTDIR}\n",	COMMAND_MKDIR);
 
@@ -207,7 +208,8 @@ static int save_script(char * directory,
 
 	/* copy puppy specific files */
 	fprintf(fp,"%s","\n# Copy anything in /usr/bin into /usr/local/bin\n");
-	fprintf(fp,"%s ${PROJECTDIR}/usr/bin/* ${PROJECTDIR}/usr/local/bin/\n", COMMAND_COPY);
+	fprintf(fp,"%s ${PROJECTDIR}/usr/bin/* ${PROJECTDIR}/usr/local/bin/\n",
+			COMMAND_COPY);
 
 	/* copy the spec file */
 	fprintf(fp,"%s","\n# Copy the spec file into the build directory\n");

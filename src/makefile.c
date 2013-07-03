@@ -303,6 +303,12 @@ void save_makefile_as(char * filename)
 	fprintf(fp,"APP=%s\n",project_name);
 	fprintf(fp,"VERSION=%s\n",project_version);
 	fprintf(fp,"%s","RELEASE=1\n");
+
+	if (is_library(project_name) != 0) {
+		fprintf(fp,"%s","SONAME=${APP}.so.0\n");
+		fprintf(fp,"%s","LIBNAME=${APP}-${VERSION}.so.0.0.${RELEASE}\n");
+	}
+
 	fprintf(fp,"ARCH_TYPE=`uname -m`\n\n");
 
 	fprintf(fp,"all:\n");
@@ -378,18 +384,19 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	/* add lines to the makefile if they don't exist */
 	add_makefile_entry_to_file(filename, "source",
-							   "tar -cvzf ../$(APP)_$(VERSION).orig.tar.gz ../$(APP)-$(VERSION) --exclude-vcs");
+							   "tar -cvzf ../${APP}_${VERSION}.orig.tar.gz " \
+							   "../${APP}-${VERSION} --exclude-vcs");
 
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -p $(DESTDIR)/usr");
+							   "mkdir -p ${DESTDIR}/usr");
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -p $(DESTDIR)/usr/bin");
+							   "mkdir -p ${DESTDIR}/usr/bin");
 
 	if (is_library(project_name) != 0) {
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -p $(DESTDIR)/usr/lib");
+								   "mkdir -p ${DESTDIR}/usr/lib");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -p $(DESTDIR)/usr/lib/$(APP)");
+								   "mkdir -p ${DESTDIR}/usr/lib/${APP}");
 	}
 
 	/* create directories for binaries */
@@ -400,11 +407,11 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		for (i = 0; i < no_of_directories; i++) {
 			if (get_subdirectory_string(directories[i]) != 0) {
 				if (contains_char(get_subdirectory_string(directories[i]),' ')==0) {
-					sprintf(str,"mkdir -m 755 -p $(DESTDIR)/%s",
+					sprintf(str,"mkdir -m 755 -p ${DESTDIR}/%s",
 							get_subdirectory_string(directories[i]));
 				}
 				else {
-					sprintf(str,"mkdir -m 755 -p $(DESTDIR)\"/%s\"",
+					sprintf(str,"mkdir -m 755 -p ${DESTDIR}\"/%s\"",
 							get_subdirectory_string(directories[i]));
 				}
 				add_makefile_entry_to_file(filename, "install",
@@ -420,8 +427,16 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
-		add_makefile_entry_to_file(filename, "install",
-								   "install -m 755 --strip $(APP) $(DESTDIR)/usr/bin");
+		if (is_library(project_name) == 0) {
+			add_makefile_entry_to_file(filename, "install",
+									   "install -m 755 --strip ${APP} " \
+									   "${DESTDIR}/usr/bin");
+		}
+		else {
+			add_makefile_entry_to_file(filename, "install",
+									   "install -m 755 --strip ${APP} " \
+									   "${DESTDIR}/usr/lib/${APP}");
+		}
 	}
 
 	if (is_library(project_name) == 0) {
@@ -429,12 +444,12 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		for (i = 0; i < no_of_binaries; i++) {
 			if (get_subdirectory_string(binaries[i]) != 0){
 				if (contains_char(binaries[i],' ')==0) {
-					sprintf(str,"install -m 755 %s $(DESTDIR)/%s",
+					sprintf(str,"install -m 755 %s ${DESTDIR}/%s",
 							binaries[i],
 							get_subdirectory_string(binaries[i]));
 				}
 				else {
-					sprintf(str,"install -m 755 \"%s\" $(DESTDIR)\"/%s\"",
+					sprintf(str,"install -m 755 \"%s\" ${DESTDIR}\"/%s\"",
 							binaries[i],
 							get_subdirectory_string(binaries[i]));
 				}
@@ -442,7 +457,8 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			}
 		}
 	}
-	else {	
+	else {
+		/* install library */
 		for (i = 0; i < no_of_binaries; i++) {
 			for (j=strlen(binaries[i])-1; j>=0; j--) {
 				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
@@ -452,112 +468,170 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			}
 			if (contains_char(binaries[i],' ')==0) {
 				sprintf(str,"install -m 755 %s " \
-						"$(DESTDIR)/usr/lib/$(APP)/%s",
+						"${DESTDIR}/usr/lib/${APP}/%s",
 						binaries[i], &binaries[i][j]);
 			}
 			else {
 				sprintf(str,"install -m 755 \"%s\" " \
-						"$(DESTDIR)\"/usr/lib/$(APP)/%s\"",
+						"${DESTDIR}\"/usr/lib/${APP}/%s\"",
 						binaries[i], &binaries[i][j]);
 			}
 			add_makefile_entry_to_file(filename, "install", str);
 
-			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) " \
-					"$(DESTDIR)/usr/lib/%s.so.0",
+			sprintf(str,"ln -sf ${DESTDIR}/usr/lib/%s.0.0.${RELEASE} " \
+					"${DESTDIR}/usr/lib/%s.so.0",
 					&binaries[i][j], &binaries[i][j]);
 			add_makefile_entry_to_file(filename, "install",str);
 
-			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.$(RELEASE) " \
-					"$(DESTDIR)/usr/lib/$(APP)/%s.so",
+			sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.${RELEASE} " \
+					"$(DESTDIR)/usr/lib/${APP}/%s.so",
 					&binaries[i][j], &binaries[i][j]);
 			add_makefile_entry_to_file(filename, "install",str);
 		}
 		add_makefile_entry_to_file(filename, "install","ldconfig");
 	}
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share");
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share");
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/man");
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share/man");
 	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -m 755 -p $(DESTDIR)/usr/share/man/man1");
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share/man/man1");
 	add_makefile_entry_to_file(filename, "install",
-							   "install -m 644 man/$(APP).1.gz $(DESTDIR)/usr/share/man/man1");
+							   "install -m 644 man/${APP}.1.gz " \
+							   "${DESTDIR}/usr/share/man/man1");
 
 	/* additional install for desktop icons */
 	if (strlen(commandline) == 0) {
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/$(APP)");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/$(APP)");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/applications");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "applications");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/pixmaps");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/pixmaps");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/icons");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "icons/hicolor");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "icons/hicolor/scalable");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/scalable/apps");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "icons/hicolor/scalable/apps");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "icons/hicolor/24x24");
 		add_makefile_entry_to_file(filename, "install",
-								   "mkdir -m 755 -p $(DESTDIR)/usr/share/icons/hicolor/24x24/apps");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "icons/hicolor/24x24/apps");
 		add_makefile_entry_to_file(filename, "install",
-								   "install -m 644 desktop/$(APP).desktop $(DESTDIR)/usr/share/applications/$(APP).desktop");
+								   "install -m 644 desktop/${APP}.desktop " \
+								   "${DESTDIR}/usr/share/applications/" \
+								   "${APP}.desktop");
 		add_makefile_entry_to_file(filename, "install",
-								   "install -m 644 desktop/icon24.png $(DESTDIR)/usr/share/icons/hicolor/24x24/apps/$(APP).png");
-		sprintf(svg_filename,"%s%cdesktop%cicon.svg", directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+								   "install -m 644 desktop/icon24.png " \
+								   "${DESTDIR}/usr/share/icons/hicolor/" \
+								   "24x24/apps/${APP}.png");
+		sprintf(svg_filename,"%s%cdesktop%cicon.svg",
+				directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 		if (file_exists(svg_filename) != 0) {
 			add_makefile_entry_to_file(filename, "install",
-									   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/icons/hicolor/scalable/apps/$(APP).svg");
+									   "install -m 644 desktop/icon.svg " \
+									   "${DESTDIR}/usr/share/icons/hicolor/" \
+									   "scalable/apps/${APP}.svg");
 			add_makefile_entry_to_file(filename, "install",
-									   "install -m 644 desktop/icon.svg $(DESTDIR)/usr/share/pixmaps/$(APP).svg");
+									   "install -m 644 desktop/icon.svg " \
+									   "${DESTDIR}/usr/share/pixmaps/${APP}.svg");
 		}
 	}
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0)) {
-		if (empty_makefile_section(filename,"all") == 1) {
-			sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
-					"-O3 -o $(APP) src/*.c -Isrc %s", compile_args);
-			add_makefile_entry_to_file(filename, "all", str);
+		if (is_library(project_type) == 0) {
+			/* compile an executable */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
+						"-O3 -o ${APP} src/*.c -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
+						"-g -o ${APP} src/*.c -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
 		}
-		if (empty_makefile_section(filename,"debug") == 1) {
-			sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
-					"-g -o $(APP) src/*.c -Isrc %s", compile_args);
-			add_makefile_entry_to_file(filename, "debug", str);
+		else {
+			/* compile a shared library */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
+						"-std=gnu99 -pedantic "							\
+						"-O3 -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
+						"-std=gnu99 -pedantic "							\
+						"-g -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
 		}
 	}
 	if ((strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
-		if (empty_makefile_section(filename,"all") == 1) {
-			sprintf(str, "g++ -Wall -pedantic -O3 "	\
-					"-o ${APP} src/*.cpp -Isrc %s", compile_args);
-			add_makefile_entry_to_file(filename, "all", str);
+		if (is_library(project_type) == 0) {
+			/* compile an executable */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "g++ -Wall -pedantic -O3 "	\
+						"-o ${APP} src/*.cpp -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "g++ -Wall -pedantic -g " \
+						"-o ${APP} src/*.cpp -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
 		}
-		if (empty_makefile_section(filename,"debug") == 1) {
-			sprintf(str, "g++ -Wall -pedantic -g " \
-					"-o ${APP} src/*.cpp -Isrc %s", compile_args);
-			add_makefile_entry_to_file(filename, "debug", str);
+		else {
+			/* compile a shared library */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
+						"-pedantic -O3 " \
+						"-o ${LIBNAME} src/*.cpp -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
+						"-pedantic -g " \
+						"-o ${LIBNAME} src/*.cpp -Isrc %s", compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
 		}
 	}
 
-	sprintf(str,"%s $(APP) \\#* \\.#* gnuplot* " \
+	if (is_library(project_name) == 0) {
+		sprintf(str,"%s ${APP} \\#* \\.#* gnuplot* "	\
 			"*.png %s/*.substvars %s/*.log",
 			COMMAND_DELETE, DEB_SUBDIR, DEB_SUBDIR);
+	}
+	else {
+		sprintf(str,"%s ${LIBNAME} \\#* \\.#* gnuplot* "	\
+			"*.png %s/*.substvars %s/*.log",
+			COMMAND_DELETE, DEB_SUBDIR, DEB_SUBDIR);
+	}
 	add_makefile_entry_to_file(filename, "clean", str);
 
-	sprintf(str,"%sr deb.* %s/$(APP) %s/$(ARCH_TYPE)",
+	sprintf(str,"%sr deb.* %s/$(APP) %s/${ARCH_TYPE}",
 			COMMAND_DELETE, DEB_SUBDIR, RPM_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 	add_makefile_entry_to_file(filename, "clean",
-							   "rm -f ../$(APP)*.deb " \
-							   "../$(APP)*.changes " \
-							   "../$(APP)*.asc " \
-							   "../$(APP)*.dsc");
+							   "rm -f ../${APP}*.deb " \
+							   "../${APP}*.changes " \
+							   "../${APP}*.asc " \
+							   "../${APP}*.dsc");
 	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.gz %s/*.pet",
 			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR,
 			PUPPY_SUBDIR, PUPPY_SUBDIR);

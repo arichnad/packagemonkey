@@ -115,8 +115,10 @@ static void save_PKGBUILD(char * directory)
 
 	if (is_library(project_name) != 0) {
 		fprintf(fp, "%s", "post_install() {\n");
-		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel /usr/lib/$pkgname.so.0\n");
-		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel /usr/lib/$pkgname.so\n");
+		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
+				"/usr/lib/$pkgname.so.0\n");
+		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
+				"/usr/lib/$pkgname.so\n");
 		fprintf(fp, "%s", "  ldconfig\n");
 		fprintf(fp, "%s", "}\n");
 		fprintf(fp, "%s", "post_remove() {\n");

@@ -1,5 +1,6 @@
 /*  pnglite.c - pnglite library
-    For conditions of distribution and use, see copyright notice in pnglite.h
+    For conditions of distribution and use,
+	see copyright notice in pnglite.h
 */
 #define DO_CRC_CHECKS 1
 #define USE_ZLIB 1
@@ -529,7 +530,8 @@ static int png_write_idats(png_t* png, unsigned char* data)
 	unsigned char *chunk;
 	unsigned long written;
 	unsigned long crc;
-	unsigned size = png->width * png->height * png->bpp + png->height;
+	unsigned size = png->width * png->height *
+		png->bpp + png->height;
 	
 	(void)png_init_deflate;
 	(void)png_end_deflate;
@@ -646,7 +648,8 @@ static int png_process_chunk(png_t* png)
 	/* if we found an idat, all other idats should be
 	   followed with no other chunks in between */
 	if(type == *(unsigned int*)"IDAT") {
-		png->png_datalen = png->width * png->height * png->bpp + png->height;
+		png->png_datalen =
+			png->width * png->height * png->bpp + png->height;
 		png->png_data = png_alloc(png->png_datalen);
 		
 		if(!png->png_data)
@@ -821,9 +824,9 @@ static int png_unfilter(png_t* png,
 		case 2: /* up */
 			if (outpos) {
 				png_filter_up(stride, filtered+pos,
-							  data+outpos,
+							  data + outpos,
 							  data + outpos - (png->width*stride),
-							  png->width*stride);
+							  png->width * stride);
 			}
 			else {
 				png_filter_up(stride, filtered+pos,
@@ -944,7 +947,9 @@ char* png_error_string(int error)
     case PNG_NOT_SUPPORTED:
 		return "The PNG is unsupported by pnglite, too bad for you!";
     case PNG_WRONG_ARGUMENTS:
-		return "Wrong combination of arguments passed to png_open. You must use either a read_function or supply a file pointer to use.";
+		return "Wrong combination of arguments passed to png_open. " \
+			"You must use either a read_function or supply a file " \
+			"pointer to use.";
     default:
 		return "Unknown error.";
     };

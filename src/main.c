@@ -640,7 +640,8 @@ int main(int argc, char* argv[])
 							   MAX_FILES);
 		switch(retval) {
 		case WALK_BADIO: {
-			fprintf(stderr,"Directory '%s' Error %d: %s\n", str,errno,strerror(errno));
+			fprintf(stderr,"Directory '%s' Error %d: %s\n",
+					str, errno, strerror(errno));
 			break;
 		}
 		case WALK_NAMETOOLONG: {
