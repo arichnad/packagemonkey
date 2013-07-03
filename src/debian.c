@@ -270,7 +270,6 @@ static void save_control()
 {
 	FILE * fp;
 	char standard[BLOCK_SIZE], dh_version[BLOCK_SIZE];
-
 	char directory[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
@@ -322,7 +321,8 @@ static void save_control()
     fprintf(fp, "Source: %s\n", project_name);
     fprintf(fp, "%s", "Priority: extra\n");
     fprintf(fp, "Maintainer: %s\n", email_address);
-    fprintf(fp, "Build-Depends: debhelper (>= %s)", dh_version);
+    fprintf(fp, "Build-Depends: debhelper (>= %s)",
+			dh_version);
 	if (strlen(build_depends) > 0) {
 		fprintf(fp, ", %s", build_depends);
 	}
@@ -354,7 +354,8 @@ static void save_control()
 		fprintf(fp, "%s", "Section: libs\n");
 	}
     fprintf(fp, "%s", "Architecture: any\n");
-    fprintf(fp, "%s", "Depends: ${shlibs:Depends}, ${misc:Depends}");
+    fprintf(fp, "%s", "Depends: ${shlibs:Depends}, " \
+			"${misc:Depends}");
 	if (strlen(depends) > 0) {
 		fprintf(fp, ", %s", depends);
 	}

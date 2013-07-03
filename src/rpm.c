@@ -68,6 +68,9 @@ static int save_spec(char * project_directory,
 			directory, DIRECTORY_SEPARATOR,
 			project_name);
 
+	/* don't overwrite existing spec file */
+	if (file_exists(filename) != 0) return 0;
+
 	fp = fopen(filename,"w");
 	if (!fp) return -1;
 
