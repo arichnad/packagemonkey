@@ -41,8 +41,7 @@ static int save_spec(char * project_directory,
 	char group_main[BLOCK_SIZE];
 	char group_additional[BLOCK_SIZE];
 	FILE * fp;
-	int ctr,i,j=0,k,no_of_directories;
-	char str[BLOCK_SIZE];
+	int i,j=0,no_of_directories;
 	const char * dayname[] = {
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 	};
@@ -114,50 +113,9 @@ static int save_spec(char * project_directory,
 	if (strlen(build_requires) > 0) {
 		fprintf(fp,"BuildRequires: %s\n",build_requires);
 	}
-	fprintf(fp,"%s","\n%description\n");
-	
-	ctr = 0;
-	for (i = 0; i < strlen(description); i++) {
-		str[ctr++] = description[i];
-		if (ctr == 76) {
-			j = ctr-1;
-			if (str[j] != ' ') {
-				while (str[j] != ' ') {
-					j--;
-				}
-			}
-			while (str[j] == ' ') {
-				j--;
-			}
-			j++;
-			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c", str[k]);
-			}
-			fprintf(fp,"\n");
-			i -= ctr-j-1;
-			ctr = 0;		
-		}
-		else {
-			if (description[i]=='\n') {
-				if (ctr > 0) {
-					str[ctr] = 0;
-					if (strlen(str) > 0) {
-						fprintf(fp, "%s\n", str);
-						fprintf(fp, "\n");
-					}
-					ctr = 0;
-				}
-			}
-		}
-	}
 
-	/* print the anything left over */
-	if (ctr > 0) {
-		str[ctr] = 0;
-		if (strlen(str) > 1) {
-			fprintf(fp, "%s\n", str);
-		}
-	}
+	fprintf(fp,"%s","\n%description\n");
+	save_description(fp, description, 0);
 
 	sprintf(svg_filename,"%s%cdesktop%cicon.svg",
 			project_directory, DIRECTORY_SEPARATOR,

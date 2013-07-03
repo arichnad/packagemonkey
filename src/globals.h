@@ -84,5 +84,8 @@ void directory_size(char * directory,
 					char * dir_size);
 void script_version_numbers(FILE * fp,
 							char * script_name);
+void save_description(FILE * fp,
+					  char * description,
+					  int leading_space);
 
 #endif

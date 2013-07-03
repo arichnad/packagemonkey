@@ -210,61 +210,6 @@ static void save_compat()
 	fclose(fp);
 }
 
-/* displays a description with line length
-   of 76 characters */
-static void save_description(FILE * fp,
-							 char * description)
-{
-	int i, ctr, j, k;
-	char str[77];
-
-	ctr = 0;
-	str[ctr++] = ' ';
-	for (i = 0; i < strlen(description); i++) {
-		str[ctr++] = description[i];
-		if (ctr == 76) {
-			j = ctr-1;
-			if (str[j] != ' ') {
-				while (str[j] != ' ') {
-					j--;
-				}
-			}
-			while (str[j] == ' ') {
-				j--;
-			}
-			j++;
-			for (k = 0; k < j; k++) {
-				fprintf(fp,"%c", str[k]);
-			}
-			fprintf(fp,"\n");
-			i -= ctr-j-1;
-			str[0] = ' ';
-			ctr = 1;			
-		}
-		else {
-			if (description[i] == '\n') {
-				if (ctr > 0) {
-					str[ctr] = 0;
-					if (strlen(str) > 0) {
-						fprintf(fp, "%s\n", str);
-						fprintf(fp, " .\n");
-					}
-					ctr = 0;
-					str[ctr++] = ' ';
-				}
-			}
-		}
-	}
-
-	/* print the anything left over */
-	if (ctr > 0) {
-		str[ctr] = 0;
-		if (strlen(str) > 1) {
-			fprintf(fp, "%s\n", str);
-		}
-	}
-}
-
 /* save a debian control file */
 static void save_control()
 {
@@ -362,7 +307,7 @@ static void save_control()
 	fprintf(fp, "%s", "\n");
     fprintf(fp, "Description: %s\n",description_brief);
 
-	save_description(fp, description);
+	save_description(fp, description, 1);
 
 	/* library headers package */
 	if (is_library(project_name) != 0) {
@@ -381,7 +326,7 @@ static void save_control()
 		fprintf(fp, "Description: %s\n",
 				description_brief);
 
-		save_description(fp, description);
+		save_description(fp, description, 1);
 	}
 
     fclose(fp);

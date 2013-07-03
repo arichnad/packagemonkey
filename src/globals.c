@@ -718,3 +718,70 @@ void script_version_numbers(FILE * fp,
 
 	fprintf(fp,"%s","\n");
 }
+
+/* displays a description with line length
+   of 76 characters */
+void save_description(FILE * fp,
+					  char * description,
+					  int leading_space)
+{
+	int i, ctr, j, k;
+	char str[77];
+
+	ctr = 0;
+	if (leading_space != 0) {
+		str[ctr++] = ' ';
+	}
+	for (i = 0; i < strlen(description); i++) {
+		str[ctr++] = description[i];
+		if (ctr == 76) {
+			j = ctr-1;
+			if (str[j] != ' ') {
+				while (str[j] != ' ') {
+					j--;
+				}
+			}
+			while (str[j] == ' ') {
+				j--;
+			}
+			j++;
+			for (k = 0; k < j; k++) {
+				fprintf(fp,"%c", str[k]);
+			}
+			fprintf(fp,"\n");
+			i -= ctr-j-1;
+			ctr = 0;
+			if (leading_space != 0) {
+				str[ctr++] = ' ';
+			}
+		}
+		else {
+			if (description[i] == '\n') {
+				if (ctr > 0) {
+					str[ctr] = 0;
+					if (strlen(str) > 0) {
+						fprintf(fp, "%s\n", str);
+						if (leading_space != 0) {
+							fprintf(fp, " .\n");
+						}
+						else {
+							fprintf(fp, "\n");
+						}
+					}
+					ctr = 0;
+					if (leading_space != 0) {
+						str[ctr++] = ' ';
+					}
+				}
+			}
+		}
+	}
+
+	/* print the anything left over */
+	if (ctr > 0) {
+		str[ctr] = 0;
+		if (strlen(str) > 1) {
+			fprintf(fp, "%s\n", str);
+		}
+	}
+}

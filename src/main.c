@@ -490,7 +490,7 @@ int main(int argc, char* argv[])
 
 	/* get the project name from the directory */
 	get_subdirectory(directory,project_name);
-	if (valid_project_name(project_name)==0) {
+	if (valid_project_name(project_name) == 0) {
 		printf("The project name, which is taken from the " \
 			   "directory within which the project exists, " \
 			   "must be all lower case with no " \
