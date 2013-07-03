@@ -359,25 +359,25 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	char * directories[MAX_FILES];
 
 	/* get the project directory */
-	get_setting("directory",directory);
+	get_setting("directory", directory);
 
 	/* the type of project */
-	get_setting("project type",project_type);
+	get_setting("project type", project_type);
 
 	/* the project name */
-	get_setting("project name",project_name);
+	get_setting("project name", project_name);
 
 	/* the project version */
-	get_setting("version",project_version);
+	get_setting("version", project_version);
 
 	/* compiler arguments */
-	get_setting("compile",compile_args);
+	get_setting("compile", compile_args);
 
 	/* command line project */
-	get_setting("commandline",commandline);
+	get_setting("commandline", commandline);
 
 	/* path and filename */
-	sprintf(filename,"%s%cMakefile",directory,
+	sprintf(filename,"%s%cMakefile", directory,
 			DIRECTORY_SEPARATOR);
 
 	save_makefile_as(filename);
@@ -428,14 +428,34 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
 		if (is_library(project_name) == 0) {
+			/* executable */
 			add_makefile_entry_to_file(filename, "install",
 									   "install -m 755 --strip ${APP} " \
 									   "${DESTDIR}/usr/bin");
 		}
 		else {
+			/* header files */
+			sprintf(str, "%s -p ${DESTDIR}/usr/include", COMMAND_MKDIR);
+			add_makefile_entry_to_file(filename, "install", str);
+
+			sprintf(str, "%s -p ${DESTDIR}/usr/include/${APP}", COMMAND_MKDIR);
+			add_makefile_entry_to_file(filename, "install", str);
+
+			sprintf(str,"%s src/*.h ${DESTDIR}/usr/include/${APP}",
+					COMMAND_COPY);
+			add_makefile_entry_to_file(filename, "install", str);
+
+			/* library */
 			add_makefile_entry_to_file(filename, "install",
-									   "install -m 755 --strip ${APP} " \
+									   "install -m 755 --strip ${LIBNAME} " \
 									   "${DESTDIR}/usr/lib/${APP}");
+
+			add_makefile_entry_to_file(filename, "install",
+									   "ln -sf ${DESTDIR}/usr/lib/${LIBNAME} " \
+									   "${DESTDIR}/usr/lib/${SONAME}");
+			add_makefile_entry_to_file(filename, "install",
+									   "ln -sf ${DESTDIR}/usr/lib/${LIBNAME} " \
+									   "${DESTDIR}/usr/lib/${APP}.so");
 		}
 	}
 
@@ -549,7 +569,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	if ((strcmp(project_type,"c")==0) ||
 		(strcmp(project_type,"C")==0)) {
-		if (is_library(project_type) == 0) {
+		if (is_library(project_name) == 0) {
 			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
@@ -566,13 +586,13 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			/* compile a shared library */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=gnu99 -pedantic "							\
+						"-std=gnu99 -pedantic -fPIC "							\
 						"-O3 -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
 				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=gnu99 -pedantic "							\
+						"-std=gnu99 -pedantic -fPIC "							\
 						"-g -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
@@ -582,7 +602,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
-		if (is_library(project_type) == 0) {
+		if (is_library(project_name) == 0) {
 			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "g++ -Wall -pedantic -O3 "	\
@@ -599,13 +619,13 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			/* compile a shared library */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
-						"-pedantic -O3 " \
+						"-pedantic -fPIC -O3 " \
 						"-o ${LIBNAME} src/*.cpp -Isrc %s", compile_args);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
 				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
-						"-pedantic -g " \
+						"-pedantic -fPIC -g " \
 						"-o ${LIBNAME} src/*.cpp -Isrc %s", compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
