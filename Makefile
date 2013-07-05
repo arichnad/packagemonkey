@@ -4,9 +4,9 @@ RELEASE=1
 ARCH_TYPE=`uname -m`
 
 all:
-	gcc -Wall -std=gnu99 -pedantic -O3 -o $(APP) src/*.c -Isrc -lz
+	gcc -Wall -std=gnu99 -pedantic -O3 -o ${APP} src/*.c -Isrc -lz
 debug:
-	gcc -Wall -std=gnu99 -pedantic -g -o $(APP) src/*.c -Isrc -lz
+	gcc -Wall -std=gnu99 -pedantic -g -o ${APP} src/*.c -Isrc -lz
 source:
 	tar -cvzf ../${APP}_${VERSION}.orig.tar.gz ../${APP}-${VERSION} --exclude-vcs
 install:
@@ -17,8 +17,9 @@ install:
 	mkdir -m 755 -p ${DESTDIR}/usr/share/man
 	mkdir -m 755 -p ${DESTDIR}/usr/share/man/man1
 	install -m 644 man/${APP}.1.gz ${DESTDIR}/usr/share/man/man1
+instlib:
 clean:
-	rm -f rpmpackage/*.src.rpm archpackage/*.gz puppypackage/*.gz puppypackage/*.pet
 	rm -f ${APP} \#* \.#* gnuplot* *.png debian/*.substvars debian/*.log
 	rm -fr deb.* debian/$(APP) rpmpackage/${ARCH_TYPE}
 	rm -f ../${APP}*.deb ../${APP}*.changes ../${APP}*.asc ../${APP}*.dsc
+	rm -f rpmpackage/*.src.rpm archpackage/*.gz puppypackage/*.gz puppypackage/*.pet

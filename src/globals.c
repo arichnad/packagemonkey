@@ -707,12 +707,12 @@ void script_version_numbers(FILE * fp,
 	/* alter the version within the puppy pet.specs file */
 	fprintf(fp, "sed -i \"s/-${PREV_VERSION}-" \
 			"/-${VERSION}-/g\"" \
-			" %s%cpet.specs\n",
+			" %s%c*.specs\n",
 			PUPPY_SUBDIR,
 			DIRECTORY_SEPARATOR);
 	fprintf(fp, "sed -i \"s/|${PREV_VERSION}|" \
 			"/|${VERSION}|/g\"" \
-			" %s%cpet.specs\n",
+			" %s%c*.specs\n",
 			PUPPY_SUBDIR,
 			DIRECTORY_SEPARATOR);
 	fprintf(fp, "sed -i 's/VERSION='" \
