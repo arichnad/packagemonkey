@@ -389,14 +389,16 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	add_makefile_entry_to_file(filename, "install",
 							   "mkdir -p ${DESTDIR}/usr");
-	add_makefile_entry_to_file(filename, "install",
-							   "mkdir -p ${DESTDIR}/usr/bin");
 
 	if (is_library(project_name) != 0) {
 		add_makefile_entry_to_file(filename, "install",
 								   "mkdir -p ${DESTDIR}/usr/lib");
 		add_makefile_entry_to_file(filename, "install",
 								   "mkdir -p ${DESTDIR}/usr/lib/${APP}");
+	}
+	else {
+		add_makefile_entry_to_file(filename, "install",
+								   "mkdir -p ${DESTDIR}/usr/bin");
 	}
 
 	/* create directories for binaries */
@@ -447,8 +449,8 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 			/* library */
 			add_makefile_entry_to_file(filename, "install",
-									   "install -m 755 --strip ${LIBNAME} " \
-									   "${DESTDIR}/usr/lib/${APP}");
+									   "install -m 755 ${LIBNAME} " \
+									   "${DESTDIR}/usr/lib");
 
 			add_makefile_entry_to_file(filename, "install",
 									   "ln -sf ${DESTDIR}/usr/lib/${LIBNAME} " \
