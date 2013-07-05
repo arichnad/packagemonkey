@@ -564,6 +564,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
+	char c_standard[BLOCK_SIZE];
 
 	/* get the project directory */
 	get_setting("directory", directory);
@@ -582,6 +583,9 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	/* command line project */
 	get_setting("commandline", commandline);
+
+	/* the standard to be used by gcc/g++ */
+	get_setting("c standard", c_standard);
 
 	/* path and filename */
 	sprintf(filename,"%s%cMakefile", directory,
@@ -610,13 +614,15 @@ void save_makefile(int no_of_binaries, char ** binaries)
 		if (is_library(project_name) == 0) {
 			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
-				sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
-						"-O3 -o ${APP} src/*.c -Isrc %s", compile_args);
+				sprintf(str, "gcc -Wall -std=%s -pedantic " \
+						"-O3 -o ${APP} src/*.c -Isrc %s",
+						c_standard, compile_args);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
-				sprintf(str, "gcc -Wall -std=gnu99 -pedantic " \
-						"-g -o ${APP} src/*.c -Isrc %s", compile_args);
+				sprintf(str, "gcc -Wall -std=%s -pedantic " \
+						"-g -o ${APP} src/*.c -Isrc %s",
+						c_standard, compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}
@@ -624,14 +630,16 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			/* compile a shared library */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=gnu99 -pedantic -fPIC "							\
-						"-O3 -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
+						"-std=%s -pedantic -fPIC "	\
+						"-O3 -o ${LIBNAME} src/*.c -Isrc %s",
+						c_standard, compile_args);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
 				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=gnu99 -pedantic -fPIC "							\
-						"-g -o ${LIBNAME} src/*.c -Isrc %s", compile_args);
+						"-std=%s -pedantic -fPIC " \
+						"-g -o ${LIBNAME} src/*.c -Isrc %s",
+						c_standard, compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}

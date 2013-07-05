@@ -178,6 +178,9 @@ List the possible desktop file categories.
 <b>--debian [version]</b><br>
 Set the Debian version.
 
+<b>--cstandard [standard]</b><br>
+The standard to be used by the gcc or g++ compiler.  Examples are c99 and gnu99.
+
 <b>-t, --tests</b><br>
 Run unit tests.
 

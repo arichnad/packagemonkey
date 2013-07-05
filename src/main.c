@@ -120,6 +120,7 @@ int main(int argc, char* argv[])
 	add_setting("source package", "");
 	add_setting("project full name", "");
 	add_setting("mime types","");
+	add_setting("c standard","gnu99");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -155,6 +156,17 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No release number given\n");
+			}
+		}
+		/* C standard used by gcc/g++ */
+		if (strcmp(argv[i],"--cstandard")==0) {
+			i++;
+			if (i < argc) {
+				printf("Standard: %s\n",argv[i]);
+				add_setting("c standard", argv[i]);
+			}
+			else {
+				printf("No C standard given\n");
 			}
 		}
 		/* mime types */

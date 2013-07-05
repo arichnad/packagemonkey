@@ -75,6 +75,8 @@ void show_help()
 		   "List the possible desktop file categories\n");
 	printf("     --debian <version>         " \
 		   "Set the Debian version\n");
+	printf("     --cstandard <standard>     " \
+		   "The standard to be used by gcc/g++ (c99, gnu99, etc)\n");
 	printf(" -t  --tests                    " \
 		   "Run unit tests\n");
 	printf(" -v  --version                  " \
