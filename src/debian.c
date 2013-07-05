@@ -1092,8 +1092,15 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		 dh_testroot\n");
 	fprintf(fp,"%s","		 dh_prep\n");
 	fprintf(fp,"%s","		 dh_installdirs\n");
-	fprintf(fp,"		 ${MAKE} install -B DESTDIR=$(CURDIR)/%s/$(APP)\n",
-			DEB_SUBDIR);
+
+	if (is_library(project_name) == 0) {
+		fprintf(fp,"		 ${MAKE} install -B DESTDIR=$(CURDIR)/%s/$(APP)\n",
+				DEB_SUBDIR);
+	}
+	else {
+		fprintf(fp,"		 ${MAKE} instlib -B DESTDIR=$(CURDIR)/%s/$(APP)\n",
+				DEB_SUBDIR);
+	}
 
 	fprintf(fp,"%s","binary-indep: build install\n");
 	fprintf(fp,"%s","			  dh_shlibdeps\n"); /* TODO check */

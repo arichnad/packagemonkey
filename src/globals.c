@@ -715,6 +715,11 @@ void script_version_numbers(FILE * fp,
 			" %s%cpet.specs\n",
 			PUPPY_SUBDIR,
 			DIRECTORY_SEPARATOR);
+	fprintf(fp, "sed -i 's/VERSION='" \
+			"${PREV_VERSION}'/VERSION='${VERSION}'/g'" \
+			" %s%cpinstall.sh %s%cpuninstall.sh\n",
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
+			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
 	fprintf(fp,"%s","\n");
 }

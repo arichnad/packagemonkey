@@ -80,7 +80,12 @@ int save_file(char * directory)
     fprintf(fp,"%s","}\n\n");
 
     fprintf(fp,"%s","src_install() {\n");
-    fprintf(fp,"%s","    emake DESTDIR=\"${D}\" install\n");
+	if (is_library(project_name) == 0) {
+		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" install\n");
+	}
+	else {
+		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" instlib\n");
+	}
     fprintf(fp,"%s",
 			"    # Install README and (Debian) changelog\n");
     fprintf(fp,"    dodoc README.md %s/changelog\n",

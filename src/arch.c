@@ -110,7 +110,12 @@ static void save_PKGBUILD(char * directory)
 	fprintf(fp, "%s", "}\n");
 	fprintf(fp, "%s", "package() {\n");
 	fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
-	fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" install\n");
+	if (is_library(project_name) == 0) {	
+		fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" install\n");
+	}
+	else {
+		fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" instlib\n");
+	}
 	fprintf(fp, "%s", "}\n");
 
 	if (is_library(project_name) != 0) {

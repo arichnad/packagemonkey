@@ -178,7 +178,12 @@ static int save_spec(char * project_directory,
 	}
 
 	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");	
-	fprintf(fp,"%s","make install -B DESTDIR=%{buildroot}\n\n");
+	if (is_library(project_name) == 0) {
+		fprintf(fp,"%s","make install -B DESTDIR=%{buildroot}\n\n");
+	}
+	else {
+		fprintf(fp,"%s","make instlib -B DESTDIR=%{buildroot}\n\n");
+	}
 
 	fprintf(fp,"%s","%files\n");
 	fprintf(fp,"%s","%doc README.md LICENSE\n");

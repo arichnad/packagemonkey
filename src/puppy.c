@@ -1,4 +1,4 @@
-/*
+#/*
   packagemonkey - a package creation assistant
   Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
 
@@ -183,7 +183,12 @@ static int save_script(char * directory,
 	fprintf(fp,"%s","\n# Build the project\n");
 	fprintf(fp,"%s","make clean\n");
 	fprintf(fp,"%s","make\n");
-	fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
+	if (is_library(project_name) == 0) {
+		fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
+	}
+	else {
+		fprintf(fp,"%s","make instlib -B DESTDIR=${PROJECTDIR}\n");
+	}
 
 	if (strlen(commandline) == 0) {
 		/* alter the category within the .desktop file */
