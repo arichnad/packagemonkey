@@ -21,7 +21,9 @@
 /* returns the name of the settings directory */
 static void settings_directory_name(char * directory)
 {
-	sprintf(directory,"%s%c.%s",getenv("HOME"),DIRECTORY_SEPARATOR,PROJECT_NAME);
+	sprintf(directory,"%s%c.config%c%s",
+			getenv("HOME"), DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR, PROJECT_NAME);
 }
 
 /* returns the settings filename */
@@ -38,10 +40,19 @@ int init_settings()
 {
 	char directory[BLOCK_SIZE];
 	char command[BLOCK_SIZE];
+	char subdir[BLOCK_SIZE];
 	int retval;
 
 	settings_directory_name(directory);
-	if (directory_exists(directory)!=0) return 0;
+	if (directory_exists(directory) != 0) return 0;
+
+	/* create a .config directory */
+	sprintf(subdir,"%s%c.config",
+			getenv("HOME"), DIRECTORY_SEPARATOR);
+	if (directory_exists(subdir) == 0) {
+		sprintf(command,"%s %s", COMMAND_MKDIR, subdir);
+		retval = system(command);
+	}
 
 	sprintf(command,"%s %s", COMMAND_MKDIR, directory);
 	retval = system(command);

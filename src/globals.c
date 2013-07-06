@@ -219,8 +219,9 @@ int valid_gpg(char * email_address)
 	char result_filename[BLOCK_SIZE];
 	char linestr[BLOCK_SIZE];
 
-	sprintf(directory, "%s%c.%s",
-			getenv("HOME"), DIRECTORY_SEPARATOR, PROJECT_NAME);
+	sprintf(directory, "%s%c.config%c%s",
+			getenv("HOME"), DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR, PROJECT_NAME);
 
 	sprintf(result_filename, "%s/test.txt",	directory);
 
