@@ -319,7 +319,9 @@ void save_makefile_as(char * filename)
 
 	fprintf(fp,"install:\n");
 
-	fprintf(fp,"instlib:\n");
+	if (is_library(project_name) != 0) {
+		fprintf(fp,"instlib:\n");
+	}
 
 	fprintf(fp,"clean:\n");
 

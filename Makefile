@@ -17,7 +17,6 @@ install:
 	mkdir -m 755 -p ${DESTDIR}/usr/share/man
 	mkdir -m 755 -p ${DESTDIR}/usr/share/man/man1
 	install -m 644 man/${APP}.1.gz ${DESTDIR}/usr/share/man/man1
-instlib:
 clean:
 	rm -f ${APP} \#* \.#* gnuplot* *.png debian/*.substvars debian/*.log
 	rm -fr deb.* debian/$(APP) rpmpackage/${ARCH_TYPE}
