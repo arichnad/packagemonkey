@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
 	char str[BLOCK_SIZE*4];
 	char test_filename[BLOCK_SIZE];
 	char mainscript[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
 	char * binaries[MAX_FILES];
 
 	if (argc <= 1) {
@@ -123,6 +124,7 @@ int main(int argc, char* argv[])
 	add_setting("mime types","");
 	add_setting("c standard","gnu99");
 	add_setting("main script","");
+	add_setting("source dir","src");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -464,6 +466,17 @@ int main(int argc, char* argv[])
 				printf("No source package given\n");
 			}
 		}
+		/* Directory where the source code will be located */
+		if ((strcmp(argv[i],"--srcdir")==0) ||
+			(strcmp(argv[i],"--sourcedir")==0)) {
+			i++;
+			if (i < argc) {
+				add_setting("source dir",argv[i]);
+			}
+			else {
+				printf("No source directory given\n");
+			}
+		}
 		/* Debian version */
 		if (strcmp(argv[i],"--debian")==0) {
 			i++;
@@ -665,6 +678,14 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	/* check the source code directory */
+	get_setting("source dir", sourcedir);
+	if (contains_char(sourcedir,DIRECTORY_SEPARATOR)!=0) {
+		printf("%s\nSource code directory should only be one level deep\n",
+			   sourcedir);
+		return -1;
+	}
+
 	printf("Project Version: %s\n", project_version);
 
 	/* get the binary files to be packaged */
@@ -722,11 +743,13 @@ int main(int argc, char* argv[])
 	if ((strlen(mainscript) > 0) &&
 		(is_script_language(project_type) != 0)) {
 		/* check that the main script exists */
-		sprintf(str,"%s%csrc%c%s",
+		sprintf(str,"%s%c%s%c%s",
 				directory, DIRECTORY_SEPARATOR,
+				sourcedir,
 				DIRECTORY_SEPARATOR, mainscript);
 		if (file_exists(str) == 0) {
 			printf("Main script %s not found\n", mainscript);
+			free_filenames(binaries,no_of_binaries);
 			return -1;
 		}
 	}

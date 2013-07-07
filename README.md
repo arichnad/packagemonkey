@@ -133,6 +133,9 @@ URL of the project home page.
 <b>--repository [url]</b><br>
 URL of the version control repository.
 
+<b>--srcdir [directory]</b><br>
+Subdirectory within which source code will be located.  This is typically "src".  The directory should only be one level deep.
+
 <b>--src [url]</b><br>
 URL of the compressed source code.
 

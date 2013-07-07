@@ -47,6 +47,10 @@ void show_help()
 		   "URL of the project home page\n");
 	printf("     --src <url>                " \
 		   "URL of the compressed source code\n");
+	printf("     --srcdir <directory>       " \
+		   "Subdirectory within which source code will be\n" \
+		   "                                " \
+		   "located (typically \"src\")\n");
 	printf("     --section <sections>       " \
 		   "Debian sections\n");
 	printf("     --categories <cat>         " \

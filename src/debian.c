@@ -1568,15 +1568,17 @@ int save_debian(int no_of_binaries, char ** binaries)
 {
 	char debdir[BLOCK_SIZE];
 	char debsourcedir[BLOCK_SIZE];
-	char sourcedir[BLOCK_SIZE];
+	char sourcedirectory[BLOCK_SIZE];
 	char mandir[BLOCK_SIZE];
 	char desktopdir[BLOCK_SIZE];
 	char directory[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
 	int retval=0,i;
 
 	get_setting("commandline",commandline);
+	get_setting("source dir",sourcedir);
 
 	/* create the debian directory */
 	get_setting("directory", directory);
@@ -1595,10 +1597,10 @@ int save_debian(int no_of_binaries, char ** binaries)
 		retval = system(commandstr);
 	}
 	/* create src */
-	sprintf(sourcedir,"%s%csrc",
-			directory, DIRECTORY_SEPARATOR);
-	if (directory_exists(sourcedir)==0) {
-		sprintf(commandstr,"%s %s",COMMAND_MKDIR,sourcedir);
+	sprintf(sourcedirectory,"%s%c%s",
+			directory, DIRECTORY_SEPARATOR, sourcedir);
+	if (directory_exists(sourcedirectory)==0) {
+		sprintf(commandstr,"%s %s",COMMAND_MKDIR,sourcedirectory);
 		retval = system(commandstr);
 	}
 	/* create man */
@@ -1629,8 +1631,8 @@ int save_debian(int no_of_binaries, char ** binaries)
 	for (i = 0; i < no_of_extensions; i++) {
 		if (files_exist(directory,extensions[i]) != 0) {
 			sprintf(commandstr,
-					"cd %s; %s *.%s src",
-					directory, COMMAND_MOVE, extensions[i]);
+					"cd %s; %s *.%s %s",
+					directory, COMMAND_MOVE, extensions[i], sourcedir);
 			retval = system(commandstr);
 		}
 	}
