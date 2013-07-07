@@ -382,10 +382,10 @@ static void save_makefile_install_scripts(char * filename,
 
 	/* ensure that there is an application directory */
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share/$(APP)");
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share/${APP}");
 
 	/* copy script files into the application directory */
-	sprintf(str,"%sr %s/* ${DESTDIR}/usr/share/${APP}",
+	sprintf(str,"%s -rf %s/* ${DESTDIR}/usr/share/${APP}",
 			COMMAND_COPY, sourcedir);
 	add_makefile_entry_to_file(filename, section, str);
 
@@ -583,7 +583,7 @@ void save_makefile_install(char * filename,
 	/* additional install for desktop icons */
 	if (strlen(commandline) == 0) { /* not a commandline project */
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/$(APP)");
+								   "mkdir -m 755 -p ${DESTDIR}/usr/share/${APP}");
 		add_makefile_entry_to_file(filename, section,
 								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
 								   "applications");
@@ -779,7 +779,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	}
 	add_makefile_entry_to_file(filename, "clean", str);
 
-	sprintf(str,"%sr deb.* %s/$(APP) %s/${ARCH_TYPE}",
+	sprintf(str,"%sr deb.* %s/${APP} %s/${ARCH_TYPE}",
 			COMMAND_DELETE, DEB_SUBDIR, RPM_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 	add_makefile_entry_to_file(filename, "clean",

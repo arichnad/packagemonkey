@@ -22,3 +22,4 @@ clean:
 	rm -fr deb.* debian/$(APP) rpmpackage/${ARCH_TYPE}
 	rm -f ../${APP}*.deb ../${APP}*.changes ../${APP}*.asc ../${APP}*.dsc
 	rm -f rpmpackage/*.src.rpm archpackage/*.gz puppypackage/*.gz puppypackage/*.pet
+	rm -fr deb.* debian/${APP} rpmpackage/${ARCH_TYPE}
