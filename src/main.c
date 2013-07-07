@@ -647,6 +647,7 @@ int main(int argc, char* argv[])
 		if (contains_char(mainscript, DIRECTORY_SEPARATOR) != 0) {
 			printf("%s\nThe main script should not contain any path, " \
 				   "just the filename\n", mainscript);
+			return -1;
 		}
 	}
 
