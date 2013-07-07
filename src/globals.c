@@ -722,6 +722,12 @@ void script_version_numbers(FILE * fp,
 			PUPPY_SUBDIR, DIRECTORY_SEPARATOR,
 			PUPPY_SUBDIR, DIRECTORY_SEPARATOR);
 
+	/* alter version number in links Debian library files */
+	fprintf(fp, "sed -i 's/-'" \
+			"${PREV_VERSION}'.so/-'${VERSION}'.so/g'" \
+			" %s%c*.links\n",
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
+
 	fprintf(fp,"%s","\n");
 }
 
