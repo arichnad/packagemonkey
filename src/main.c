@@ -643,6 +643,11 @@ int main(int argc, char* argv[])
 				   "This is the name of the script to be called initially.\n");
 			return -1;
 		}
+		/* check that there is no path within the main script */
+		if (contains_char(mainscript, DIRECTORY_SEPARATOR) != 0) {
+			printf("%s\nThe main script should not contain any path, " \
+				   "just the filename\n", mainscript);
+		}
 	}
 
 	/* check that a brief description as given */
