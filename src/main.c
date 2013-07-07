@@ -635,9 +635,9 @@ int main(int argc, char* argv[])
 		printf("Project Type: %s\n", project_type);
 	}
 
+	get_setting("main script", mainscript);
 	if (is_script_language(project_type) != 0) {
 		/* check that a main script was specified */
-		get_setting("main script", mainscript);
 		if (strlen(mainscript) == 0) {
 			printf("No main script specified.\n" \
 				   "This is the name of the script to be called initially.\n");
@@ -712,6 +712,19 @@ int main(int argc, char* argv[])
     save_configure(directory);
 	save_license(directory);
 	save_debian(no_of_binaries,binaries);
+
+	if ((strlen(mainscript) > 0) &&
+		(is_script_language(project_type) != 0)) {
+		/* check that the main script exists */
+		sprintf(str,"%s%csrc%c%s",
+				directory, DIRECTORY_SEPARATOR,
+				DIRECTORY_SEPARATOR, mainscript);
+		if (file_exists(str) == 0) {
+			printf("Main script %s not found\n", mainscript);
+			return -1;
+		}
+	}
+
 	save_desktop();
 	save_makefile(no_of_binaries,binaries);
 	save_rpm(no_of_binaries,binaries);
