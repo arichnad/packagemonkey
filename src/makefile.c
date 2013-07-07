@@ -637,11 +637,11 @@ void save_makefile_install(char * filename,
 static void save_makefile_scala(char * filename)
 {
 	char str[BLOCK_SIZE];
-	char c_standard[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
 	char sourcedir[BLOCK_SIZE];
+	char build_dir[BLOCK_SIZE];
 
 	/* the project name */
 	get_setting("project name", project_name);
@@ -649,28 +649,28 @@ static void save_makefile_scala(char * filename)
 	/* the type of project */
 	get_setting("project type", project_type);
 
-	/* the standard to be used by gcc/g++ */
-	get_setting("c standard", c_standard);
-
 	/* compiler arguments */
 	get_setting("compile", compile_args);
 
 	/* get the directory within which the source code is located */
 	get_setting("source dir", sourcedir);
 
+	/* directory where results of compilation are held */
+	get_setting("build dir", build_dir);
+
 	if (strcmp(project_type,"scala")==0) {
 		if (is_library(project_name) == 0) {
 			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
-				sprintf(str, "scalac %s%c*.scala %s -sourcepath %s -d build",
+				sprintf(str, "scalac %s%c*.scala %s -sourcepath %s -d %s",
 						sourcedir, DIRECTORY_SEPARATOR,
-						compile_args, sourcedir);
+						compile_args, sourcedir, build_dir);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
-				sprintf(str, "scalac -g %s%c*.scala %s -sourcepath %s -d build",
+				sprintf(str, "scalac -g %s%c*.scala %s -sourcepath %s -d %s",
 						sourcedir, DIRECTORY_SEPARATOR,
-						compile_args, sourcedir);
+						compile_args, sourcedir, build_dir);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}
@@ -684,7 +684,6 @@ static void save_makefile_scala(char * filename)
 static void save_makefile_vala(char * filename)
 {
 	char str[BLOCK_SIZE];
-	char c_standard[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
@@ -695,9 +694,6 @@ static void save_makefile_vala(char * filename)
 
 	/* the type of project */
 	get_setting("project type", project_type);
-
-	/* the standard to be used by gcc/g++ */
-	get_setting("c standard", c_standard);
 
 	/* compiler arguments */
 	get_setting("compile", compile_args);
@@ -854,6 +850,53 @@ static void save_makefile_c(char * filename)
 	}
 }
 
+/* saves Java compile instructions to a makefile */
+static void save_makefile_java(char * filename)
+{
+	char str[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char compile_args[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+	char build_dir[BLOCK_SIZE];
+
+	/* the project name */
+	get_setting("project name", project_name);
+
+	/* the type of project */
+	get_setting("project type", project_type);
+
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
+	/* get the directory within which the source code is located */
+	get_setting("source dir", sourcedir);
+
+	/* directory where results of compilation are held */
+	get_setting("build dir", build_dir);
+
+	if (strcmp(project_type,"java")==0) {
+		if (is_library(project_name) == 0) {
+			/* compile an executable */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "javac %s -d %s -sourcepath %s %s%c${APP}.java",
+						compile_args, build_dir, sourcedir,
+						sourcedir, DIRECTORY_SEPARATOR);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "javac %s -d %s -sourcepath %s %s%c${APP}.java",
+						compile_args, build_dir, sourcedir,
+						sourcedir, DIRECTORY_SEPARATOR);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
+		}
+		else {
+			/* TODO: compile a shared library */
+		}
+	}
+}
+
 /* saves a makefile */
 void save_makefile(int no_of_binaries, char ** binaries)
 {
@@ -915,6 +958,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	save_makefile_cpp(filename);
 	save_makefile_vala(filename);
 	save_makefile_scala(filename);
+	save_makefile_java(filename);
 
 	if (is_library(project_name) == 0) {
 		sprintf(str,"%s ${APP} \\#* \\.#* gnuplot* " \

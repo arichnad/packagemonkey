@@ -125,6 +125,7 @@ int main(int argc, char* argv[])
 	add_setting("c standard","gnu99");
 	add_setting("main script","");
 	add_setting("source dir","src");
+	add_setting("build dir","bin");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
