@@ -633,102 +633,126 @@ void save_makefile_install(char * filename,
 	save_makefile_install_scripts(filename, section);
 }
 
-/* saves a makefile */
-void save_makefile(int no_of_binaries, char ** binaries)
+/* saves Scala compile instructions to a makefile */
+static void save_makefile_scala(char * filename)
 {
-	char directory[BLOCK_SIZE];
-	char filename[BLOCK_SIZE];
 	char str[BLOCK_SIZE];
-	char svg_filename[BLOCK_SIZE];
+	char c_standard[BLOCK_SIZE];
 	char project_type[BLOCK_SIZE];
-	char project_version[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
 	char compile_args[BLOCK_SIZE];
-	char commandline[BLOCK_SIZE];
-	char c_standard[BLOCK_SIZE];
 	char sourcedir[BLOCK_SIZE];
-
-	/* get the project directory */
-	get_setting("directory", directory);
-
-	/* the type of project */
-	get_setting("project type", project_type);
 
 	/* the project name */
 	get_setting("project name", project_name);
 
-	/* the project version */
-	get_setting("version", project_version);
-
-	/* compiler arguments */
-	get_setting("compile", compile_args);
-
-	/* command line project */
-	get_setting("commandline", commandline);
+	/* the type of project */
+	get_setting("project type", project_type);
 
 	/* the standard to be used by gcc/g++ */
 	get_setting("c standard", c_standard);
 
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
 	/* get the directory within which the source code is located */
 	get_setting("source dir", sourcedir);
 
-	/* path and filename */
-	sprintf(filename,"%s%cMakefile", directory,
-			DIRECTORY_SEPARATOR);
-
-	save_makefile_as(filename);
-
-	/* add lines to the makefile if they don't exist */
-	add_makefile_entry_to_file(filename, "source",
-							   "tar -cvzf ../${APP}_${VERSION}.orig.tar.gz " \
-							   "../${APP}-${VERSION} --exclude-vcs");
-
-    save_makefile_install(filename, "install", no_of_binaries, binaries,
-						  project_name, project_type, commandline,
-						  directory, svg_filename);
-	if (is_library(project_name) != 0) {
-		/* this install type will be used when creating packages,
-		   and excludes links */
-		save_makefile_install(filename, "instlib", no_of_binaries, binaries,
-							  project_name, project_type, commandline,
-							  directory, svg_filename);
-	}
-
-	if ((strcmp(project_type,"c")==0) ||
-		(strcmp(project_type,"C")==0)) {
+	if (strcmp(project_type,"scala")==0) {
 		if (is_library(project_name) == 0) {
 			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
-				sprintf(str, "gcc -Wall -std=%s -pedantic " \
-						"-O3 -o ${APP} %s/*.c -I%s %s",
-						c_standard, sourcedir, sourcedir, compile_args);
+				sprintf(str, "scalac %s%c*.scala %s -sourcepath %s -d build",
+						sourcedir, DIRECTORY_SEPARATOR,
+						compile_args, sourcedir);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
-				sprintf(str, "gcc -Wall -std=%s -pedantic " \
-						"-g -o ${APP} %s/*.c -I%s %s",
-						c_standard, sourcedir, sourcedir, compile_args);
+				sprintf(str, "scalac -g %s%c*.scala %s -sourcepath %s -d build",
+						sourcedir, DIRECTORY_SEPARATOR,
+						compile_args, sourcedir);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}
 		else {
-			/* compile a shared library */
+			/* TODO: compile a shared library */
+		}
+	}
+}
+
+/* saves Vala compile instructions to a makefile */
+static void save_makefile_vala(char * filename)
+{
+	char str[BLOCK_SIZE];
+	char c_standard[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char compile_args[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+
+	/* the project name */
+	get_setting("project name", project_name);
+
+	/* the type of project */
+	get_setting("project type", project_type);
+
+	/* the standard to be used by gcc/g++ */
+	get_setting("c standard", c_standard);
+
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
+	/* get the directory within which the source code is located */
+	get_setting("source dir", sourcedir);
+
+	if (strcmp(project_type,"vala")==0) {
+		if (is_library(project_name) == 0) {
+			/* compile an executable */
 			if (empty_makefile_section(filename,"all") == 1) {
-				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=%s -pedantic -fPIC " \
-						"-O3 -o ${LIBNAME} %s/*.c -I%s %s",
-						c_standard, sourcedir, sourcedir, compile_args);
+				sprintf(str, "valac %s%c*.vala %s --basedir %s -o ${APP}",
+						sourcedir, DIRECTORY_SEPARATOR,
+						compile_args, sourcedir);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
-				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
-						"-std=%s -pedantic -fPIC " \
-						"-g -o ${LIBNAME} %s/*.c -I%s %s",
-						c_standard, sourcedir, sourcedir, compile_args);
+				sprintf(str, "valac -g --save-temps %s%c*.vala %s " \
+						"--basedir %s -o ${APP}",
+						sourcedir, DIRECTORY_SEPARATOR,
+						compile_args, sourcedir);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}
+		else {
+			/* TODO: compile a shared library */
+		}
 	}
+}
+
+/* saves C++ compile instructions to a makefile */
+static void save_makefile_cpp(char * filename)
+{
+	char str[BLOCK_SIZE];
+	char c_standard[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char compile_args[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+
+	/* the project name */
+	get_setting("project name", project_name);
+
+	/* the type of project */
+	get_setting("project type", project_type);
+
+	/* the standard to be used by gcc/g++ */
+	get_setting("c standard", c_standard);
+
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
+	/* get the directory within which the source code is located */
+	get_setting("source dir", sourcedir);
+
 	if ((strcmp(project_type,"c++")==0) ||
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
@@ -766,14 +790,139 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			}
 		}
 	}
+}
+
+/* saves C compile instructions to a makefile */
+static void save_makefile_c(char * filename)
+{
+	char str[BLOCK_SIZE];
+	char c_standard[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char compile_args[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+
+	/* the project name */
+	get_setting("project name", project_name);
+
+	/* the type of project */
+	get_setting("project type", project_type);
+
+	/* the standard to be used by gcc/g++ */
+	get_setting("c standard", c_standard);
+
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
+	/* get the directory within which the source code is located */
+	get_setting("source dir", sourcedir);
+
+	if ((strcmp(project_type,"c")==0) ||
+		(strcmp(project_type,"C")==0)) {
+		if (is_library(project_name) == 0) {
+			/* compile an executable */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "gcc -Wall -std=%s -pedantic " \
+						"-O3 -o ${APP} %s/*.c -I%s %s",
+						c_standard, sourcedir, sourcedir, compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "gcc -Wall -std=%s -pedantic " \
+						"-g -o ${APP} %s/*.c -I%s %s",
+						c_standard, sourcedir, sourcedir, compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
+		}
+		else {
+			/* compile a shared library */
+			if (empty_makefile_section(filename,"all") == 1) {
+				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
+						"-std=%s -pedantic -fPIC " \
+						"-O3 -o ${LIBNAME} %s/*.c -I%s %s",
+						c_standard, sourcedir, sourcedir, compile_args);
+				add_makefile_entry_to_file(filename, "all", str);
+			}
+			if (empty_makefile_section(filename,"debug") == 1) {
+				sprintf(str, "gcc -shared -Wl,-soname,${SONAME} " \
+						"-std=%s -pedantic -fPIC " \
+						"-g -o ${LIBNAME} %s/*.c -I%s %s",
+						c_standard, sourcedir, sourcedir, compile_args);
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
+		}
+	}
+}
+
+/* saves a makefile */
+void save_makefile(int no_of_binaries, char ** binaries)
+{
+	char directory[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	char str[BLOCK_SIZE];
+	char svg_filename[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+	char project_version[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char compile_args[BLOCK_SIZE];
+	char commandline[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+
+	/* get the project directory */
+	get_setting("directory", directory);
+
+	/* the type of project */
+	get_setting("project type", project_type);
+
+	/* the project name */
+	get_setting("project name", project_name);
+
+	/* the project version */
+	get_setting("version", project_version);
+
+	/* compiler arguments */
+	get_setting("compile", compile_args);
+
+	/* command line project */
+	get_setting("commandline", commandline);
+
+	/* get the directory within which the source code is located */
+	get_setting("source dir", sourcedir);
+
+	/* path and filename */
+	sprintf(filename,"%s%cMakefile", directory,
+			DIRECTORY_SEPARATOR);
+
+	save_makefile_as(filename);
+
+	/* add lines to the makefile if they don't exist */
+	add_makefile_entry_to_file(filename, "source",
+							   "tar -cvzf ../${APP}_${VERSION}.orig.tar.gz " \
+							   "../${APP}-${VERSION} --exclude-vcs");
+
+    save_makefile_install(filename, "install", no_of_binaries, binaries,
+						  project_name, project_type, commandline,
+						  directory, svg_filename);
+	if (is_library(project_name) != 0) {
+		/* this install type will be used when creating packages,
+		   and excludes links */
+		save_makefile_install(filename, "instlib", no_of_binaries, binaries,
+							  project_name, project_type, commandline,
+							  directory, svg_filename);
+	}
+
+	save_makefile_c(filename);
+	save_makefile_cpp(filename);
+	save_makefile_vala(filename);
+	save_makefile_scala(filename);
 
 	if (is_library(project_name) == 0) {
-		sprintf(str,"%s ${APP} \\#* \\.#* gnuplot* "	\
+		sprintf(str,"%s ${APP} \\#* \\.#* gnuplot* " \
 			"*.png %s/*.substvars %s/*.log",
 			COMMAND_DELETE, DEB_SUBDIR, DEB_SUBDIR);
 	}
 	else {
-		sprintf(str,"%s ${LIBNAME} \\#* \\.#* gnuplot* "	\
+		sprintf(str,"%s ${LIBNAME} \\#* \\.#* gnuplot* " \
 			"*.png %s/*.substvars %s/*.log",
 			COMMAND_DELETE, DEB_SUBDIR, DEB_SUBDIR);
 	}
