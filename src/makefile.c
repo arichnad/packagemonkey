@@ -284,7 +284,7 @@ int add_makefile_entry(char * section, char * entry)
 	return add_makefile_entry_to_file(filename, section, entry);
 }
 
-/* saves a makefile with a given filename */
+/* saves a skeletal makefile with a given filename */
 void save_makefile_as(char * filename)
 {
 	char project_name[BLOCK_SIZE];
@@ -337,6 +337,8 @@ int save_configure(char * directory)
 
 	sprintf(filename,"%s%cconfigure",
 			directory, DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return 0;
 
 	fp = fopen(filename,"w");
 	if (!fp) return 0;

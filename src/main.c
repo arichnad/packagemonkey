@@ -96,6 +96,7 @@ int main(int argc, char* argv[])
 	char description[BLOCK_SIZE];
 	char str[BLOCK_SIZE*4];
 	char test_filename[BLOCK_SIZE];
+	char mainscript[BLOCK_SIZE];
 	char * binaries[MAX_FILES];
 
 	if (argc <= 1) {
@@ -121,6 +122,7 @@ int main(int argc, char* argv[])
 	add_setting("project full name", "");
 	add_setting("mime types","");
 	add_setting("c standard","gnu99");
+	add_setting("main script","");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -167,6 +169,17 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No C standard given\n");
+			}
+		}
+		/* If this is a python project then this specifies the
+		   main script */
+		if (strcmp(argv[i],"--mainscript")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("main script", argv[i]);
+			}
+			else {
+				printf("No main script given\n");
 			}
 		}
 		/* mime types */
@@ -584,6 +597,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	/* check the free desktop categories */
 	get_setting("categories", categories);
 	parse_desktop_category(categories, main_category,
 						   additional_category);
@@ -619,6 +633,16 @@ int main(int argc, char* argv[])
 	if (strlen(project_type) > 0) {
 		add_setting("project type", project_type);
 		printf("Project Type: %s\n", project_type);
+	}
+
+	if (strcmp(project_type, "py") == 0) {
+		/* check that a main script was specified */
+		get_setting("main script", mainscript);
+		if (strlen(mainscript) == 0) {
+			printf("No main script specified.\n" \
+				   "This is the name of the script to be called initially.\n");
+			return -1;
+		}
 	}
 
 	/* check that a brief description as given */
