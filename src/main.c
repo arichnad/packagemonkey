@@ -635,7 +635,7 @@ int main(int argc, char* argv[])
 		printf("Project Type: %s\n", project_type);
 	}
 
-	if (strcmp(project_type, "py") == 0) {
+	if (is_script_language(project_type) != 0) {
 		/* check that a main script was specified */
 		get_setting("main script", mainscript);
 		if (strlen(mainscript) == 0) {

@@ -178,6 +178,9 @@ List the possible desktop file categories.
 <b>--debian [version]</b><br>
 Set the Debian version.
 
+<b>--mainscript [filename]</b><br>
+If the project uses a scripted language, such as Python or Perl, then this specifies the initial script to be run.
+
 <b>--cstandard [standard]</b><br>
 The standard to be used by the gcc or g++ compiler.  Examples are c99 and gnu99.
 

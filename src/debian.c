@@ -1619,10 +1619,12 @@ int save_debian(int no_of_binaries, char ** binaries)
 	}
 
 	/* move any code into the src directory */
-	int no_of_extensions = 18;
+	int no_of_extensions = 30;
 	char * extensions[] =  {
 		"c","cpp","h","py","vala","java","rbbas","rbuistate","rbmnu","rbfrm",
-		"rbtbar","rbvcp","rbres","ico","png","jpg", "jpeg", "gif"
+		"rbtbar","rbvcp","rbres","ico","png","jpg", "jpeg", "gif", "pl", "vapi",
+		"scala", "clj", "xojo_code", "xojo_project", "xojo_uistate", "xojo_menu",
+		"xojo_resources", "xojo_window", "xojo_toolbar", "xojo_binary_project"
 	};
 	for (i = 0; i < no_of_extensions; i++) {
 		if (files_exist(directory,extensions[i]) != 0) {

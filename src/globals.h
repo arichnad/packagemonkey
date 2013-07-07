@@ -87,5 +87,6 @@ void script_version_numbers(FILE * fp,
 void save_description(FILE * fp,
 					  char * description,
 					  int leading_space);
+int is_script_language(char * project_type);
 
 #endif

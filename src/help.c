@@ -75,6 +75,10 @@ void show_help()
 		   "List the possible desktop file categories\n");
 	printf("     --debian <version>         " \
 		   "Set the Debian version\n");
+	printf("     --mainscript <filename>    " \
+		   "If the project uses a scripted language then\n" \
+		   "                                " \
+		   "this specifies the initial script to be run\n");
 	printf("     --cstandard <standard>     " \
 		   "The standard to be used by gcc/g++ (c99, gnu99, etc)\n");
 	printf(" -t  --tests                    " \

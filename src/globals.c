@@ -791,3 +791,15 @@ void save_description(FILE * fp,
 		}
 	}
 }
+
+/* if the given project type is a script language
+   then return a non-zero value */
+int is_script_language(char * project_type)
+{
+	if ((strcmp(project_type,"py") == 0) ||
+		(strcmp(project_type,"pl") == 0)) {
+		return 1;
+	}
+
+	return 0;
+}

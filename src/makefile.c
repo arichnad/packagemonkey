@@ -340,6 +340,7 @@ int save_configure(char * directory)
 
 	if (file_exists(filename) != 0) return 0;
 
+	/* dummy file containing a single space character */
 	fp = fopen(filename,"w");
 	if (!fp) return 0;
 	fprintf(fp,"%s", " ");
@@ -347,6 +348,72 @@ int save_configure(char * directory)
 
 	sprintf(commandstr,"chmod +x %s", filename);
 	return system(commandstr);
+}
+
+/* if the project is written in a scripted language and has a main script
+   specified then copy the scripts to the relevant location */
+static void save_makefile_install_scripts(char * filename,
+										  char * section)
+{
+	char project_type[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char mainscript[BLOCK_SIZE];
+	char str[BLOCK_SIZE];
+	char runscript[BLOCK_SIZE];
+
+	get_setting("project type", project_type);
+	get_setting("project name", project_name);
+	get_setting("main script", mainscript);
+
+	/* only applies to executable applications */
+	if (is_library(project_name) != 0) return;
+
+	/* a main script must have been specified */
+	if (strlen(mainscript) == 0) return;	
+
+	/* if this is not a script language */
+	if (is_script_language(project_type) == 0) return;
+
+	/* ensure that there is a share directory */
+	add_makefile_entry_to_file(filename, section,
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share");
+
+	/* ensure that there is an application directory */
+	add_makefile_entry_to_file(filename, section,
+							   "mkdir -m 755 -p ${DESTDIR}/usr/share/$(APP)");
+
+	/* copy script files into the application directory */
+	sprintf(str,"%sr src/* ${DESTDIR}/usr/share/${APP}",
+			COMMAND_COPY);
+	add_makefile_entry_to_file(filename, section, str);
+
+	/* name of the run script */
+	sprintf(runscript, "${DESTDIR}/usr/bin/${APP}");
+
+	/* create a run script */
+	sprintf(str, "echo '#!/bin/sh' > %s\n", runscript);
+	add_makefile_entry_to_file(filename, section, str);
+
+	/* move to the project directory */
+	sprintf(str, "echo 'cd /usr/share/%s' >> %s\n",
+			project_name, runscript);
+	add_makefile_entry_to_file(filename, section, str);
+
+	/* run the main script */
+	if (strcmp(project_type,"py") == 0) {
+		sprintf(str, "echo 'exec python %s' >> %s\n",
+				mainscript, runscript);
+		add_makefile_entry_to_file(filename, section, str);
+	}
+	if (strcmp(project_type,"pl") == 0) {
+		sprintf(str, "echo 'exec perl %s' >> %s\n",
+				mainscript, runscript);
+		add_makefile_entry_to_file(filename, section, str);
+	}
+
+	/* make the script runable */
+	sprintf(str, "chmod +x %s\n", runscript);
+	add_makefile_entry_to_file(filename, section, str);	
 }
 
 /* saves the install section of a makefile */
@@ -509,7 +576,7 @@ void save_makefile_install(char * filename,
 							   "${DESTDIR}/usr/share/man/man1");
 
 	/* additional install for desktop icons */
-	if (strlen(commandline) == 0) {
+	if (strlen(commandline) == 0) { /* not a commandline project */
 		add_makefile_entry_to_file(filename, section,
 								   "mkdir -m 755 -p ${DESTDIR}/usr/share/$(APP)");
 		add_makefile_entry_to_file(filename, section,
@@ -544,6 +611,8 @@ void save_makefile_install(char * filename,
 								   "24x24/apps/${APP}.png");
 		sprintf(svg_filename,"%s%cdesktop%cicon.svg",
 				directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+
+		/* check for the existence of an SVG icon */
 		if (file_exists(svg_filename) != 0) {
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 644 desktop/icon.svg " \
@@ -554,6 +623,9 @@ void save_makefile_install(char * filename,
 									   "${DESTDIR}/usr/share/pixmaps/${APP}.svg");
 		}
 	}
+
+	/* save any scripts to the appropriate locations */
+	save_makefile_install_scripts(filename, section);
 }
 
 /* saves a makefile */
