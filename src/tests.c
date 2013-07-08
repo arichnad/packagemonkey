@@ -18,6 +18,67 @@
 
 #include "tests.h"
 
+static void test_debian_parse_header()
+{
+	char str[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+
+	printf("test_debian_parse_header...");
+
+	sprintf(str,"%s","packagemonkey (1.23-1) stable; urgency=medium");
+	debian_parse_changelog_header(str, version);
+	assert(strcmp(version,"1.23-1")==0);
+
+	printf("Ok\n");
+}
+
+static void test_debian_parse_footer()
+{
+	char str[BLOCK_SIZE];
+	char email_address[BLOCK_SIZE];
+	char datetime[BLOCK_SIZE];
+
+	printf("test_debian_parse_footer...");
+
+	sprintf(str,"%s"," -- Bob Mottram (4096 bits) <bob@robotics.uk.to>  " \
+			"Sun, 07 Jul 2013 20:28:00 +0100 ");
+	debian_parse_changelog_footer(str, email_address, datetime);
+	assert(strcmp(email_address,"Bob Mottram (4096 bits) <bob@robotics.uk.to>")==0);
+	assert(strcmp(datetime,"Sun, 07 Jul 2013")==0);
+
+	printf("Ok\n");
+
+}
+
+static void test_trim()
+{
+	char str[BLOCK_SIZE];
+
+	printf("test_trim...");
+
+	sprintf(str,"%s","This is a test");
+	trim(str);
+	assert(strcmp(str,"This is a test")==0);
+
+	sprintf(str,"%s","   This is a test");
+	trim(str);
+	assert(strcmp(str,"This is a test")==0);
+
+	sprintf(str,"%s","This is a test   ");
+	trim(str);
+	assert(strcmp(str,"This is a test")==0);
+
+	sprintf(str,"%s","   This is a test   ");
+	trim(str);
+	assert(strcmp(str,"This is a test")==0);
+
+	sprintf(str,"%s","\tThis is a test\t\t");
+	trim(str);
+	assert(strcmp(str,"This is a test")==0);
+
+	printf("Ok\n");
+}
+
 static int test_detect_project()
 {
 	char commandstr[BLOCK_SIZE];
@@ -223,4 +284,7 @@ void run_tests()
 	test_categories();
 	test_makefile();
 	test_detect_project();
+	test_trim();
+	test_debian_parse_header();
+	test_debian_parse_footer();
 }

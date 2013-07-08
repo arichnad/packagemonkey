@@ -402,5 +402,8 @@ int save_rpm(int no_of_binaries, char ** binaries)
 
 	save_script(directory);
 
+	/* import the Debian changelog into the spec file */
+	debian_changelog_to_spec(directory);
+
 	return retval;
 }

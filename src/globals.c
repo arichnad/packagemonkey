@@ -18,6 +18,48 @@
 
 #include "globals.h"
 
+/* removes leading and trailing spaces and tabs from a string */
+void trim(char * str)
+{
+	int i, start=0,end=strlen(str)-1;
+
+	for (i = 0; i < strlen(str); i++) {
+		if ((str[i] != ' ') &&
+			(str[i] != '\t')) {
+			start = i;
+			break;
+		}
+	}
+
+	for (i = strlen(str)-1; i > start; i--) {
+		if ((str[i] != ' ') &&
+			(str[i] != '\t') &&
+			(str[i] != 10) &&
+			(str[i] != 13)) {
+			end = i;
+			break;
+		}		
+	}
+
+	for (i = start; i <= end; i++) {
+		str[i-start] = str[i];
+	}
+	str[i-start] = 0;
+}
+
+/* is the given string a number? */
+int is_numeric(char * str)
+{
+	int i;
+
+	if (strlen(str) == 0) return 0;
+
+	for (i = 0; i < strlen(str); i++) {
+		if ((str[i]<'0') || (str[i]>'9')) return 0;
+	}
+	return 1;
+}
+
 /* returns non-zero value if the given file exists */
 int file_exists(char * filename)
 {

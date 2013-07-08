@@ -51,6 +51,206 @@ char * sections_wheezy[] = {
 	"x11","xfce","zope"
 };
 
+/* extracts the version from the changelog entry header */
+void debian_parse_changelog_header(char * linestr,
+								   char * version)
+{
+	int i,found=0,ctr=0;
+
+	version[0]=0;
+	for (i = 0; i < strlen(linestr)-1; i++) {
+		if (linestr[i] == '(') {
+			found = 1;
+		}
+		else {
+			if (linestr[i] == ')') {
+				found = 0;
+				version[ctr] = 0;
+			}
+			if (found == 1) {
+				version[ctr++] = linestr[i];
+			}
+		}
+	}
+}
+
+/* parses a changelog fotter and returns the
+   email address and date */
+void debian_parse_changelog_footer(char * linestr,
+								   char * email_address,
+								   char * datetime)
+{
+	int i, ctr = 0;
+
+	email_address[0] = 0;
+	datetime[0] = 0;
+	trim(linestr);
+	for (i = strlen(linestr)-1; i >= 4; i--) {
+		if (linestr[i] == ' ') {
+			ctr++;
+			if (ctr == 6) {
+				strncpy(email_address, &linestr[3], i-3);
+				strncpy(datetime, &linestr[i+1],
+						strlen(linestr)-(i+1));
+				trim(email_address);
+				trim(datetime);
+				break;
+			}
+		}
+	}
+
+	/* remove the time from the date */
+	ctr = 0;
+	for (i = 0; i < strlen(datetime); i++) {
+		if (datetime[i] == ' ') {
+			ctr++;
+			if (ctr == 4) {
+				datetime[i] = 0;
+				break;
+			}
+		}
+	}
+}
+
+/* saves Debian changelog to an RPM spec format */
+static int debian_changelog_spec_write(char * directory,
+									   FILE * spec_file)
+{
+	char filename[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+	char versionstr[BLOCK_SIZE];
+	char email_address[BLOCK_SIZE];
+	char datetime[BLOCK_SIZE];
+	FILE * fp;
+	char buffer[BLOCK_SIZE*8];
+	int i, buffer_ctr = -1, entries = 0;
+
+	sprintf(filename,"%s%c%s%cchangelog",
+			directory, DIRECTORY_SEPARATOR,
+			DEB_SUBDIR, DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) == 0) return 0;
+
+	fp = fopen(filename, "r");
+	if (!fp) return 0;
+
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			if (strlen(linestr) <= 1) continue;
+			/* beginning of entry */
+			if ((buffer_ctr == -1) &&
+				(linestr[0] != ' ') &&
+				(linestr[0] != '\t')) {
+				debian_parse_changelog_header(linestr,
+											  versionstr);				
+				buffer_ctr = 0;
+			}
+			else {
+				if (strlen(linestr) > 4) {
+					if ((buffer_ctr != -1) &&
+						(linestr[0] == ' ') &&
+						(linestr[1] == '-') &&
+						(linestr[2] == '-')) {
+						/* end of entry */
+						debian_parse_changelog_footer(linestr,
+													  email_address,
+													  datetime);
+
+						/* write to the spec file */
+						if (entries > 0) {
+							fprintf(spec_file,"%s","\n");
+						}
+						fprintf(spec_file, "* %s %s %s\n",
+								datetime, email_address,
+								versionstr);
+						buffer[buffer_ctr++] = 0;
+						fprintf(spec_file, "%s", buffer);
+						buffer_ctr = -1;
+						entries++;
+					}
+					else {
+						/* line within entry */
+						if (buffer_ctr != -1) {
+							if (linestr[2] == '*') {
+								linestr[2] = '-';
+							}
+							for (i = 2; i < strlen(linestr); i++) {
+								if (buffer_ctr < BLOCK_SIZE*8-2) {
+									buffer[buffer_ctr++] =
+										linestr[i];
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}	
+
+	fclose(fp);
+
+	return 0;
+}
+
+/* moves Debian changelog into an RPM spec file */
+int debian_changelog_to_spec(char * directory)
+{
+	FILE * spec_file, * fp;
+	char spec_filename[BLOCK_SIZE];
+	char temp_filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE];
+
+	/* get the name of the project */
+	get_setting("project name",project_name);
+
+	/* filename of the spec file */
+	sprintf(spec_filename,"%s%c%s%c%s.spec",
+			directory, DIRECTORY_SEPARATOR,
+			RPM_SUBDIR, DIRECTORY_SEPARATOR,
+			project_name);
+
+	/* if the spec file doesn't exist then exit */
+	if (file_exists(spec_filename) == 0) return -1;
+
+	/* read from the spec file */
+	fp = fopen(spec_filename, "r");
+	if (!fp) return -1;
+
+	/* create a temporary file */
+	sprintf(temp_filename,"%s%cpm_changelog",
+			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
+	spec_file = fopen(temp_filename, "w");
+	if (!spec_file) {
+		fclose(fp);
+		return -1;
+	}
+
+	/* write to the temporary file until we get to the changelog section */
+	while (!feof(fp)) {
+		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
+			fprintf(spec_file, "%s", linestr);
+			if (strlen(linestr) == 0) continue;			
+			if (strncmp(linestr,"%changelog",10)==0) {
+				break;
+			}
+		}
+	}
+	fclose(fp);
+
+	/* update the spec file changelog based upon the Debian changelog */
+	debian_changelog_spec_write(directory, spec_file);
+
+	fclose(spec_file);
+
+	/* copy the temporary spec file to the original location */
+	sprintf(commandstr,"%s -f %s %s",
+			COMMAND_COPY, temp_filename, spec_filename);
+	return(system(commandstr));
+}
+
+
 /* returns the version of Debian for which the package
    will be created */
 static float get_debian_version()

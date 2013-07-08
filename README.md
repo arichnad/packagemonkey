@@ -42,8 +42,8 @@ If you wish to generate packages for the packagemonkey application itself then r
 Those scripts may then be run in order to generate packages.  The debian.sh script will generate a package within the directory one level above and the others create their own subdirectories within which the built packages can be found.
 
 
-Example
--------
+Example: Packaging some pre-existing binaries
+---------------------------------------------
 
 As the most likely kind of scenario it is assumed that you have somehow created some binaries or some scripts which you wish to turn into an installable package.
 

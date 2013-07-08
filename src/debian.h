@@ -33,5 +33,11 @@
 void debian_list_sections();
 int debian_valid_section(char * section);
 int save_debian(int no_of_binaries, char ** binaries);
+int debian_changelog_to_spec(char * directory);
+void debian_parse_changelog_header(char * linestr,
+								   char * version);
+void debian_parse_changelog_footer(char * linestr,
+								   char * email_address,
+								   char * datetime);
 
 #endif

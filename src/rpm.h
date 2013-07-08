@@ -28,6 +28,7 @@
 #include "settings.h"
 #include "directory.h"
 #include "desktop.h"
+#include "debian.h"
 
 int save_rpm(int no_of_binaries, char ** binaries);
 

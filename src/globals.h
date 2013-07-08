@@ -58,6 +58,8 @@
 #define PUPPY_SUBDIR  "puppypackage"
 #define EBUILD_SUBDIR "ebuildpackage"
 
+void trim(char * str);
+int is_numeric(char * str);
 int file_exists(char * filename);
 int directory_exists(char * directory);
 void get_file_extension(char * filename, char * extension);
