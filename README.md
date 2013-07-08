@@ -73,6 +73,27 @@ If you list the contents of the current directory (ls *.sh) you should then noti
 
 You can run any or all of these scripts to generate the relevant packages.  An important point to stress here is that with the exception of puppy.sh and ebuild.sh you will need to be running on a suitable system in order to create the package successfully.  So for example to create an RPM you will need to be running an RPM based distro (possibly as a virtual machine).  A handy alternative is to build packages using Open Build Service, which avoids needing to use a lot of virtual machines.
 
+Packaging Scripts
+-----------------
+
+If you are packaging scripts written for an interpreted language, such as Python or Perl, then you don't need to use the install directory as in the previous example.  Put your script files into a subdirectory called src then run something like the following, substituting your own project details.
+
+    packagemonkey -n "My Python Project" --cmd --dir "." -l "bsd" -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" --brief "Example Python Project Packaging" --desc "Example of how to use packagemonkey with a Python project" --homepage "https://myprojecturl" --repository "https://myprojectrepository.git" --section "utils" --version "0.1.2" --categories "Office/Email" --dependsdeb "python (>= 2.7.0)" --mainscript "main.py"
+
+An important option is mainscript which determines which script should be called first.  So in the above example there is expected to exist a script called src/main.py
+
+Packaging Libraries
+-------------------
+
+To package a C, C++ or Vala library put your code into a subdirectory named "src" and ensure that the name of the project and project directory name begins with "lib".  An example is as follows:
+
+    packagemonkey -n "libgpr" --version "1.03" --cmd --dir "." -l "bsd" -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" --brief "Library for genetic programming" --desc "Making the inclusion of Genetic Programming easy within any C/C++ application. Genetic programming (GP) is a powerful technique, inspired by the process of natural selection, which can be utilized to automatically discover programs which produce a desired input to output transformation. Both classical tree-based and Cartesian forms of Genetic Programming are supported, including self-modifying variants." --homepage "https://github.com/fuzzgun/libgpr" --repository "https://github.com/fuzzgun/libgpr.git" --section "libs" --categories "Development/ArtificialIntelligence" --cstandard "c99" --compile "-lm -lz -fopenmp" --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
+
+Changelog
+---------
+
+Once packaging files have been generated then the master changelog is the one within the debian subdirectory.  Changes made to debian/changelog will update the RPM spec file automatically if you subsequently run packagemonkey again to regenerate the files.
+
 Using Packagemonkey with Open Build Service
 -------------------------------------------
 
