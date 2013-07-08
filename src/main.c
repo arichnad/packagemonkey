@@ -113,11 +113,13 @@ int main(int argc, char* argv[])
 	add_setting("release","1");
 	add_setting("depends deb","");
 	add_setting("depends rpm","");
+	add_setting("depends rpm distro","");
 	add_setting("depends arch","");
 	add_setting("depends puppy","");
 	add_setting("depends ebuild","");
 	add_setting("build deb","");
 	add_setting("build rpm","");
+	add_setting("build rpm distro","");
 	add_setting("build arch","");
 	add_setting("source package", "");
 	add_setting("project full name", "");
@@ -376,6 +378,26 @@ int main(int argc, char* argv[])
 				printf("No RPM packages given for the build\n");
 			}
 		}
+		/* distro specific packages needed to build an RPM */
+		if (strcmp(argv[i],"--buildrpmdistro")==0) {
+			i++;
+			if (i < argc) {
+				get_setting("build rpm distro", str);
+				if (strlen(str) == 0) {
+					sprintf(str, "%s", argv[i]);
+				}
+				else {
+					if (strlen(str) + strlen(argv[i]) + 1 < BLOCK_SIZE) {
+						sprintf(&str[strlen(str)], "%c%s",
+								STRING_SEPARATOR, argv[i]);
+					}
+				}
+				add_setting("build rpm distro", str);
+			}
+			else {
+				printf("No distro specific RPM packages given for the build\n");
+			}
+		}
 		/* Arch packages which the build requires */
 		if (strcmp(argv[i],"--buildarch")==0) {
 			i++;
@@ -414,6 +436,26 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No RPM depends packages given\n");
+			}
+		}
+		/* distro specific RPM packages */
+		if (strcmp(argv[i],"--dependsrpmdistro")==0) {
+			i++;
+			if (i < argc) {
+				get_setting("depends rpm distro", str);
+				if (strlen(str) == 0) {
+					sprintf(&str[strlen(str)], "%s", argv[i]);
+				}
+				else {
+					if (strlen(str) + strlen(argv[i]) + 1 < BLOCK_SIZE) {
+						sprintf(&str[strlen(str)], "%c%s",
+								STRING_SEPARATOR, argv[i]);
+					}
+				}
+				add_setting("depends rpm distro", str);
+			}
+			else {
+				printf("No RPM depends distro packages given\n");
 			}
 		}
 		/* Arch packages which this depends upon */

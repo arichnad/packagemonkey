@@ -18,6 +18,86 @@
 
 #include "rpm.h"
 
+/* Saves the Requires and BuildRequires sections, including exception rules */
+static void conditional_requires(FILE * fp,
+								 char * section,
+								 char * requires,
+								 char * requires_distro)
+{
+	char str[BLOCK_SIZE];
+	int start=0, i=0, j, n, ctr=0;
+	char * packages[MAX_FILES];
+
+	fprintf(fp, "%s", "\n");
+
+	while (i < strlen(requires_distro)) {
+		if ((requires_distro[i] == STRING_SEPARATOR) ||
+			(i == strlen(requires_distro)-1)) {
+
+			/* copy the section of the string into str */
+			if (i == strlen(requires_distro)-1) {
+				strncpy(str, &requires_distro[start], i - start + 1);
+				str[i - start + 1] = 0;
+			}
+			else {
+				strncpy(str, &requires_distro[start], i - start);
+				str[i - start] = 0;
+			}
+
+			/* get the separate packages */
+			n = separate_files(str, packages, MAX_FILES);
+			if (n > 1) {
+				/* convert the distro name to lower case */
+				for (j = 0; j < strlen(packages[0]); j++) {
+					packages[0][j] = tolower(packages[0][j]);
+				}
+				/* condition */
+				if (ctr == 0) {
+					fprintf(fp,"%%if 0%%{?%s_version}\n", packages[0]);
+				}
+				else {
+					fprintf(fp,"%%elseif 0%%{?%s_version}\n", packages[0]);
+				}
+				/* packages */
+				fprintf(fp, "%s: ", section);
+				for (j = 1; j < n; j++) {
+					if (j > 1) {
+						fprintf(fp, ", %s", packages[j]);
+					}
+					else {
+						fprintf(fp, "%s", packages[j]);
+					}
+				}
+				fprintf(fp, "%s", "\n");
+				ctr++;
+			}
+
+			/* free allocated memory */
+			for (j = 0; j < n; j++) {
+				free(packages[j]);
+			}
+
+			start = i + 1;
+		}
+		i++;
+	}
+
+	if (strlen(requires) > 0) {
+		if (ctr > 0) {
+			fprintf(fp,"%s","%else\n");
+		}
+		fprintf(fp,"%s: %s\n", section, requires);
+		if (ctr > 0) {
+			fprintf(fp,"%s","%endif\n");
+		}
+	}
+	else {
+		if (ctr > 0) {
+			fprintf(fp,"%s","%endif\n");
+		}
+	}
+}
+
 static int save_spec(char * project_directory,
 					 char * directory,
 					 int no_of_binaries, char ** binaries)
@@ -30,7 +110,9 @@ static int save_spec(char * project_directory,
 	char homepage[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
 	char requires[BLOCK_SIZE];
+	char requires_distro[BLOCK_SIZE];
 	char build_requires[BLOCK_SIZE];
+	char build_requires_distro[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char svg_filename[BLOCK_SIZE];
 	char source_package[BLOCK_SIZE];
@@ -80,7 +162,9 @@ static int save_spec(char * project_directory,
 	get_setting("homepage", homepage);
 	get_setting("email", email_address);
 	get_setting("depends rpm", requires);
+	get_setting("depends rpm distro", requires_distro);
 	get_setting("build rpm", build_requires);
+	get_setting("build rpm distro", build_requires_distro);
 	get_setting("source package", source_package);
 	get_setting("categories", categories);
 	get_setting("release", release);
@@ -109,12 +193,10 @@ static int save_spec(char * project_directory,
 		fprintf(fp,"%s","Group: Application/Utility\n");
 	}
 
-	if (strlen(requires) > 0) {
-		fprintf(fp,"Requires: %s\n",requires);
-	}
-	if (strlen(build_requires) > 0) {
-		fprintf(fp,"BuildRequires: %s\n",build_requires);
-	}
+	conditional_requires(fp, "Requires",
+						 requires, requires_distro);
+	conditional_requires(fp, "BuildRequires",
+						 build_requires, build_requires_distro);
 
 	fprintf(fp,"%s","\n%description\n");
 	save_description(fp, description, 0);

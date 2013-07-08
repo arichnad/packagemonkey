@@ -178,6 +178,16 @@ Deb packages required to build the project.
 <b>--dependsrpm [packages]</b><br>
 RPM packages which the project depends upon.
 
+<b>--dependsrpmdistro [packages]</b><br>
+Distro-specific RPM packages which the project depends upon.  The first entry should be the name of the distro.
+
+For example:
+
+    --dependsrpm "sqlite"
+    --dependsrpmdistro "mandriva, sqlite3"
+
+This will use the package "sqlite" by default, but if the operating system is Mandriva then it will use the "sqlite3" package instead.
+
 <b>--dependsarch [packages]</b><br>
 Arch packages which the project depends upon.
 
@@ -189,6 +199,16 @@ Ebuild packages which the project depends upon.
 
 <b>--buildrpm [packages>]</b><br>
 RPM packages required to build the project.
+
+<b>--buildrpmdistro [packages>]</b><br>
+Distro-specific RPM packages which the project depends upon.  The first entry should be the name of the distro.
+
+For example:
+
+    --buildrpm "sqlite-devel"
+    --buildrpmdistro "mandriva, libsqlite3-devel"
+
+This will use the package "sqlite-devel" by default, but if the operating system is Mandriva then it will use the "libsqlite3-devel" package instead.
 
 <b>--buildarch [packages>]</b><br>
 Arch packages required to build the project.
