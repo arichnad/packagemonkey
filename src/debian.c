@@ -194,7 +194,7 @@ static int debian_changelog_spec_write(char * directory,
 						if (entries > 0) {
 							fprintf(spec_file,"%s","\n");
 						}
-						fprintf(spec_file, "* %s %s %s %s %s %s\n",
+						fprintf(spec_file, "* %s %s %s %s %s - %s\n",
 								dayname, month, monthday, year,
 								email_address, versionstr);
 						buffer[buffer_ctr++] = 0;
