@@ -301,6 +301,8 @@ static int copy_mini_icon(char * directory,
 						  int no_of_binaries, char ** binaries,
 						  char * xpm_filename)
 {
+	char search_filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
 	char commandline[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	int i,ctr=0;
@@ -316,6 +318,53 @@ static int copy_mini_icon(char * directory,
 					directory, DIRECTORY_SEPARATOR,
 					binaries[i]);
 			ctr++;
+		}
+	}
+
+	/* get the name of the project */
+	get_setting("project name", project_name);
+
+	/* search within the desktop directory
+	   for some possible filenames */
+	if (ctr == 0) {
+		for (i = 0; i < 5; i++) {
+			switch(i) {
+			case 0: {
+				sprintf(search_filename, "%s%cdesktop%c%s.xpm",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR, project_name);
+				break;
+			}
+			case 1: {
+				sprintf(search_filename, "%s%cdesktop%cicon.xpm",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR);
+				break;
+			}
+			case 2: {
+				sprintf(search_filename, "%s%cdesktop%cicon14.xpm",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR);
+				break;
+			}
+			case 3: {
+				sprintf(search_filename, "%s%cdesktop%cicon24.xpm",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR);
+				break;
+			}
+			case 4: {
+				sprintf(search_filename, "%s%cdesktop%cicon48.xpm",
+						directory, DIRECTORY_SEPARATOR,
+						DIRECTORY_SEPARATOR);
+				break;
+			}
+			}
+			if (file_exists(search_filename) != 0) {
+				sprintf(xpm_filename, "%s", search_filename);
+				ctr = 1;
+				break;
+			}
 		}
 	}
 
