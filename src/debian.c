@@ -78,9 +78,13 @@ void debian_parse_changelog_header(char * linestr,
    email address and date */
 void debian_parse_changelog_footer(char * linestr,
 								   char * email_address,
-								   char * datetime)
+								   char * dayname,
+								   char * month,
+								   char * monthday,
+								   char * year)
 {
-	int i, ctr = 0;
+	int i, start = 0, ctr = 0;
+	char datetime[BLOCK_SIZE];
 
 	email_address[0] = 0;
 	datetime[0] = 0;
@@ -103,11 +107,36 @@ void debian_parse_changelog_footer(char * linestr,
 	ctr = 0;
 	for (i = 0; i < strlen(datetime); i++) {
 		if (datetime[i] == ' ') {
+
+			switch(ctr) {
+			case 0: {
+				strncpy(dayname,&datetime[start],i-start-1);
+				dayname[i-start-1]=0;
+				break;
+			}
+			case 1: {
+				strncpy(month,&datetime[start],i-start);
+				month[i-start]=0;
+				break;
+			}
+			case 2: {
+				strncpy(monthday,&datetime[start],i-start);
+				monthday[i-start]=0;
+				break;
+			}
+			case 3: {
+				strncpy(year,&datetime[start],i-start);
+				year[i-start]=0;
+				break;
+			}
+			}
+
 			ctr++;
 			if (ctr == 4) {
 				datetime[i] = 0;
 				break;
 			}
+			start=i+1;
 		}
 	}
 }
@@ -120,7 +149,10 @@ static int debian_changelog_spec_write(char * directory,
 	char linestr[BLOCK_SIZE];
 	char versionstr[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
-	char datetime[BLOCK_SIZE];
+	char dayname[BLOCK_SIZE];
+	char monthday[BLOCK_SIZE];
+	char month[BLOCK_SIZE];
+	char year[BLOCK_SIZE];
 	FILE * fp;
 	char buffer[BLOCK_SIZE*8];
 	int i, buffer_ctr = -1, entries = 0;
@@ -154,15 +186,17 @@ static int debian_changelog_spec_write(char * directory,
 						/* end of entry */
 						debian_parse_changelog_footer(linestr,
 													  email_address,
-													  datetime);
+													  dayname,
+													  monthday,
+													  month, year);
 
 						/* write to the spec file */
 						if (entries > 0) {
 							fprintf(spec_file,"%s","\n");
 						}
-						fprintf(spec_file, "* %s %s %s\n",
-								datetime, email_address,
-								versionstr);
+						fprintf(spec_file, "* %s %s %s %s %s %s\n",
+								dayname, month, monthday, year,
+								email_address, versionstr);
 						buffer[buffer_ctr++] = 0;
 						fprintf(spec_file, "%s", buffer);
 						buffer_ctr = -1;
@@ -1303,7 +1337,7 @@ static int save_rules(char * directory,
 	}
 
 	fprintf(fp,"%s","binary-indep: build install\n");
-	fprintf(fp,"%s","			  dh_shlibdeps\n"); /* TODO check */
+	/*fprintf(fp,"%s","			  dh_shlibdeps\n");*/ /* TODO check */
 	fprintf(fp,"%s","			  dh_testdir\n");
 	fprintf(fp,"%s","			  dh_testroot\n");
 	fprintf(fp,"%s","			  dh_installchangelogs\n");

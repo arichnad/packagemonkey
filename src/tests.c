@@ -36,15 +36,24 @@ static void test_debian_parse_footer()
 {
 	char str[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
-	char datetime[BLOCK_SIZE];
+	char dayname[BLOCK_SIZE];
+	char monthday[BLOCK_SIZE];
+	char month[BLOCK_SIZE];
+	char year[BLOCK_SIZE];
 
 	printf("test_debian_parse_footer...");
 
 	sprintf(str,"%s"," -- Bob Mottram (4096 bits) <bob@robotics.uk.to>  " \
 			"Sun, 07 Jul 2013 20:28:00 +0100 ");
-	debian_parse_changelog_footer(str, email_address, datetime);
+	debian_parse_changelog_footer(str, email_address,
+								  dayname, monthday,
+								  month, year);
 	assert(strcmp(email_address,"Bob Mottram (4096 bits) <bob@robotics.uk.to>")==0);
-	assert(strcmp(datetime,"Sun, 07 Jul 2013")==0);
+
+	assert(strcmp(dayname,"Sun")==0);
+	assert(strcmp(monthday,"07")==0);
+	assert(strcmp(month,"Jul")==0);
+	assert(strcmp(year,"2013")==0);
 
 	printf("Ok\n");
 

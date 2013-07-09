@@ -38,6 +38,9 @@ void debian_parse_changelog_header(char * linestr,
 								   char * version);
 void debian_parse_changelog_footer(char * linestr,
 								   char * email_address,
-								   char * datetime);
+								   char * dayname,
+								   char * month,
+								   char * monthday,
+								   char * year);
 
 #endif
