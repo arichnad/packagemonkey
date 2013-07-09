@@ -319,6 +319,8 @@ void save_makefile_as(char * filename)
 
 	fprintf(fp,"install:\n");
 
+	fprintf(fp,"uninstall:\n");
+
 	if (is_library(project_name) != 0) {
 		fprintf(fp,"instlib:\n");
 	}
@@ -418,6 +420,61 @@ static void save_makefile_install_scripts(char * filename,
 	add_makefile_entry_to_file(filename, section, str);	
 }
 
+/* instructions to uninstall */
+static void save_makefile_uninstall(char * filename,
+									char * project_name,
+									char * commandline,
+									int no_of_binaries, char ** binaries)
+{
+	int i;
+	char str[BLOCK_SIZE];
+
+	/* remove any installed binaries */
+	for (i = 0; i < no_of_binaries; i++) {
+		if (get_subdirectory_string(binaries[i]) != 0){
+			if (contains_char(binaries[i],' ')==0) {
+				sprintf(str,"rm -f /%s",
+						get_subdirectory_string(binaries[i]));
+			}
+			else {
+				sprintf(str,"rm -f \"/%s\"",
+						get_subdirectory_string(binaries[i]));
+			}
+			add_makefile_entry_to_file(filename, "uninstall", str);
+		}
+	}
+
+	/* remove the manpage */
+	add_makefile_entry_to_file(filename, "uninstall",
+							   "rm -f /usr/share/man/man1/${APP}.1.gz");
+
+	if (is_library(project_name) == 0) {
+		/* remove the application */
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -rf /usr/share/${APP}");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/bin/${APP}");
+	}
+	else {
+		/* remove the library */
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/lib/${APP}.so");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/lib/${SONAME}");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -rf /usr/include/${APP}");
+	}
+	
+	if (strlen(commandline) == 0) {
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/share/applications/${APP}.desktop");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/share/icons/hicolor/scalable/apps/${APP}.svg");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "/usr/share/pixmaps/${APP}.svg");
+	}
+}
+
 /* saves the install section of a makefile */
 void save_makefile_install(char * filename,
 						   char * section,
@@ -428,7 +485,7 @@ void save_makefile_install(char * filename,
 						   char * directory,
 						   char * svg_filename)
 {
-	int i, j, no_of_directories;
+	int i, no_of_directories;
 	char str[BLOCK_SIZE];
 	char * directories[MAX_FILES];
 	char sourcedir[BLOCK_SIZE];
@@ -515,61 +572,29 @@ void save_makefile_install(char * filename,
 		}
 	}
 
-	if (is_library(project_name) == 0) {
-		/* install binary files from a directory */
-		for (i = 0; i < no_of_binaries; i++) {
-			if (get_subdirectory_string(binaries[i]) != 0){
-				if (contains_char(binaries[i],' ')==0) {
-					sprintf(str,"install -m 755 %s ${DESTDIR}/%s",
-							binaries[i],
-							get_subdirectory_string(binaries[i]));
-				}
-				else {
-					sprintf(str,"install -m 755 \"%s\" ${DESTDIR}\"/%s\"",
-							binaries[i],
-							get_subdirectory_string(binaries[i]));
-				}
-				add_makefile_entry_to_file(filename, section, str);
-			}
-		}
-	}
-	else {
-		/* install library */
-		for (i = 0; i < no_of_binaries; i++) {
-			for (j=strlen(binaries[i])-1; j>=0; j--) {
-				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
-					j++;
-					break;
-				}
-			}
+	/* install binary files from a directory */
+	for (i = 0; i < no_of_binaries; i++) {
+		if (get_subdirectory_string(binaries[i]) != 0){
 			if (contains_char(binaries[i],' ')==0) {
-				sprintf(str,"install -m 755 %s " \
-						"${DESTDIR}/usr/lib/${APP}/%s",
-						binaries[i], &binaries[i][j]);
+				sprintf(str,"install -m 755 %s ${DESTDIR}/%s",
+						binaries[i],
+						get_subdirectory_string(binaries[i]));
 			}
 			else {
-				sprintf(str,"install -m 755 \"%s\" " \
-						"${DESTDIR}\"/usr/lib/${APP}/%s\"",
-						binaries[i], &binaries[i][j]);
+				sprintf(str,"install -m 755 \"%s\" ${DESTDIR}\"/%s\"",
+						binaries[i],
+						get_subdirectory_string(binaries[i]));
 			}
 			add_makefile_entry_to_file(filename, section, str);
-
-			if (is_install_lib == 0) {
-				sprintf(str,"ln -sf ${DESTDIR}/usr/lib/%s.0.0.${RELEASE} " \
-						"${DESTDIR}/usr/lib/%s.so.0",
-						&binaries[i][j], &binaries[i][j]);
-				add_makefile_entry_to_file(filename, section, str);
-
-				sprintf(str,"ln -sf $(DESTDIR)/usr/lib/%s.0.0.${RELEASE} " \
-						"$(DESTDIR)/usr/lib/${APP}/%s.so",
-						&binaries[i][j], &binaries[i][j]);
-				add_makefile_entry_to_file(filename, section, str);
-			}
-		}
-		if (is_install_lib == 0) {
-			add_makefile_entry_to_file(filename, section,"ldconfig");
 		}
 	}
+
+	if ((is_library(project_name) != 0) &&
+		(is_install_lib == 0)) {
+		add_makefile_entry_to_file(filename, section,"ldconfig");
+	}
+
+	/* install the manpage */
 	add_makefile_entry_to_file(filename, section,
 							   "mkdir -m 755 -p ${DESTDIR}/usr/share");
 	add_makefile_entry_to_file(filename, section,
@@ -946,6 +971,10 @@ void save_makefile(int no_of_binaries, char ** binaries)
     save_makefile_install(filename, "install", no_of_binaries, binaries,
 						  project_name, project_type, commandline,
 						  directory, svg_filename);
+
+	save_makefile_uninstall(filename, project_name,
+							commandline, no_of_binaries, binaries);
+
 	if (is_library(project_name) != 0) {
 		/* this install type will be used when creating packages,
 		   and excludes links */
