@@ -411,7 +411,7 @@ static int save_script(char * directory)
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
 	fprintf(fp, "%s", "SOURCE=~/rpmbuild/SOURCES" \
-			"/${APP}-${VERSION}.orig.tar.gz\n\n");
+			"/${APP}_${VERSION}.orig.tar.gz\n\n");
 
 	/* alter the version numbers */
 	script_version_numbers(fp,"rpm");
