@@ -429,13 +429,13 @@ static int save_script(char * directory)
 	fprintf(fp, "%s -p ~/rpmbuild/SOURCES\n", COMMAND_MKDIR);
 	fprintf(fp, "%s", "rm -f ${SOURCE}\n");
 	fprintf(fp, "%s",
-			"# having the root directory called " \
+			"\n# having the root directory called " \
 			"name-version seems essential\n");
 	fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
 	fprintf(fp, "%s",
 			"tar -cvzf ${SOURCE} ../${APP}-${VERSION} " \
 			"--exclude-vcs\n");
-	fprintf(fp, "%s", "# rename the root directory " \
+	fprintf(fp, "%s", "\n# rename the root directory " \
 			"without the version number\n");
 	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n\n");
 

@@ -175,10 +175,10 @@ static int save_script(char * directory)
 	fprintf(fp, "%s", "\n# Create the source code\n");
 	fprintf(fp, "%s", "make clean\n");
 	fprintf(fp, "%s %s/*.gz\n", COMMAND_DELETE, ARCH_SUBDIR);
-	fprintf(fp, "%s", "# having the root directory called name-version seems essential\n");
+	fprintf(fp, "%s", "\n# having the root directory called name-version seems essential\n");
 	fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
 	fprintf(fp, "%s", "tar -cvzf ${SOURCE} ../${APP}-${VERSION} --exclude-vcs\n");
-	fprintf(fp, "%s", "# rename the root directory without the version number\n");
+	fprintf(fp, "%s", "\n# rename the root directory without the version number\n");
 	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
 
 	fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
