@@ -58,6 +58,7 @@
 #define DEB_SUBDIR    "debian"
 #define PUPPY_SUBDIR  "puppypackage"
 #define EBUILD_SUBDIR "ebuildpackage"
+#define SLACK_SUBDIR  "slackpackage"
 
 /* character used to separate multiple lines within a string */
 #define STRING_SEPARATOR '^'

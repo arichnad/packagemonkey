@@ -36,6 +36,7 @@
 #include "arch.h"
 #include "puppy.h"
 #include "ebuild.h"
+#include "slack.h"
 #include "help.h"
 
 /* deallocates memory used for filenames */
@@ -803,6 +804,7 @@ int main(int argc, char* argv[])
 	save_arch();
 	save_puppy(no_of_binaries,binaries);
 	save_ebuild();
+	save_slack();
 
 	/* free memory */
 	free_filenames(binaries,no_of_binaries);
