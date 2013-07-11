@@ -1009,9 +1009,9 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							   "../${APP}*.changes " \
 							   "../${APP}*.asc " \
 							   "../${APP}*.dsc");
-	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.gz %s/*.pet",
+	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.gz %s/*.pet %s/*.txz",
 			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR,
-			PUPPY_SUBDIR, PUPPY_SUBDIR);
+			PUPPY_SUBDIR, PUPPY_SUBDIR, SLACK_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 
 	replace_build_script_version(filename,

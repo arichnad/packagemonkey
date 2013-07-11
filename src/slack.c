@@ -119,6 +119,128 @@ static void save_slack_desc(char * directory)
 	fclose(fp);
 }
 
+static int save_slackbuild(char * directory)
+{
+	char script_filename[BLOCK_SIZE];
+	char build_directory[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char version[BLOCK_SIZE];
+	char release[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	char tarball_base[BLOCK_SIZE];
+	FILE * fp;
+
+	get_setting("project name",project_name);
+	get_setting("version",version);
+	get_setting("release",release);
+
+	/* name of the script to build the package */
+	sprintf(script_filename,"%s%cslack.sh",
+			directory, DIRECTORY_SEPARATOR);
+
+	/* directory in which to build the package */
+	sprintf(build_directory,"~%cpetbuild",
+			DIRECTORY_SEPARATOR);
+
+	/* base name of the tarball */
+	sprintf(tarball_base,"%s","${APP}-${VERSION}-${RELEASE}.tar");
+
+	/* save the script */
+	fp = fopen(script_filename,"w");
+	if (!fp) return -1;
+
+	fprintf(fp,"%s","#!/bin/bash\n\n");
+
+	/* create the build directory /tmp/buildpet/project-version */
+	fprintf(fp,"APP=%s\n",project_name);
+	fprintf(fp,"PREV_VERSION=%s\n",version);
+	fprintf(fp,"VERSION=%s\n",version);
+	fprintf(fp,"RELEASE=%s\n",release);
+	fprintf(fp,"BUILDDIR=%s\n",build_directory);
+	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
+	fprintf(fp,"%s","PROJECTDIR=${BUILDDIR}/${APP}-${VERSION}-${RELEASE}\n");
+
+	/* alter the version numbers */
+	script_version_numbers(fp,"slack");
+
+	/* make directories */
+	fprintf(fp,"%s","\n# Make directories within which the project " \
+			"will be built\n");
+	fprintf(fp,"%s -p ${BUILDDIR}\n",COMMAND_MKDIR);
+	fprintf(fp,"%s -p ${PROJECTDIR}\n",	COMMAND_MKDIR);
+
+	/* build */
+	fprintf(fp,"%s","\n# Build the project\n");
+	fprintf(fp,"%s","make clean\n");
+	fprintf(fp,"%s","make\n");
+	if (is_library(project_name) == 0) {
+		fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
+	}
+	else {
+		fprintf(fp,"%s","make instlib -B DESTDIR=${PROJECTDIR}\n");
+	}
+
+	/* copy the slack-desc and doinst.sh files */
+	fprintf(fp,"%s","\n# Copy the slack-desc and doinst.sh files into " \
+			"the build install directory\n");
+	fprintf(fp, "%s ${PROJECTDIR}%cinstall\n",
+			COMMAND_MKDIR, DIRECTORY_SEPARATOR);
+	fprintf(fp, "%s ${CURRDIR}%c%s%cslack-desc ${PROJECTDIR}%cinstall\n",
+			COMMAND_COPY, DIRECTORY_SEPARATOR,
+			SLACK_SUBDIR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+	fprintf(fp, "%s ${CURRDIR}%c%s%cdoinst.sh ${PROJECTDIR}%cinstall\n",
+			COMMAND_COPY, DIRECTORY_SEPARATOR,
+			SLACK_SUBDIR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
+
+	/* compress the build directory */
+	fprintf(fp,"%s","\n# Compress the build directory\n");
+	fprintf(fp,"%s","cd ${BUILDDIR}\n");
+
+	fprintf(fp,"tar -c -f %s .\n",
+			tarball_base);
+	fprintf(fp,"%s","sync\n");
+	fprintf(fp,"xz %s\n", tarball_base);
+	fprintf(fp,"%s","sync\n");
+	fprintf(fp,"mv %s.xz ${CURRDIR}/%s/${APP}-${VERSION}-${RELEASE}.txz\n",
+			tarball_base, SLACK_SUBDIR);
+
+	/* Move back to the current directory and remove
+	   the temporary directory */
+	fprintf(fp,"%s","cd ${CURRDIR}\n");
+	fprintf(fp,"%s","\n# Remove the temporary build directory\n");
+	fprintf(fp,"%sr ${BUILDDIR}\n", COMMAND_DELETE);
+	fclose(fp);
+
+	sprintf(commandstr,"chmod +x %s", script_filename);
+	return system(commandstr);
+}
+
+/* saves a doinst.sh script if none exists */
+static int save_doinst(char * directory)
+{
+	char filename[BLOCK_SIZE];
+	char commandstr[BLOCK_SIZE];
+	FILE * fp;
+
+	sprintf(filename, "%s%c%s%cdoinst.sh",
+			directory, DIRECTORY_SEPARATOR,
+			SLACK_SUBDIR, DIRECTORY_SEPARATOR);
+
+	if (file_exists(filename) != 0) return 0;
+
+	fp = fopen(filename, "w");
+	if (!fp) return -1;
+
+	fprintf(fp,"%s","#!/bin/sh -e\n\n");
+	fprintf(fp,"%s","# This script is run after installation.\n" \
+			"# Any additional configuration goes here.\n");
+
+	fclose(fp);
+
+	sprintf(commandstr,"chmod +x %s", filename);
+	return system(commandstr);
+}
+
 int save_slack()
 {
 	char directory[BLOCK_SIZE];
@@ -138,8 +260,14 @@ int save_slack()
 		retval = system(commandstr);
 	}
 
+	/* save a doinst script if none exists */
+	save_doinst(directory);
+
 	/* save the package description */
 	save_slack_desc(directory);
+
+	/* save the build script */
+	save_slackbuild(directory);
 
 	return retval;
 }

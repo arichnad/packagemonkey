@@ -708,9 +708,9 @@ void script_version_numbers(FILE * fp,
 							char * script_name)
 {
 	int i, first = 1;
-	const int no_of_scripts = 5;
+	const int no_of_scripts = 6;
 	char * scripts[] = {
-		"debian","rpm","arch","puppy", "ebuild"
+		"debian","rpm","arch","puppy", "ebuild", "slack"
 	};
 
 	fprintf(fp, "%s", "\n# Update version numbers " \
