@@ -379,6 +379,7 @@ static void save_makefile_install_scripts(char * filename,
 	char runscript[BLOCK_SIZE];
 	char sourcedir[BLOCK_SIZE];
 	char library_path[BLOCK_SIZE];
+	char progname[BLOCK_SIZE];
 
 	get_setting("project type", project_type);
 	get_setting("project name", project_name);
@@ -415,27 +416,50 @@ static void save_makefile_install_scripts(char * filename,
 	sprintf(str, "echo '#!/bin/sh' > %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
-	/* add library path */
-	if (strlen(library_path) > 0) {
-		sprintf(str, "echo 'LD_LIBRARY_PATH=%s' >> %s",
-				library_path, runscript);
-		add_makefile_entry_to_file(filename, section, str);
-	}
-
 	/* move to the project directory */
 	sprintf(str, "echo 'cd /usr/share/%s' >> %s",
 			project_name, runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* run the main script */
-	if (strcmp(project_type,"py") == 0) {
-		sprintf(str, "echo 'exec python %s' >> %s",
-				mainscript, runscript);
-		add_makefile_entry_to_file(filename, section, str);
+	if (is_script_language(project_type) != 0) {
+		sprintf(progname,"%s","");
+	    if (strcmp(project_type,"pl") == 0) {
+			sprintf(progname,"%s","perl");
+		}
+	    if (strcmp(project_type,"py") == 0) {
+			sprintf(progname,"%s","python");
+		}
+		if (strlen(progname) > 0) {
+			if (strlen(library_path) > 0) {
+				/* add library path */
+				sprintf(str,
+						"echo 'LD_LIBRARY_PATH=\"%s\" " \
+						"exec %s %s' >> %s",
+						library_path, progname,
+						mainscript, runscript);
+			}
+			else {
+				/* just run the script */
+				sprintf(str, "echo 'exec %s %s' >> %s",
+						progname, mainscript, runscript);
+			}
+			add_makefile_entry_to_file(filename, section, str);
+		}
 	}
 	if (strcmp(project_type,"pl") == 0) {
-		sprintf(str, "echo 'exec perl %s' >> %s",
-				mainscript, runscript);
+		if (strlen(library_path) > 0) {
+			/* add library path */
+			sprintf(str,
+					"echo 'LD_LIBRARY_PATH=\"%s\" " \
+					"exec perl %s' >> %s",
+					library_path, mainscript, runscript);
+		}
+		else {
+			/* just run the script */
+			sprintf(str, "echo 'exec perl %s' >> %s",
+					mainscript, runscript);
+		}
 		add_makefile_entry_to_file(filename, section, str);
 	}
 
