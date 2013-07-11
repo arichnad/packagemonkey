@@ -410,28 +410,28 @@ static void save_makefile_install_scripts(char * filename,
 	sprintf(runscript, "${DESTDIR}/usr/bin/${APP}");
 
 	/* create a run script */
-	sprintf(str, "echo '#!/bin/sh' > %s\n", runscript);
+	sprintf(str, "echo '#!/bin/sh' > %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* move to the project directory */
-	sprintf(str, "echo 'cd /usr/share/%s' >> %s\n",
+	sprintf(str, "echo 'cd /usr/share/%s' >> %s",
 			project_name, runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* run the main script */
 	if (strcmp(project_type,"py") == 0) {
-		sprintf(str, "echo 'exec python %s' >> %s\n",
+		sprintf(str, "echo 'exec python %s' >> %s",
 				mainscript, runscript);
 		add_makefile_entry_to_file(filename, section, str);
 	}
 	if (strcmp(project_type,"pl") == 0) {
-		sprintf(str, "echo 'exec perl %s' >> %s\n",
+		sprintf(str, "echo 'exec perl %s' >> %s",
 				mainscript, runscript);
 		add_makefile_entry_to_file(filename, section, str);
 	}
 
 	/* make the script runable */
-	sprintf(str, "chmod +x %s\n", runscript);
+	sprintf(str, "chmod +x %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);	
 }
 
