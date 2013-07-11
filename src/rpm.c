@@ -104,6 +104,7 @@ static int save_spec(char * project_directory,
 {
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char description_brief[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
@@ -169,6 +170,7 @@ static int save_spec(char * project_directory,
 	get_setting("categories", categories);
 	get_setting("release", release);
 	get_setting("commandline", commandline);
+	get_setting("project type", project_type);
 
 	fprintf(fp,"Name: %s\n",project_name);
 	fprintf(fp,"Version: %s\n",version);
@@ -298,6 +300,10 @@ static int save_spec(char * project_directory,
 			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable\n");
 			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable/apps\n");
 		}
+	}
+
+	if (is_script_language(project_type) != 0) {
+		fprintf(fp,"%s","/usr/share/%{name}/*\n");
 	}
 
 	fprintf(fp,"%s","%{_bindir}/*\n");
