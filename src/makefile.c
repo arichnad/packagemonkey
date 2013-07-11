@@ -378,11 +378,13 @@ static void save_makefile_install_scripts(char * filename,
 	char str[BLOCK_SIZE];
 	char runscript[BLOCK_SIZE];
 	char sourcedir[BLOCK_SIZE];
+	char library_path[BLOCK_SIZE];
 
 	get_setting("project type", project_type);
 	get_setting("project name", project_name);
 	get_setting("main script", mainscript);
 	get_setting("source dir", sourcedir);
+	get_setting("library path", library_path);
 
 	/* only applies to executable applications */
 	if (is_library(project_name) != 0) return;
@@ -412,6 +414,13 @@ static void save_makefile_install_scripts(char * filename,
 	/* create a run script */
 	sprintf(str, "echo '#!/bin/sh' > %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);
+
+	/* add library path */
+	if (strlen(library_path) > 0) {
+		sprintf(str, "echo 'LD_LIBRARY_PATH=%s' >> %s",
+				library_path, runscript);
+		add_makefile_entry_to_file(filename, section, str);
+	}
 
 	/* move to the project directory */
 	sprintf(str, "echo 'cd /usr/share/%s' >> %s",

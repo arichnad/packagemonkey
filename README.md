@@ -230,6 +230,9 @@ If the project uses a scripted language, such as Python or Perl, then this speci
 <b>--cstandard [standard]</b><br>
 The standard to be used by the gcc or g++ compiler.  Examples are c99 and gnu99.
 
+<b>--librarypath [paths]</b><br>
+Specify LD_LIBRARY_PATH.
+
 <b>-t, --tests</b><br>
 Run unit tests.
 

@@ -89,6 +89,8 @@ void show_help()
 		   "this specifies the initial script to be run\n");
 	printf("     --cstandard <standard>        " \
 		   "The standard to be used by gcc/g++ (c99, gnu99, etc)\n");
+	printf("     --librarypath <paths>         " \
+		   "Specify LD_LIBRARY_PATH\n");
 	printf(" -t  --tests                       " \
 		   "Run unit tests\n");
 	printf(" -v  --version                     " \

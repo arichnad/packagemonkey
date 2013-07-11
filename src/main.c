@@ -129,6 +129,7 @@ int main(int argc, char* argv[])
 	add_setting("main script","");
 	add_setting("source dir","src");
 	add_setting("build dir","bin");
+	add_setting("library path", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -186,6 +187,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No main script given\n");
+			}
+		}
+		/* specify LD_LIBRARY_PATH */
+		if (strcmp(argv[i],"--librarypath")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("library path", argv[i]);
+			}
+			else {
+				printf("No library path given\n");
 			}
 		}
 		/* mime types */
