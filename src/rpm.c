@@ -172,24 +172,26 @@ static int save_spec(char * project_directory,
 	get_setting("commandline", commandline);
 	get_setting("project type", project_type);
 
-	fprintf(fp,"Name: %s\n",project_name);
-	fprintf(fp,"Version: %s\n",version);
-	fprintf(fp,"Release: %s%%{?dist}\n",release);
-	fprintf(fp,"Summary: %s\n",description_brief);
-	fprintf(fp,"License: %s\n",license);
-	fprintf(fp,"URL: %s\n",homepage);
-	fprintf(fp,"Packager: %s\n", email_address);   
+	fprintf(fp, "Name: %s\n", project_name);
+	fprintf(fp, "Version: %s\n", version);
+	fprintf(fp, "Release: %s%%{?dist}\n", release);
+	fprintf(fp, "Summary: %s\n", description_brief);
+	fprintf(fp, "License: %s\n", license);
+	fprintf(fp, "URL: %s\n", homepage);
+	fprintf(fp, "Packager: %s\n", email_address);   
 	if (strlen(source_package) > 0) {
-		fprintf(fp,"Source0: %s\n", source_package);
+		fprintf(fp, "Source0: %s\n", source_package);
 	}
 	else {
-		fprintf(fp,"%s",
+		fprintf(fp, "%s",
 				"Source0: http://yourdomainname.com/src/" \
 				"%{name}_%{version}.orig.tar.gz\n");
 	}
 	if (strlen(categories) > 0) {
-		parse_desktop_category(categories, group_main, group_additional);
-		fprintf(fp,"Group: %s/%s\n",group_main,group_additional);
+		parse_desktop_category(categories,
+							   group_main, group_additional);
+		fprintf(fp, "Group: %s/%s\n",
+				group_main,group_additional);
 	}
 	else {
 		fprintf(fp,"%s","Group: Application/Utility\n");
@@ -200,27 +202,27 @@ static int save_spec(char * project_directory,
 	conditional_requires(fp, "BuildRequires",
 						 build_requires, build_requires_distro);
 
-	fprintf(fp,"%s","\n%description\n");
+	fprintf(fp, "%s", "\n%description\n");
 	save_description(fp, description, 0);
 
-	sprintf(svg_filename,"%s%cdesktop%cicon.svg",
+	sprintf(svg_filename, "%s%cdesktop%cicon.svg",
 			project_directory, DIRECTORY_SEPARATOR,
 			DIRECTORY_SEPARATOR);
 
-	fprintf(fp,"%s","\n%prep\n");
-	fprintf(fp,"%s","%setup -q\n\n");
+	fprintf(fp, "%s", "\n%prep\n");
+	fprintf(fp, "%s", "%setup -q\n\n");
 
-	fprintf(fp,"%s","%build\n");
-	fprintf(fp,"%s","%configure\n");
-	fprintf(fp,"%s","make %{?_smp_mflags}\n\n");
+	fprintf(fp, "%s", "%build\n");
+	fprintf(fp, "%s", "%configure\n");
+	fprintf(fp, "%s", "make %{?_smp_mflags}\n\n");
 
-	fprintf(fp,"%s","%install\n");
-	fprintf(fp,"%s","rm -rf %{buildroot}\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/etc\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/etc/%{name}\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/bin\n");
+	fprintf(fp, "%s", "%install\n");
+	fprintf(fp, "%s", "rm -rf %{buildroot}\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/etc\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/etc/%{name}\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/bin\n");
 
 	/* create directories for binaries */
 	if (no_of_binaries > 0) {
@@ -229,7 +231,7 @@ static int save_spec(char * project_directory,
 							directories);
 		for (i = 0; i < no_of_directories; i++) {
 			if (get_subdirectory_string(directories[i]) != 0) {
-				fprintf(fp,"mkdir -p \"%%{buildroot}/%s\"\n",
+				fprintf(fp, "mkdir -p \"%%{buildroot}/%s\"\n",
 						get_subdirectory_string(directories[i]));
 			}
 			free(directories[i]);
@@ -237,41 +239,41 @@ static int save_spec(char * project_directory,
 	}
 
 	if (is_library(project_name) != 0) {
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/lib/%{name}\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/lib\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/lib/%{name}\n");
 	}
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man\n");
-	fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/man/man1\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/man\n");
+	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/man/man1\n");
 
 	if (strlen(commandline) == 0) {
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/%{name}\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/applications\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
-		fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24\n");
-		fprintf(fp,"%s",
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/%{name}\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/applications\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/icons\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/icons/hicolor\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24\n");
+		fprintf(fp, "%s",
 				"mkdir -p %{buildroot}/usr/share/icons/hicolor/24x24/apps\n\n");
 		if (strlen(svg_filename) > 0) {
-			fprintf(fp,"%s","mkdir -p %{buildroot}/usr/share/pixmaps\n");
-			fprintf(fp,"%s",
+			fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/pixmaps\n");
+			fprintf(fp, "%s",
 					"mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable\n");
-			fprintf(fp,"%s",
+			fprintf(fp, "%s",
 					"mkdir -p %{buildroot}/usr/share/icons/hicolor/scalable/apps\n");
 		}
 	}
 
-	fprintf(fp,"%s","# Make install but to the RPM BUILDROOT directory\n");	
+	fprintf(fp, "%s", "# Make install but to the RPM BUILDROOT directory\n");	
 	if (is_library(project_name) == 0) {
-		fprintf(fp,"%s","make install -B DESTDIR=%{buildroot}\n\n");
+		fprintf(fp, "%s", "make install -B DESTDIR=%{buildroot}\n\n");
 	}
 	else {
-		fprintf(fp,"%s","make instlib -B DESTDIR=%{buildroot}\n\n");
+		fprintf(fp, "%s", "make instlib -B DESTDIR=%{buildroot}\n\n");
 	}
 
-	fprintf(fp,"%s","%files\n");
-	fprintf(fp,"%s","%doc README.md LICENSE\n");
-	fprintf(fp,"%s","%defattr(-,root,root,-)\n");
+	fprintf(fp, "%s", "%files\n");
+	fprintf(fp, "%s", "%doc README.md LICENSE\n");
+	fprintf(fp, "%s", "%defattr(-,root,root,-)\n");
 
 	/* claim ownership of directories */
 	no_of_directories =
@@ -280,43 +282,43 @@ static int save_spec(char * project_directory,
 	for (i = 0; i < no_of_directories; i++) {
 		if (get_subdirectory_string(directories[i]) != 0) {
 			if (contains_char(get_subdirectory_string(directories[i]), ' ') == 0) {
-				fprintf(fp,"%%dir /%s\n",get_subdirectory_string(directories[i]));
+				fprintf(fp, "%%dir /%s\n",get_subdirectory_string(directories[i]));
 			}
 			else {
-				fprintf(fp,"%%dir \"/%s\"\n",get_subdirectory_string(directories[i]));
+				fprintf(fp, "%%dir \"/%s\"\n",get_subdirectory_string(directories[i]));
 			}
 		}
 		free(directories[i]);
 	}
 
 	if (strlen(commandline) == 0) {
-		fprintf(fp,"%s","%dir /usr/share/%{name}\n");
-		fprintf(fp,"%s","%dir /usr/share/applications\n");
-		fprintf(fp,"%s","%dir /usr/share/icons/hicolor\n");
-		fprintf(fp,"%s","%dir /usr/share/icons/hicolor/24x24\n");
-		fprintf(fp,"%s","%dir /usr/share/icons/hicolor/24x24/apps\n");
+		fprintf(fp, "%s", "%dir /usr/share/%{name}\n");
+		fprintf(fp, "%s", "%dir /usr/share/applications\n");
+		fprintf(fp, "%s", "%dir /usr/share/icons/hicolor\n");
+		fprintf(fp, "%s", "%dir /usr/share/icons/hicolor/24x24\n");
+		fprintf(fp, "%s", "%dir /usr/share/icons/hicolor/24x24/apps\n");
 		if (strlen(svg_filename) > 0) {
-			fprintf(fp,"%s","%dir /usr/share/pixmaps\n");
-			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable\n");
-			fprintf(fp,"%s","%dir /usr/share/icons/hicolor/scalable/apps\n");
+			fprintf(fp, "%s", "%dir /usr/share/pixmaps\n");
+			fprintf(fp, "%s", "%dir /usr/share/icons/hicolor/scalable\n");
+			fprintf(fp, "%s", "%dir /usr/share/icons/hicolor/scalable/apps\n");
 		}
 	}
 
 	if (is_script_language(project_type) != 0) {
-		fprintf(fp,"%s","/usr/share/%{name}/*\n");
+		fprintf(fp, "%s", "/usr/share/%{name}/*\n");
 	}
 
-	fprintf(fp,"%s","%{_bindir}/*\n");
-	fprintf(fp,"%s","%{_mandir}/man1/*\n");
+	fprintf(fp, "%s", "%{_bindir}/*\n");
+	fprintf(fp, "%s", "%{_mandir}/man1/*\n");
 	if (strlen(commandline) == 0) {
-		fprintf(fp,"%s","%attr(644,root,root) " \
+		fprintf(fp, "%s", "%attr(644,root,root) " \
 				"/usr/share/applications/%{name}.desktop\n");
-		fprintf(fp,"%s","%attr(644,root,root) " \
+		fprintf(fp, "%s", "%attr(644,root,root) " \
 				"/usr/share/icons/hicolor/24x24/apps/%{name}.png\n");
 		if (file_exists(svg_filename) != 0) {
-			fprintf(fp,"%s","%attr(644,root,root) " \
+			fprintf(fp, "%s", "%attr(644,root,root) " \
 					"/usr/share/icons/hicolor/scalable/apps/%{name}.svg\n");
-			fprintf(fp,"%s","%attr(644,root,root) " \
+			fprintf(fp, "%s", "%attr(644,root,root) " \
 					"/usr/share/pixmaps/%{name}.svg\n");
 		}
 	}
@@ -324,11 +326,11 @@ static int save_spec(char * project_directory,
 		/* install some binaries */
 		for (i = 0; i < no_of_binaries; i++) {
 			if (contains_char(get_subdirectory_string(binaries[i]),' ') == 0) {
-				fprintf(fp,"%%attr(755,root,root) /%s\n",
+				fprintf(fp, "%%attr(755,root,root) /%s\n",
 						get_subdirectory_string(binaries[i]));
 			}
 			else {
-				fprintf(fp,"%%attr(755,root,root) \"/%s\"\n",
+				fprintf(fp, "%%attr(755,root,root) \"/%s\"\n",
 						get_subdirectory_string(binaries[i]));
 			}
 		}
@@ -336,7 +338,7 @@ static int save_spec(char * project_directory,
 	else {
 		/* install libraries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp,"%%attr(755,root,root) /usr/lib/%%{name}/%s\n",
+			fprintf(fp, "%%attr(755,root,root) /usr/lib/%%{name}/%s\n",
 					get_subdirectory_string(binaries[i]));
 		}
 	}
@@ -344,9 +346,9 @@ static int save_spec(char * project_directory,
 	fprintf(fp,"%s","\n");
 
 	if (is_library(project_name) != 0) {
-		fprintf(fp,"%s","%post\n");
-		fprintf(fp,"%s","umask 007\n");
-		fprintf(fp,"%s","ldconfig > /dev/null 2>&1\n");
+		fprintf(fp, "%s", "%post\n");
+		fprintf(fp, "%s", "umask 007\n");
+		fprintf(fp, "%s", "ldconfig > /dev/null 2>&1\n");
 
 		for (i = 0; i < no_of_binaries; i++) {
 			for (j = strlen(binaries[i])-1; j >= 0; j--) {
@@ -356,15 +358,16 @@ static int save_spec(char * project_directory,
 				}
 			}
 			if (file_is_library(&binaries[i][j]) != 0) {
-				fprintf(fp,"ln -sf /usr/lib/%s.0.0.1 /usr/lib/%%{name}/%s\n",
+				fprintf(fp,
+						"ln -sf /usr/lib/%s.0.0.1 /usr/lib/%%{name}/%s\n",
 						&binaries[i][j], &binaries[i][j]);
 			}
 		}
-		fprintf(fp,"%s","\n");
+		fprintf(fp, "%s", "\n");
 
-		fprintf(fp,"%s","%postun\n");
-		fprintf(fp,"%s","umask 007\n");
-		fprintf(fp,"%s","ldconfig > /dev/null 2>&1\n");
+		fprintf(fp, "%s", "%postun\n");
+		fprintf(fp, "%s", "umask 007\n");
+		fprintf(fp, "%s", "ldconfig > /dev/null 2>&1\n");
 		for (i = 0; i < no_of_binaries; i++) {
 			for (j = strlen(binaries[i])-1; j >= 0; j--) {
 				if (binaries[i][j] == DIRECTORY_SEPARATOR) {
@@ -373,16 +376,17 @@ static int save_spec(char * project_directory,
 				}
             }
 			if (file_is_library(&binaries[i][j]) != 0) {
-				fprintf(fp,"rm /usr/lib/%s\n",&binaries[i][j]);
+				fprintf(fp, "rm /usr/lib/%s\n", &binaries[i][j]);
 			}
         }
-		fprintf(fp,"%s","\n");
+		fprintf(fp, "%s", "\n");
 	}
 
-	fprintf(fp,"%s","%changelog\n");
-	fprintf(fp,"* %s %s %d %d  %s\n",
-			dayname[weekday], monthname[month], day, year, email_address);
-	fprintf(fp,"%s","- Spec file created\n");
+	fprintf(fp, "%s", "%changelog\n");
+	fprintf(fp, "* %s %s %d %d  %s\n",
+			dayname[weekday], monthname[month],
+			day, year, email_address);
+	fprintf(fp, "%s", "- Spec file created\n");
 
 	fclose(fp);
 	return 0;
