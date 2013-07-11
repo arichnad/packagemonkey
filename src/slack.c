@@ -119,6 +119,7 @@ static void save_slack_desc(char * directory)
 	fclose(fp);
 }
 
+/* saves a script which creates a txz package */
 static int save_slackbuild(char * directory)
 {
 	char script_filename[BLOCK_SIZE];

@@ -10,7 +10,7 @@ Description
 
 Creating installable packages for Linux distros has always been a bit of a black art.  There is a lot of documentation out there and it's often voluminous and not especially easy to interpret.  When doing packaging by hand there are also many ways to go wrong.
 
-Packagemonkey is intended to make packaging simpler, and enable the creation of multiple different types of package including deb, RPM, ebuild, Arch and PET.
+Packagemonkey is intended to make packaging simpler, and enable the creation of multiple different types of package including deb, RPM, ebuild, Arch, PET and TXZ.
 
 Installation
 ------------
@@ -38,6 +38,7 @@ If you wish to generate packages for the packagemonkey application itself then r
     arch.sh
     puppy.sh
     ebuild.sh
+    slack.sh
 
 Those scripts may then be run in order to generate packages.  The debian.sh script will generate a package within the directory one level above and the others create their own subdirectories within which the built packages can be found.
 
@@ -65,11 +66,12 @@ For convenience it may be a good idea to put that into a script, so that it can 
 
 If you list the contents of the current directory (ls *.sh) you should then notice that a number of scripts have been created.
 
-    debian.sh - used to create a Debian package
-    rpm.sh - used to create an RPM package
-    arch.sh - used to create a package for Arch Linux
-    puppy.sh - used to create a package for Puppy Linux
-    ebuild.sh - used to create a package for Gentoo
+    debian.sh - create a Debian package
+    rpm.sh - create an RPM package
+    arch.sh - create a package for Arch Linux
+    puppy.sh - create a package for Puppy Linux
+    ebuild.sh - create a package for Gentoo
+    slack.sh - create a package for Slackware
 
 You can run any or all of these scripts to generate the relevant packages.  An important point to stress here is that with the exception of puppy.sh and ebuild.sh you will need to be running on a suitable system in order to create the package successfully.  So for example to create an RPM you will need to be running an RPM based distro (possibly as a virtual machine).  A handy alternative is to build packages using Open Build Service, which avoids needing to use a lot of virtual machines.
 
