@@ -91,6 +91,8 @@ void show_help()
 		   "The standard to be used by gcc/g++ (c99, gnu99, etc)\n");
 	printf("     --librarypath <paths>         " \
 		   "Specify LD_LIBRARY_PATH\n");
+	printf("     --suggestsdeb                 " \
+		   "Suggested Debian packages\n");
 	printf(" -t  --tests                       " \
 		   "Run unit tests\n");
 	printf(" -v  --version                     " \

@@ -130,6 +130,7 @@ int main(int argc, char* argv[])
 	add_setting("source dir","src");
 	add_setting("build dir","bin");
 	add_setting("library path", "");
+	add_setting("suggests deb", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -176,6 +177,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No C standard given\n");
+			}
+		}
+		/* suggested packages for Debian */
+		if (strcmp(argv[i],"--suggestsdeb")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("suggests deb", argv[i]);
+			}
+			else {
+				printf("No suggests packages given\n");
 			}
 		}
 		/* If this is a python project then this specifies the

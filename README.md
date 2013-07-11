@@ -233,6 +233,9 @@ The standard to be used by the gcc or g++ compiler.  Examples are c99 and gnu99.
 <b>--librarypath [paths]</b><br>
 Specify LD_LIBRARY_PATH.
 
+<b>--suggestsdeb</b><br>
+Suggested Debian packages.
+
 <b>-t, --tests</b><br>
 Run unit tests.
 

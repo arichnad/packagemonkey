@@ -467,6 +467,7 @@ static void save_control()
 	char description_brief[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
+	char suggests[BLOCK_SIZE];
 
 	directory[0]=0;
 	filename[0]=0;
@@ -496,6 +497,7 @@ static void save_control()
 	get_setting("section", section);
 	get_setting("depends deb", depends);
 	get_setting("build deb", build_depends);
+	get_setting("suggests deb", suggests);
 
 	get_debian_standard(standard);
 	get_debhelper_version(dh_version);
@@ -563,6 +565,9 @@ static void save_control()
 		fprintf(fp, ", %s", depends);
 	}
 	fprintf(fp, "%s", "\n");
+	if (strlen(suggests) > 0) {
+		fprintf(fp, "Suggests: %s\n", suggests);
+	}
     fprintf(fp, "Description: %s\n",description_brief);
 
 	save_description(fp, description, 1);
