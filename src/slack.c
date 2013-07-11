@@ -130,57 +130,58 @@ static int save_slackbuild(char * directory)
 	char tarball_base[BLOCK_SIZE];
 	FILE * fp;
 
-	get_setting("project name",project_name);
-	get_setting("version",version);
-	get_setting("release",release);
+	get_setting("project name", project_name);
+	get_setting("version", version);
+	get_setting("release", release);
 
-	/* name of the script to build the package */
-	sprintf(script_filename,"%s%cslack.sh",
+	/* Name of the script to build the package */
+	sprintf(script_filename, "%s%cslack.sh",
 			directory, DIRECTORY_SEPARATOR);
 
-	/* directory in which to build the package */
-	sprintf(build_directory,"~%cpetbuild",
+	/* Directory in which to build the package */
+	sprintf(build_directory, "~%cslackbuild",
 			DIRECTORY_SEPARATOR);
 
-	/* base name of the tarball */
-	sprintf(tarball_base,"%s","${APP}-${VERSION}-${RELEASE}.tar");
+	/* Base name of the tarball */
+	sprintf(tarball_base, "%s", "${APP}-${VERSION}-${RELEASE}.tar");
 
-	/* save the script */
-	fp = fopen(script_filename,"w");
+	/* Save the script */
+	fp = fopen(script_filename, "w");
 	if (!fp) return -1;
 
 	fprintf(fp,"%s","#!/bin/bash\n\n");
 
-	/* create the build directory /tmp/buildpet/project-version */
-	fprintf(fp,"APP=%s\n",project_name);
-	fprintf(fp,"PREV_VERSION=%s\n",version);
-	fprintf(fp,"VERSION=%s\n",version);
-	fprintf(fp,"RELEASE=%s\n",release);
-	fprintf(fp,"BUILDDIR=%s\n",build_directory);
+	/* Create the build directory /tmp/buildpet/project-version */
+	fprintf(fp, "APP=%s\n", project_name);
+	fprintf(fp, "PREV_VERSION=%s\n", version);
+	fprintf(fp, "VERSION=%s\n", version);
+	fprintf(fp, "RELEASE=%s\n", release);
+	fprintf(fp, "ARCH_TYPE=`uname -m`\n");
+	fprintf(fp, "BUILDDIR=%s\n", build_directory);
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
-	fprintf(fp,"%s","PROJECTDIR=${BUILDDIR}/${APP}-${VERSION}-${RELEASE}\n");
+	fprintf(fp, "%s", "PROJECTDIR=${BUILDDIR}/${APP}-${VERSION}-${RELEASE}\n");
 
-	/* alter the version numbers */
-	script_version_numbers(fp,"slack");
+	/* Alter the version numbers */
+	script_version_numbers(fp, "slack");
 
-	/* make directories */
-	fprintf(fp,"%s","\n# Make directories within which the project " \
+	/* Make directories */
+	fprintf(fp, "%s", "\n# Make directories within which the project " \
 			"will be built\n");
-	fprintf(fp,"%s -p ${BUILDDIR}\n",COMMAND_MKDIR);
-	fprintf(fp,"%s -p ${PROJECTDIR}\n",	COMMAND_MKDIR);
+	fprintf(fp, "%s -p ${BUILDDIR}\n", COMMAND_MKDIR);
+	fprintf(fp, "%s -p ${PROJECTDIR}\n", COMMAND_MKDIR);
 
-	/* build */
-	fprintf(fp,"%s","\n# Build the project\n");
-	fprintf(fp,"%s","make clean\n");
-	fprintf(fp,"%s","make\n");
+	/* Build */
+	fprintf(fp, "%s", "\n# Build the project\n");
+	fprintf(fp, "%s", "make clean\n");
+	fprintf(fp, "%s", "make\n");
 	if (is_library(project_name) == 0) {
-		fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
+		fprintf(fp, "%s", "make install -B DESTDIR=${PROJECTDIR}\n");
 	}
 	else {
-		fprintf(fp,"%s","make instlib -B DESTDIR=${PROJECTDIR}\n");
+		fprintf(fp, "%s", "make instlib -B DESTDIR=${PROJECTDIR}\n");
 	}
 
-	/* copy the slack-desc and doinst.sh files */
+	/* Copy the slack-desc and doinst.sh files */
 	fprintf(fp,"%s","\n# Copy the slack-desc and doinst.sh files into " \
 			"the build install directory\n");
 	fprintf(fp, "%s ${PROJECTDIR}%cinstall\n",
@@ -192,26 +193,26 @@ static int save_slackbuild(char * directory)
 			COMMAND_COPY, DIRECTORY_SEPARATOR,
 			SLACK_SUBDIR, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
 
-	/* compress the build directory */
-	fprintf(fp,"%s","\n# Compress the build directory\n");
-	fprintf(fp,"%s","cd ${BUILDDIR}\n");
+	/* Compress the build directory */
+	fprintf(fp, "%s", "\n# Compress the build directory\n");
+	fprintf(fp, "%s", "cd ${BUILDDIR}\n");
 
-	fprintf(fp,"tar -c -f %s .\n",
+	fprintf(fp, "tar -c -f %s .\n",
 			tarball_base);
-	fprintf(fp,"%s","sync\n");
-	fprintf(fp,"xz %s\n", tarball_base);
-	fprintf(fp,"%s","sync\n");
-	fprintf(fp,"mv %s.xz ${CURRDIR}/%s/${APP}-${VERSION}-${RELEASE}.txz\n",
+	fprintf(fp, "%s","sync\n");
+	fprintf(fp, "xz %s\n", tarball_base);
+	fprintf(fp, "%s","sync\n");
+	fprintf(fp, "mv %s.xz ${CURRDIR}/%s/${APP}-${VERSION}-${ARCH_TYPE}-${RELEASE}.txz\n",
 			tarball_base, SLACK_SUBDIR);
 
 	/* Move back to the current directory and remove
 	   the temporary directory */
-	fprintf(fp,"%s","cd ${CURRDIR}\n");
-	fprintf(fp,"%s","\n# Remove the temporary build directory\n");
-	fprintf(fp,"%sr ${BUILDDIR}\n", COMMAND_DELETE);
+	fprintf(fp, "%s", "cd ${CURRDIR}\n");
+	fprintf(fp, "%s", "\n# Remove the temporary build directory\n");
+	fprintf(fp, "%sr ${BUILDDIR}\n", COMMAND_DELETE);
 	fclose(fp);
 
-	sprintf(commandstr,"chmod +x %s", script_filename);
+	sprintf(commandstr, "chmod +x %s", script_filename);
 	return system(commandstr);
 }
 
