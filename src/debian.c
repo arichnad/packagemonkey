@@ -89,13 +89,15 @@ void debian_parse_changelog_footer(char * linestr,
 	email_address[0] = 0;
 	datetime[0] = 0;
 	trim(linestr);
-	for (i = strlen(linestr)-1; i >= 4; i--) {
+	for (i = strlen(linestr)-1; i >= 3; i--) {
 		if (linestr[i] == ' ') {
 			ctr++;
 			if (ctr == 6) {
 				strncpy(email_address, &linestr[3], i-3);
+				email_address[i-3] = 0;
 				strncpy(datetime, &linestr[i+1],
 						strlen(linestr)-(i+1));
+				datetime[strlen(linestr)-(i+1)] = 0;
 				trim(email_address);
 				trim(datetime);
 				break;
@@ -110,23 +112,27 @@ void debian_parse_changelog_footer(char * linestr,
 
 			switch(ctr) {
 			case 0: {
-				strncpy(dayname,&datetime[start],i-start-1);
-				dayname[i-start-1]=0;
+				strncpy(dayname,
+						&datetime[start], i-start-1);
+				dayname[i-start-1] = 0;
 				break;
 			}
 			case 1: {
-				strncpy(month,&datetime[start],i-start);
-				month[i-start]=0;
+				strncpy(month,
+						&datetime[start], i-start);
+				month[i-start] = 0;
 				break;
 			}
 			case 2: {
-				strncpy(monthday,&datetime[start],i-start);
-				monthday[i-start]=0;
+				strncpy(monthday,
+						&datetime[start], i-start);
+				monthday[i-start] = 0;
 				break;
 			}
 			case 3: {
-				strncpy(year,&datetime[start],i-start);
-				year[i-start]=0;
+				strncpy(year,
+						&datetime[start], i-start);
+				year[i-start] = 0;
 				break;
 			}
 			}

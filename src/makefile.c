@@ -91,7 +91,11 @@ int get_makefile_entry_from_file(char * makefilename,
 	int i, j, line_number = 0, is_line;
 	int begin_read = 0, index = -1;
 	FILE * fp;
-	char linestr[BLOCK_SIZE],linestr2[BLOCK_SIZE];
+	char linestr[BLOCK_SIZE], entry_line[BLOCK_SIZE];
+	char makefile_line[BLOCK_SIZE], sectionstr[BLOCK_SIZE];
+
+	/* section name with a colon */
+	sprintf(sectionstr, "%s:", section);
 
 	/* check if the Makefile exists */
 	if (file_exists(makefilename) == 0) return -1;
@@ -99,28 +103,39 @@ int get_makefile_entry_from_file(char * makefilename,
 	fp = fopen(makefilename,"r");
 	if (!fp) return -1;
 
+	/* remove any stray characters from the entry */
+	j = 0;
+	for (i = 0; i < strlen(entry); i++) {
+		if ((entry[i] != '\t') &&
+			(entry[i] != 10) &&
+			(entry[i] != 13)) {
+			entry_line[j++] = entry[i];
+		}
+	}
+	entry_line[j] = 0;
+
 	while (!feof(fp)) {
 		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
 			if (strlen(linestr) == 0) continue;
 			j = 0;
-			is_line=0;
+			is_line = 0;
 			for (i = 0; i < strlen(linestr); i++) {
 				if (linestr[i] != '\t') {
 					if ((linestr[i] != 10) &&
 						(linestr[i] != 13)) {
-						linestr2[j++] = linestr[i];
+						makefile_line[j++] = linestr[i];
 					}				
 				}
 				else {
 					/* this is a line and not a section heading */
-					is_line=1;
+					is_line = 1;
 				}
 			}
-			linestr2[j]=0;
-			if (is_line==0) {
+			makefile_line[j] = 0;
+			if (is_line == 0) {
 				/* compare the section name */
-				if (strncmp(linestr2, section,
-							strlen(section)) == 0) {
+				if (strncmp(makefile_line, sectionstr,
+							strlen(sectionstr)) == 0) {
 					begin_read = 1;
 				}
 				else {
@@ -132,7 +147,7 @@ int get_makefile_entry_from_file(char * makefilename,
 			else {
 				/* compare the line */
 				if (begin_read == 1) {
-					if (strcmp(linestr2, entry) == 0) {
+					if (strcmp(makefile_line, entry_line) == 0) {
 						index = line_number;
 						break;
 					}
@@ -1009,8 +1024,10 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							   "../${APP}*.changes " \
 							   "../${APP}*.asc " \
 							   "../${APP}*.dsc");
-	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.gz %s/*.pet %s/*.txz",
-			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR,
+	sprintf(str,"%s %s/*.src.rpm %s/*.gz",
+			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR);
+	sprintf(str,"%s  %s/*.gz %s/*.pet %s/*.txz",
+			COMMAND_DELETE,
 			PUPPY_SUBDIR, PUPPY_SUBDIR, SLACK_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 
