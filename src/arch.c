@@ -190,7 +190,11 @@ static int save_script(char * directory)
 	fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
 
 	fprintf(fp, "%s", "\n# Create the package\n");
-	fprintf(fp, "%s", "makepkg\n");
+	/*fprintf(fp, "%s", "makepkg\n");*/
+	fprintf(fp, "%s", "tar -c -f ${APP}-${VERSION}.pkg.tar .\n");
+	fprintf(fp, "%s","sync\n");
+	fprintf(fp, "%s", "xz ${APP}-${VERSION}.pkg.tar\n");
+	fprintf(fp, "%s","sync\n");
 
 	fprintf(fp, "%s", "\n# Move back to the original directory\n");
 	fprintf(fp, "%s", "cd ${CURRDIR}\n\n");

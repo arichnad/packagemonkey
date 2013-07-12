@@ -1057,8 +1057,8 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							   "../${APP}*.changes " \
 							   "../${APP}*.asc " \
 							   "../${APP}*.dsc");
-	sprintf(str,"%s %s/*.src.rpm %s/*.gz",
-			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR);
+	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.xz",
+			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR, ARCH_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 	sprintf(str,"%s  %s/*.gz %s/*.pet %s/*.txz",
 			COMMAND_DELETE,
