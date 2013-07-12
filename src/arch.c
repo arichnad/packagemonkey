@@ -71,7 +71,10 @@ static void save_PKGBUILD(char * directory)
 		separate_files(depends, package_list,
 					   MAX_FILES);
 	for (i = 0; i < no_of_packages; i++) {
-		fprintf(fp, " '%s'", package_list[i]);
+		if (i > 0) {
+			fprintf(fp, "%s", " ");
+		}
+		fprintf(fp, "'%s'", package_list[i]);
 		free(package_list[i]);
 	}
 	fprintf(fp,"%s",")\n");
@@ -81,10 +84,10 @@ static void save_PKGBUILD(char * directory)
 		separate_files(build_depends, package_list,
 					   MAX_FILES);
 	for (i = 0; i < no_of_packages; i++) {
-		fprintf(fp, " '%s'", package_list[i]);
-		if (i < no_of_packages-1) {
-			fprintf(fp, "%s"," ");
+		if (i > 0) {
+			fprintf(fp, "%s", " ");
 		}
+		fprintf(fp, "'%s'", package_list[i]);
 		free(package_list[i]);
 	}
 	fprintf(fp,"%s",")\n");
@@ -94,10 +97,10 @@ static void save_PKGBUILD(char * directory)
 		separate_files(optional_depends, package_list,
 					   MAX_FILES);
 	for (i = 0; i < no_of_packages; i++) {
-		fprintf(fp, " '%s'", package_list[i]);
-		if (i < no_of_packages-1) {
-			fprintf(fp, "%s"," ");
+		if (i > 0) {
+			fprintf(fp, "%s", " ");
 		}
+		fprintf(fp, "'%s'", package_list[i]);
 		free(package_list[i]);
 	}
 	fprintf(fp,"%s",")\n");
