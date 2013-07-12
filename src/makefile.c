@@ -506,11 +506,15 @@ static void save_makefile_uninstall(char * filename,
 	else {
 		/* remove the library */
 		add_makefile_entry_to_file(filename, "uninstall",
+								   "rm -f /usr/lib/${LIBNAME}");
+		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -f /usr/lib/${APP}.so");
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -f /usr/lib/${SONAME}");
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -rf /usr/include/${APP}");
+		add_makefile_entry_to_file(filename, "uninstall",
+								   "ldconfig");
 	}
 	
 	if (strlen(commandline) == 0) {
