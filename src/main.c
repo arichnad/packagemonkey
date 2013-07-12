@@ -131,6 +131,7 @@ int main(int argc, char* argv[])
 	add_setting("build dir","bin");
 	add_setting("library path", "");
 	add_setting("suggests deb", "");
+	add_setting("suggests arch", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -186,7 +187,17 @@ int main(int argc, char* argv[])
 				add_setting("suggests deb", argv[i]);
 			}
 			else {
-				printf("No suggests packages given\n");
+				printf("No Debian suggests packages given\n");
+			}
+		}
+		/* suggested packages for Arch */
+		if (strcmp(argv[i],"--suggestsarch")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("suggests arch", argv[i]);
+			}
+			else {
+				printf("No Arch suggests packages given\n");
 			}
 		}
 		/* If this is a python project then this specifies the

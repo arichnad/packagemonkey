@@ -93,6 +93,8 @@ void show_help()
 		   "Specify LD_LIBRARY_PATH\n");
 	printf("     --suggestsdeb                 " \
 		   "Suggested Debian packages\n");
+	printf("     --suggestsarch                " \
+		   "Suggested Arch packages\n");
 	printf(" -t  --tests                       " \
 		   "Run unit tests\n");
 	printf(" -v  --version                     " \

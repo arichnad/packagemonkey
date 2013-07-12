@@ -34,6 +34,7 @@ static void save_PKGBUILD(char * directory)
 	char filename[BLOCK_SIZE];
 	FILE * fp;
 	char * package_list[MAX_FILES];
+	char optional_depends[BLOCK_SIZE];
 	int i, no_of_packages;
 
 	sprintf(filename, "%s%cPKGBUILD",
@@ -50,6 +51,7 @@ static void save_PKGBUILD(char * directory)
 	get_setting("homepage",homepage);
 	get_setting("license",license);
 	get_setting("depends arch",depends);
+	get_setting("suggests arch",optional_depends);
 	get_setting("build arch",build_depends);
 	get_setting("source package",source_package);
 
@@ -87,7 +89,19 @@ static void save_PKGBUILD(char * directory)
 	}
 	fprintf(fp,"%s",")\n");
 
-	fprintf(fp, "%s", "optdepends=()\n");
+	fprintf(fp, "%s", "optdepends=(");
+	no_of_packages =
+		separate_files(optional_depends, package_list,
+					   MAX_FILES);
+	for (i = 0; i < no_of_packages; i++) {
+		fprintf(fp, " '%s'", package_list[i]);
+		if (i < no_of_packages-1) {
+			fprintf(fp, "%s"," ");
+		}
+		free(package_list[i]);
+	}
+	fprintf(fp,"%s",")\n");
+
 	fprintf(fp, "%s", "provides=()\n");
 	fprintf(fp, "%s", "conflicts=()\n");
 	fprintf(fp, "%s", "replaces=()\n");

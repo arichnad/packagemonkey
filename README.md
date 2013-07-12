@@ -236,6 +236,9 @@ Specify LD_LIBRARY_PATH.
 <b>--suggestsdeb</b><br>
 Suggested Debian packages.
 
+<b>--suggestsarch</b><br>
+Suggested Arch packages.
+
 <b>-t, --tests</b><br>
 Run unit tests.
 
