@@ -851,3 +851,37 @@ int is_script_language(char * project_type)
 
 	return 0;
 }
+
+/* Takes an absolute path/filename and returns the
+   relative path/filename to the project directory.
+   This avoids having hardcoded absolute paths in
+   the script */
+void relative_install_path(char * filename,
+						   char * relative,
+						   char * binaries,
+						   char * project_name)
+{
+	char str[BLOCK_SIZE];
+	char * rel;
+	int i;
+
+	sprintf(str, "/%s/", binaries);
+	rel = strstr(filename, str);
+	if (rel == NULL) {
+		sprintf(str,"/%s/",project_name);
+		rel = strstr(filename,str);
+		if (rel == NULL) {
+			sprintf(relative,"%s",filename);
+			return;
+		}
+		else {
+			for (i = 1; i < strlen(rel)-1; i++) {
+				if (rel[i] == '/') {
+					sprintf(relative,"%s",&rel[i+1]);
+					return;					
+				}
+			}
+		}
+	}	
+	sprintf(relative,"%s",&rel[1]);
+}

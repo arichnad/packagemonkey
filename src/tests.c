@@ -18,6 +18,28 @@
 
 #include "tests.h"
 
+static void test_relative_install_path()
+{
+	char filename[BLOCK_SIZE];
+	char relative[BLOCK_SIZE];
+
+    printf("test_relative_install_path...");
+
+	sprintf(filename, "%s", "/home/username/develop/projectname/desktop/somefile.png");
+	relative_install_path(filename, relative,
+						  "install", "projectname");
+	assert(strlen(relative) < strlen(filename));
+	assert(strcmp(relative,"desktop/somefile.png") == 0);
+
+	sprintf(filename, "%s", "/home/username/develop/projectname/install/somefile.png");
+	relative_install_path(filename, relative,
+						  "install", "projectname");
+	assert(strlen(relative) < strlen(filename));
+	assert(strcmp(relative,"install/somefile.png") == 0);
+
+	printf("Ok\n");
+}
+
 static void test_debian_parse_header()
 {
 	char str[BLOCK_SIZE];
@@ -296,4 +318,5 @@ void run_tests()
 	test_trim();
 	test_debian_parse_header();
 	test_debian_parse_footer();
+	test_relative_install_path();
 }
