@@ -60,7 +60,14 @@ Create a subdirectory called "install", then insert your files within that direc
 
 To create packaging files and scripts first make sure that you are in the foobar directory, then you could then run something like:
 
-    packagemonkey --name "Foo Bar" --cmd --dir "." -l "gpl3" -e "Name <name@mydomainname.com>" --brief "Tool to make packaging easier" --desc "Making packing easier than it previously was." --homepage "https://github.com/fuzzgun/packagemonkey.git" --section "utils" --version "0.10" --categories "Utility/ConsoleOnly" --compile "-lz" --dependsdeb "build-essential, lintian"
+    packagemonkey --name "Foo Bar" --cmd --dir "." -l "gpl3" \
+                  -e "Name <name@mydomainname.com>" \
+                  --brief "Tool to make packaging easier" \
+                  --desc "Making packing easier than it previously was." \
+                  --homepage "https://github.com/fuzzgun/packagemonkey.git" \
+                  --section "utils" --version "0.10" \
+                  --categories "Utility/ConsoleOnly" --compile "-lz" \
+                  --dependsdeb "build-essential, lintian"
 
 For convenience it may be a good idea to put that into a script, so that it can easily be called again later without needing to be re-typed.
 
@@ -80,7 +87,15 @@ Packaging Scripts
 
 If you are packaging scripts written for an interpreted language, such as Python or Perl, then you don't need to use the install directory as in the previous example.  Put your script files into a subdirectory called src then run something like the following, substituting your own project details.
 
-    packagemonkey -n "My Python Project" --cmd --dir "." -l "bsd" -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" --brief "Example Python Project Packaging" --desc "Example of how to use packagemonkey with a Python project" --homepage "https://myprojecturl" --repository "https://myprojectrepository.git" --section "utils" --version "0.1.2" --categories "Office/Email" --dependsdeb "python (>= 2.7.0)" --mainscript "main.py"
+    packagemonkey -n "My Python Project" --cmd --dir "." -l "bsd" \
+                  -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
+                  --brief "Example Python Project Packaging" \
+                  --desc "Example of how to use packagemonkey with a " \
+				  "Python project" --homepage "https://myprojecturl" \
+                  --repository "https://myprojectrepository.git" \
+                  --section "utils" --version "0.1.2" \
+                  --categories "Office/Email" \
+                  --dependsdeb "python (>= 2.7.0)" --mainscript "main.py"
 
 An important option is mainscript which determines which script should be called first.  So in the above example there is expected to exist a script called src/main.py
 
@@ -89,7 +104,39 @@ Packaging Libraries
 
 To package a C, C++ or Vala library put your code into a subdirectory named "src" and ensure that the name of the project and project directory name begins with "lib".  An example is as follows:
 
-    packagemonkey -n "libgpr" --version "1.03" --cmd --dir "." -l "bsd" -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" --brief "Library for genetic programming" --desc "Making the inclusion of Genetic Programming easy within any C/C++ application. Genetic programming (GP) is a powerful technique, inspired by the process of natural selection, which can be utilized to automatically discover programs which produce a desired input to output transformation. Both classical tree-based and Cartesian forms of Genetic Programming are supported, including self-modifying variants." --homepage "https://github.com/fuzzgun/libgpr" --repository "https://github.com/fuzzgun/libgpr.git" --section "libs" --categories "Development/ArtificialIntelligence" --cstandard "c99" --compile "-lm -lz -fopenmp" --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
+    packagemonkey -n "libgpr" --version "1.03" --cmd --dir "." -l "bsd" \
+                  -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
+                  --brief "Library for genetic programming" \
+                  --desc "Making the inclusion of Genetic Programming " \
+				  "easy within any C/C++ application. Genetic programming " \
+				  "(GP) is a powerful technique, inspired by the process " \
+				  "of natural selection, which can be utilized to " \
+				  "automatically discover programs which produce a desired " \
+				  "input to output transformation. Both classical " \
+				  "tree-based and Cartesian forms of Genetic Programming " \
+				  "are supported, including self-modifying variants." \
+                  --homepage "https://github.com/fuzzgun/libgpr" \
+				  --repository "https://github.com/fuzzgun/libgpr.git" \
+				  --section "libs" --categories "Development/ArtificialIntelligence" \
+                  --cstandard "c99" --compile "-lm -lz -fopenmp" \
+                  --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
+
+Packaging GUI Applications
+--------------------------
+
+The above examples are all for command line applications. If you're packaging a project which has a GUI then simply omit the --cmd option. You'll need to figure out where to put your application within the various free desktop categories. To see what categories are available type:
+
+   packagemonkey --list-desktop
+
+You should pick a main and additional category, then include those within the --categories option when calling packagemonkey. For example:
+
+   --categories "Utility/Email"
+
+After generating packaging files you will notice that a blank PNG image appears within the desktop subdirectory. This is the desktop icon for your application, so you should edit it accordingly. For maximum compatibility with desktop environments such as Unity or Gnome Shell you should also add an SVG version of the icon within the desktop subdirectory. If you don't already have an SVG then one can be easily created by loading a PNG into Inkscape and then exporting it in SVG format.
+
+If you intend to distribute your application on Puppy Linux then you will also need a mini-icon. This should be a 14x14 pixel icon saved in XPM format within the desktop subdirectory.
+
+Once you have added an SVG or mini-icon to the desktop directory then you should regenerate the packaging again so that the Makefile is updated. 
 
 Changelog
 ---------
