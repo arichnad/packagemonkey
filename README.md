@@ -80,7 +80,7 @@ If you list the contents of the current directory (ls *.sh) you should then noti
     ebuild.sh - create a package for Gentoo
     slack.sh - create a package for Slackware
 
-You can run any or all of these scripts to generate the relevant packages.  An important point to stress here is that with the exception of puppy.sh and ebuild.sh you will need to be running on a suitable system in order to create the package successfully.  So for example to create an RPM you will need to be running an RPM based distro (possibly as a virtual machine).  A handy alternative is to build packages using Open Build Service, which avoids needing to use a lot of virtual machines.
+You can run any or all of these scripts to generate the relevant packages.  An important point to stress here is that for Debian and RPM scripts to produce a package you will need to be running on a suitable operating system which supports those formats.  So for example to create an RPM you will need to be running an RPM based distro (possibly as a virtual machine).  A handy alternative is to build packages using Open Build Service, which avoids needing to use a lot of virtual machines.
 
 Packaging Scripts
 -----------------
