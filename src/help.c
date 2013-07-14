@@ -97,6 +97,8 @@ void show_help()
 		   "Suggested Arch packages\n");
 	printf(" -t  --tests                       " \
 		   "Run unit tests\n");
+	printf("     --pythonversion               " \
+		   "Version of Python to use (2/3)\n");
 	printf(" -v  --version                     " \
 		   "Show or set the project version number\n");
 	printf(" -r  --release                     " \

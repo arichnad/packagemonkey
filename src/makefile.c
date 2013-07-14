@@ -380,6 +380,7 @@ static void save_makefile_install_scripts(char * filename,
 	char sourcedir[BLOCK_SIZE];
 	char library_path[BLOCK_SIZE];
 	char progname[BLOCK_SIZE];
+	char python_version[BLOCK_SIZE];
 
 	get_setting("project type", project_type);
 	get_setting("project name", project_name);
@@ -428,7 +429,20 @@ static void save_makefile_install_scripts(char * filename,
 			sprintf(progname,"%s","perl");
 		}
 	    if (strcmp(project_type,"py") == 0) {
-			sprintf(progname,"%s","python");
+			get_setting("python version", python_version);
+			if (strlen(python_version) > 0) {
+				if (strlen(python_version) == 1) {
+					sprintf(progname,
+							"python%s", python_version);
+				}
+				else {
+					sprintf(progname, "%s",
+							python_version);
+				}
+			}
+			else {
+				sprintf(progname,"%s","python");
+			}
 		}
 		if (strlen(progname) > 0) {
 			if (strlen(library_path) > 0) {

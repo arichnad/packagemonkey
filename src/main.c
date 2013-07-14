@@ -132,6 +132,7 @@ int main(int argc, char* argv[])
 	add_setting("library path", "");
 	add_setting("suggests deb", "");
 	add_setting("suggests arch", "");
+	add_setting("python version", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -198,6 +199,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No Arch suggests packages given\n");
+			}
+		}
+		/* specify the python version to use */
+		if (strcmp(argv[i],"--pythonversion")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("python version", argv[i]);
+			}
+			else {
+				printf("No Python version given\n");
 			}
 		}
 		/* If this is a python project then this specifies the

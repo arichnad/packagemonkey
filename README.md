@@ -286,6 +286,9 @@ Suggested Debian packages.
 <b>--suggestsarch</b><br>
 Suggested Arch packages.
 
+<b>--pythonversion [version number]</b><br>
+Optionally specify the version of Python to use.  This is typically a single digit number 2 or 3.  When the main script is called this governs which Python runtime will be used.  You can also specify the whole runtime name if necessary, such as "python2".
+
 <b>-t, --tests</b><br>
 Run unit tests.
 
