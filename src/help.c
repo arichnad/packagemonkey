@@ -59,8 +59,6 @@ void show_help()
 		   "Mime types which the project can handle\n");
 	printf("     --dependsdeb <packages>       " \
 		   "Deb packages which the project depends upon\n");
-	printf("     --builddeb <packages>         " \
-		   "Deb packages required to build the project\n");
 	printf("     --dependsrpm <packages>       " \
 		   "RPM packages which the project depends upon\n");
 	printf("     --dependsrpmdistro <packages> " \
@@ -71,12 +69,16 @@ void show_help()
 		   "Puppy packages which the project depends upon\n");
 	printf("     --dependsebuild <packages>    " \
 		   "Ebuild packages which the project depends upon\n");
+	printf("     --builddeb <packages>         " \
+		   "Deb packages required to build the project\n");
 	printf("     --buildrpm <packages>         " \
 		   "RPM packages required to build the project\n");
 	printf("     --buildrpmdistro <packages>   " \
 		   "Distro specific build dependencies\n");
 	printf("     --buildarch <packages>        " \
 		   "Arch packages required to build the project\n");
+	printf("     --buildebuild <packages>      " \
+		   "Ebuild packages required to build the project\n");
 	printf("     --list-sections               " \
 		   "List the possible Debian sections\n");
 	printf("     --list-desktop                " \
@@ -99,6 +101,8 @@ void show_help()
 		   "Run unit tests\n");
 	printf("     --pythonversion               " \
 		   "Version of Python to use (2/3)\n");
+	printf("     --pythonreq                   " \
+		   "Ebuild PYTHON_REQ_USE dependencies\n");
 	printf(" -v  --version                     " \
 		   "Show or set the project version number\n");
 	printf(" -r  --release                     " \

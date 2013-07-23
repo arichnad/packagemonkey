@@ -122,6 +122,7 @@ int main(int argc, char* argv[])
 	add_setting("build rpm","");
 	add_setting("build rpm distro","");
 	add_setting("build arch","");
+	add_setting("build ebuild","");
 	add_setting("source package", "");
 	add_setting("project full name", "");
 	add_setting("mime types","");
@@ -133,6 +134,7 @@ int main(int argc, char* argv[])
 	add_setting("suggests deb", "");
 	add_setting("suggests arch", "");
 	add_setting("python version", "");
+	add_setting("python requires", "");
 
 	/* parse options */
 	for (i = 1; i < argc; i++) {
@@ -209,6 +211,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No Python version given\n");
+			}
+		}
+		/* Ebuild PYTHON_REQ_USE */
+		if (strcmp(argv[i],"--pythonreq")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("python requires", argv[i]);
+			}
+			else {
+				printf("No Ebuild PYTHON_REQ_USE given\n");
 			}
 		}
 		/* If this is a python project then this specifies the
@@ -441,6 +453,16 @@ int main(int argc, char* argv[])
 			}
 			else {
 				printf("No distro specific RPM packages given for the build\n");
+			}
+		}
+		/* Ebuild packages which the build requires */
+		if (strcmp(argv[i],"--buildebuild")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("build ebuild",argv[i]);
+			}
+			else {
+				printf("No Ebuild packages given for the build\n");
 			}
 		}
 		/* Arch packages which the build requires */

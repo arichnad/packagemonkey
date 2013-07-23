@@ -262,6 +262,9 @@ This will use the package "sqlite-devel" by default, but if the operating system
 <b>--buildarch [packages>]</b><br>
 Arch packages required to build the project.
 
+<b>--buildebuild [packages>]</b><br>
+Ebuild packages required to build the project.
+
 <b>--list-sections</b><br>
 List the possible Debian sections.
 
@@ -288,6 +291,9 @@ Suggested Arch packages.
 
 <b>--pythonversion [version number]</b><br>
 Optionally specify the version of Python to use.  This is typically a single digit number 2 or 3.  When the main script is called this governs which Python runtime will be used.  You can also specify the whole runtime name if necessary, such as "python2".
+
+<b>--pythonreq [packages]</b><br>
+Ebuild PYTHON_REQ_USE dependencies.
 
 <b>-t, --tests</b><br>
 Run unit tests.

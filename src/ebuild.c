@@ -25,25 +25,36 @@ int save_file(char * directory)
 	char filename[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
 	char license[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char depends[BLOCK_SIZE];
+	char build_depends[BLOCK_SIZE];
 	char repository[BLOCK_SIZE];
 	char installdir[BLOCK_SIZE];
-	char * build_depends[MAX_FILES];
-	int i, no_of_depends, use_git = 0;
+	char python_version[BLOCK_SIZE];
+	char python_requires[BLOCK_SIZE];
+	char * build_depends_files[MAX_FILES];
+	char * depends_files[MAX_FILES];
+	char * python_requires_packages[MAX_FILES];
+	int i, no_of_depends, no_of_build_depends, use_git = 0;
+	int no_of_python_requires;
 
-	get_setting("project name",project_name);
-	get_setting("version",version);
-	get_setting("release",release);
-	get_setting("homepage",homepage);
-	get_setting("license",license);
-	get_setting("depends ebuild",depends);
-	get_setting("description",description);
-	get_setting("vcs repository",repository);
+	get_setting("project name", project_name);
+	get_setting("project type", project_type);
+	get_setting("version", version);
+	get_setting("release", release);
+	get_setting("homepage", homepage);
+	get_setting("license", license);
+	get_setting("build ebuild", build_depends);
+	get_setting("depends ebuild", depends);
+	get_setting("description", description);
+	get_setting("vcs repository", repository);
+	get_setting("python version", python_version);
+	get_setting("python requires", python_requires);
 
 	/* decide whether to use a git repository */
 	sprintf(installdir, "%s%cinstall",
@@ -61,54 +72,103 @@ int save_file(char * directory)
 
 	no_of_depends =
 		separate_files(depends,
-					   build_depends,
+					   depends_files,
 					   MAX_FILES);
 
-	sprintf(filename,"%s%c%s%c%s-%s-%s.ebuild",
+	no_of_build_depends =
+		separate_files(build_depends,
+					   build_depends_files,
+					   MAX_FILES);
+
+	sprintf(filename, "%s%c%s%c%s-%s-%s.ebuild",
 			directory, DIRECTORY_SEPARATOR,
 			EBUILD_SUBDIR, DIRECTORY_SEPARATOR,
 			project_name, version, release);
 
-	fp = fopen(filename,"w");
+	fp = fopen(filename, "w");
 	if (!fp) return -1;
 
 	fprintf(fp,"%s","# $Header: $\n\n");
+	
+	fprintf(fp,"%s","EAPI=5\n\n");
 
-	fprintf(fp,"%s","EAPI=4\n\n");
-
+	/* inherit */
 	if (use_git == 1) {
-		fprintf(fp,"%s","inherit git\n\n");
+		fprintf(fp,"%s","inherit git-2");
+		if (strcmp(project_type,"py")==0) {
+			fprintf(fp,"%s"," python-r1");
+		}
+		fprintf(fp,"%s","\n\n");
+	}
+	else {
+		if (strcmp(project_type,"py")==0) {
+			fprintf(fp,"%s","inherit python-r1\n\n");
+		}
 	}
 
-	fprintf(fp,"DESCRIPTION=\"%s\"\n",description);
-	fprintf(fp,"HOMEPAGE=\"%s\"\n",homepage);
+	/* python specific stuff */
+	if (strcmp(project_type,"py")==0) {
+		if (strlen(python_version) > 0) {
+			if (python_version[0] == '2') {
+				fprintf(fp, "%s", "PYTHON_COMPAT=( python2_7 )\n");
+			}
+		}
+		if (strlen(python_requires)>0) {
+			no_of_python_requires =
+				separate_files(python_requires,
+							   python_requires_packages,
+							   MAX_FILES);
+			if (no_of_python_requires > 0) {
+				fprintf(fp, "PYTHON_REQ_USE=\"%s",
+						python_requires_packages[0]);
+				for (i = 1; i < no_of_python_requires; i++) {
+					fprintf(fp, "\n    %s",
+							python_requires_packages[i]);
+					free(python_requires_packages[i]);
+				}
+				fprintf(fp, "%s", "\"\n");
+			}
+		}
+		fprintf(fp,"%s","REQUIRED_USE=\"${PYTHON_REQUIRED_USE}\"\n");
+	}
+
+	fprintf(fp,"DESCRIPTION=\"%s\"\n", description);
+	fprintf(fp,"HOMEPAGE=\"%s\"\n", homepage);
 
 	if (use_git == 0) {
 		/* use the compressed source code */
-		fprintf(fp,"%s","SRC_URI=\"${PN}/${P}.tar.gz\"\n");
+		fprintf(fp, "%s", "SRC_URI=\"${PN}/${P}.tar.gz\"\n");
 	}
 	else {
 		/* use a git repository */
-		fprintf(fp,"EGIT_REPO_URI=\"%s\"\n", repository);
+		fprintf(fp, "EGIT_REPO_URI=\"%s\"\n", repository);
 	}
 
-	fprintf(fp,"LICENSE=\"%s\"\n",license);
-	fprintf(fp,"%s","SLOT=\"0\"\n");
-	fprintf(fp,"%s","KEYWORDS=\"x86\"\n");
+	fprintf(fp, "LICENSE=\"%s\"\n", license);
+	fprintf(fp, "%s", "SLOT=\"0\"\n");
+	fprintf(fp, "%s", "KEYWORDS=\"x86\"\n");
 
-	fprintf(fp,"%s","RDEPEND=\"dev-libs/popt\"\n");
-	fprintf(fp,"%s","DEPEND=\"${RDEPEND}");
-	for (i = 0; i < no_of_depends; i++) {
-		fprintf(fp,"\n    %s", build_depends[i]);
-		free(build_depends[i]);
+	fprintf(fp, "%s", "DEPEND=\"dev-libs/popt");
+	for (i = 0; i < no_of_build_depends; i++) {
+		fprintf(fp, "\n    %s", build_depends_files[i]);
+		free(build_depends_files[i]);
 	}
 	fprintf(fp,"%s","\"\n");
 
-    fprintf(fp,"%s","\nsrc_configure() {\n");
-    fprintf(fp,"%s","    econf --with-popt\n");
-    fprintf(fp,"%s","}\n\n");
+	fprintf(fp, "%s", "RDEPEND=\"${DEPEND}");
+	for (i = 0; i < no_of_depends; i++) {
+		fprintf(fp, "\n    %s", depends_files[i]);
+		free(depends_files[i]);
+	}
+	fprintf(fp, "%s", "\"\n");
 
-    fprintf(fp,"%s","src_install() {\n");
+    fprintf(fp, "%s", "\nsrc_configure() {\n");
+    fprintf(fp, "%s", "    econf --with-popt\n");
+    fprintf(fp, "%s", "}\n\n");
+
+	fprintf(fp, "%s", "src_compile() { :; }\n\n");
+
+    fprintf(fp, "%s", "src_install() {\n");
 	if (is_library(project_name) == 0) {
 		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" PREFIX=\"/usr\" install\n");
 	}
