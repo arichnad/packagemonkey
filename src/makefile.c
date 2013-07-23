@@ -309,22 +309,23 @@ void save_makefile_as(char * filename)
 	/* check if the Makefile exists */
 	if (file_exists(filename) != 0) return;
 
-	get_setting("project name",project_name);
-	get_setting("version",project_version);
+	get_setting("project name", project_name);
+	get_setting("version", project_version);
 
-	fp = fopen(filename,"w");
+	fp = fopen(filename, "w");
 	if (!fp) return;
 
-	fprintf(fp,"APP=%s\n",project_name);
-	fprintf(fp,"VERSION=%s\n",project_version);
-	fprintf(fp,"%s","RELEASE=1\n");
+	fprintf(fp, "APP=%s\n", project_name);
+	fprintf(fp, "VERSION=%s\n", project_version);
+	fprintf(fp, "%s", "RELEASE=1\n");
 
 	if (is_library(project_name) != 0) {
-		fprintf(fp,"%s","SONAME=${APP}.so.0\n");
-		fprintf(fp,"%s","LIBNAME=${APP}-${VERSION}.so.0.0.${RELEASE}\n");
+		fprintf(fp, "%s", "SONAME=${APP}.so.0\n");
+		fprintf(fp, "%s", "LIBNAME=${APP}-${VERSION}.so.0.0.${RELEASE}\n");
 	}
 
-	fprintf(fp,"ARCH_TYPE=`uname -m`\n\n");
+	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	fprintf(fp, "%s", "PREFIX?=/usr/local\n\n");
 
 	fprintf(fp,"all:\n");
 
@@ -399,26 +400,26 @@ static void save_makefile_install_scripts(char * filename,
 
 	/* ensure that there is a share directory */
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share");
+							   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share");
 
 	/* ensure that there is an application directory */
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share/${APP}");
+							   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/${APP}");
 
 	/* copy script files into the application directory */
-	sprintf(str,"%s -rf %s/* ${DESTDIR}/usr/share/${APP}",
+	sprintf(str,"%s -rf %s/* ${DESTDIR}${PREFIX}/share/${APP}",
 			COMMAND_COPY, sourcedir);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* name of the run script */
-	sprintf(runscript, "${DESTDIR}/usr/bin/${APP}");
+	sprintf(runscript, "${DESTDIR}${PREFIX}/bin/${APP}");
 
 	/* create a run script */
 	sprintf(str, "echo '#!/bin/sh' > %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* move to the project directory */
-	sprintf(str, "echo 'cd /usr/share/%s' >> %s",
+	sprintf(str, "echo 'cd ${PREFIX}/share/%s' >> %s",
 			project_name, runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
@@ -508,36 +509,36 @@ static void save_makefile_uninstall(char * filename,
 
 	/* remove the manpage */
 	add_makefile_entry_to_file(filename, "uninstall",
-							   "rm -f /usr/share/man/man1/${APP}.1.gz");
+							   "rm -f ${PREFIX}/share/man/man1/${APP}.1.gz");
 
 	if (is_library(project_name) == 0) {
 		/* remove the application */
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -rf /usr/share/${APP}");
+								   "rm -rf ${PREFIX}/share/${APP}");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/bin/${APP}");
+								   "rm -f ${PREFIX}/bin/${APP}");
 	}
 	else {
 		/* remove the library */
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/lib/${LIBNAME}");
+								   "rm -f ${PREFIX}/lib/${LIBNAME}");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/lib/${APP}.so");
+								   "rm -f ${PREFIX}/lib/${APP}.so");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/lib/${SONAME}");
+								   "rm -f ${PREFIX}/lib/${SONAME}");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -rf /usr/include/${APP}");
+								   "rm -rf ${PREFIX}/include/${APP}");
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "ldconfig");
 	}
 	
 	if (strlen(commandline) == 0) {
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/share/applications/${APP}.desktop");
+								   "rm -f ${PREFIX}/share/applications/${APP}.desktop");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f /usr/share/icons/hicolor/scalable/apps/${APP}.svg");
+								   "rm -f ${PREFIX}/share/icons/hicolor/scalable/apps/${APP}.svg");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "/usr/share/pixmaps/${APP}.svg");
+								   "${PREFIX}/share/pixmaps/${APP}.svg");
 	}
 }
 
@@ -565,16 +566,19 @@ void save_makefile_install(char * filename,
 
 	add_makefile_entry_to_file(filename, section,
 							   "mkdir -p ${DESTDIR}/usr");
+	
+	add_makefile_entry_to_file(filename, section,
+							   "mkdir -p ${DESTDIR}${PREFIX}");
 
 	if (is_library(project_name) != 0) {
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -p ${DESTDIR}/usr/lib");
+								   "mkdir -p ${DESTDIR}${PREFIX}/lib");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -p ${DESTDIR}/usr/lib/${APP}");
+								   "mkdir -p ${DESTDIR}${PREFIX}/lib/${APP}");
 	}
 	else {
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -p ${DESTDIR}/usr/bin");
+								   "mkdir -p ${DESTDIR}${PREFIX}/bin");
 	}
 
 	/* create directories for binaries */
@@ -608,32 +612,32 @@ void save_makefile_install(char * filename,
 			/* executable */
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 755 --strip ${APP} " \
-									   "${DESTDIR}/usr/bin");
+									   "${DESTDIR}${PREFIX}/bin");
 		}
 		else {
 			/* header files */
-			sprintf(str, "%s -p ${DESTDIR}/usr/include", COMMAND_MKDIR);
+			sprintf(str, "%s -p ${DESTDIR}${PREFIX}/include", COMMAND_MKDIR);
 			add_makefile_entry_to_file(filename, section, str);
 
-			sprintf(str, "%s -p ${DESTDIR}/usr/include/${APP}", COMMAND_MKDIR);
+			sprintf(str, "%s -p ${DESTDIR}${PREFIX}/include/${APP}", COMMAND_MKDIR);
 			add_makefile_entry_to_file(filename, section, str);
 
-			sprintf(str,"%s %s/*.h ${DESTDIR}/usr/include/${APP}",
+			sprintf(str,"%s %s/*.h ${DESTDIR}${PREFIX}/include/${APP}",
 					COMMAND_COPY, sourcedir);
 			add_makefile_entry_to_file(filename, section, str);
 
 			/* library */
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 755 ${LIBNAME} " \
-									   "${DESTDIR}/usr/lib");
+									   "${DESTDIR}${PREFIX}/lib");
 
 			if (is_install_lib == 0) {
 				add_makefile_entry_to_file(filename, section,
-										   "ln -sf ${DESTDIR}/usr/lib/${LIBNAME} " \
-										   "${DESTDIR}/usr/lib/${SONAME}");
+										   "ln -sf ${DESTDIR}${PREFIX}/lib/${LIBNAME} " \
+										   "${DESTDIR}${PREFIX}/lib/${SONAME}");
 				add_makefile_entry_to_file(filename, section,
-										   "ln -sf ${DESTDIR}/usr/lib/${LIBNAME} " \
-										   "${DESTDIR}/usr/lib/${APP}.so");
+										   "ln -sf ${DESTDIR}${PREFIX}/lib/${LIBNAME} " \
+										   "${DESTDIR}${PREFIX}/lib/${APP}.so");
 			}
 		}
 	}
@@ -662,48 +666,48 @@ void save_makefile_install(char * filename,
 
 	/* install the manpage */
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share");
+							   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share");
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share/man");
+							   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/man");
 	add_makefile_entry_to_file(filename, section,
-							   "mkdir -m 755 -p ${DESTDIR}/usr/share/man/man1");
+							   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/man/man1");
 	add_makefile_entry_to_file(filename, section,
 							   "install -m 644 man/${APP}.1.gz " \
-							   "${DESTDIR}/usr/share/man/man1");
+							   "${DESTDIR}${PREFIX}/share/man/man1");
 
 	/* additional install for desktop icons */
 	if (strlen(commandline) == 0) { /* not a commandline project */
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/${APP}");
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/${APP}");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "applications");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/pixmaps");
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/pixmaps");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/icons");
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/icons");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "icons/hicolor");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "icons/hicolor/scalable");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "icons/hicolor/scalable/apps");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "icons/hicolor/24x24");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -m 755 -p ${DESTDIR}/usr/share/" \
+								   "mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/" \
 								   "icons/hicolor/24x24/apps");
 		add_makefile_entry_to_file(filename, section,
 								   "install -m 644 desktop/${APP}.desktop " \
-								   "${DESTDIR}/usr/share/applications/" \
+								   "${DESTDIR}${PREFIX}/share/applications/" \
 								   "${APP}.desktop");
 		add_makefile_entry_to_file(filename, section,
 								   "install -m 644 desktop/icon24.png " \
-								   "${DESTDIR}/usr/share/icons/hicolor/" \
+								   "${DESTDIR}${PREFIX}/share/icons/hicolor/" \
 								   "24x24/apps/${APP}.png");
 		sprintf(svg_filename,"%s%cdesktop%cicon.svg",
 				directory, DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR);
@@ -712,11 +716,11 @@ void save_makefile_install(char * filename,
 		if (file_exists(svg_filename) != 0) {
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 644 desktop/icon.svg " \
-									   "${DESTDIR}/usr/share/icons/hicolor/" \
+									   "${DESTDIR}${PREFIX}/share/icons/hicolor/" \
 									   "scalable/apps/${APP}.svg");
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 644 desktop/icon.svg " \
-									   "${DESTDIR}/usr/share/pixmaps/${APP}.svg");
+									   "${DESTDIR}${PREFIX}/share/pixmaps/${APP}.svg");
 		}
 	}
 

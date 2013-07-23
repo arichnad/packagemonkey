@@ -165,10 +165,10 @@ static int save_script(char * directory,
 	fprintf(fp,"%s","make clean\n");
 	fprintf(fp,"%s","make\n");
 	if (is_library(project_name) == 0) {
-		fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR}\n");
+		fprintf(fp,"%s","make install -B DESTDIR=${PROJECTDIR} PREFIX=/usr\n");
 	}
 	else {
-		fprintf(fp,"%s","make instlib -B DESTDIR=${PROJECTDIR}\n");
+		fprintf(fp,"%s","make instlib -B DESTDIR=${PROJECTDIR} PREFIX=/usr\n");
 	}
 
 	if (strlen(commandline) == 0) {

@@ -1313,6 +1313,7 @@ static int save_rules(char * directory,
 		(is_script_language(project_type) == 0)) {
 		fprintf(fp,"%s","application = ${CURDIR}/${APP}\n");
 	}
+	fprintf(fp,"%s","PREFIX=/usr\n");
 
 	fprintf(fp,"%s","build: build-stamp\n");
 	fprintf(fp,"%s","\tmake\n");
@@ -1341,11 +1342,11 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		 dh_installdirs\n");
 
 	if (is_library(project_name) == 0) {
-		fprintf(fp,"		 ${MAKE} install -B DESTDIR=${CURDIR}/%s/${APP}\n",
+		fprintf(fp,"		 ${MAKE} install -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
 				DEB_SUBDIR);
 	}
 	else {
-		fprintf(fp,"		 ${MAKE} instlib -B DESTDIR=${CURDIR}/%s/${APP}\n",
+		fprintf(fp,"		 ${MAKE} instlib -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
 				DEB_SUBDIR);
 	}
 

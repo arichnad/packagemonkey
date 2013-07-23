@@ -110,10 +110,10 @@ int save_file(char * directory)
 
     fprintf(fp,"%s","src_install() {\n");
 	if (is_library(project_name) == 0) {
-		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" install\n");
+		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" PREFIX=\"/usr\" install\n");
 	}
 	else {
-		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" instlib\n");
+		fprintf(fp,"%s","    emake DESTDIR=\"${D}\" PREFIX=\"/usr\" instlib\n");
 	}
     fprintf(fp,"%s",
 			"    # Install README and (Debian) changelog\n");
