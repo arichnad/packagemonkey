@@ -1150,6 +1150,12 @@ void save_makefile(int no_of_binaries, char ** binaries)
 			PUPPY_SUBDIR, PUPPY_SUBDIR, SLACK_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
 
+	if (is_qt_project() != 0) {
+		/* remove QT build directory */
+		sprintf(str, "%sr ${GUI_DIR}", COMMAND_DELETE);
+		add_makefile_entry_to_file(filename, "clean", str);
+	}
+
 	replace_build_script_version(filename,
 								 project_name,
 								 project_version);
