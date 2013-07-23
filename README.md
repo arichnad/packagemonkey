@@ -138,6 +138,10 @@ If you intend to distribute your application on Puppy Linux then you will also n
 
 Once you have added an SVG or mini-icon to the desktop directory then you should regenerate the packaging again so that the Makefile is updated. 
 
+If you're packaging an application made using Qt Creator then make sure that the project file exists within the src subdirectory and has the same name as the project.  For example:
+
+    src/foobar.pro
+
 Changelog
 ---------
 

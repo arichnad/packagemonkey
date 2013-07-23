@@ -29,3 +29,4 @@ clean:
 	rm -f ../${APP}*.deb ../${APP}*.changes ../${APP}*.asc ../${APP}*.dsc
 	rm -f rpmpackage/*.src.rpm archpackage/*.gz archpackage/*.xz
 	rm -f  puppypackage/*.gz puppypackage/*.pet slackpackage/*.txz
+	rm -f puppypackage/*.gz puppypackage/*.pet slackpackage/*.txz

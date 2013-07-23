@@ -18,6 +18,34 @@
 
 #include "makefile.h"
 
+/* Returns a non-zero value if this is a QT project.
+   If this is a QT project then a file called src/projectname.pro should exist,
+   where "projectname" is the name of the project */
+static int is_qt_project()
+{
+	char directory[BLOCK_SIZE];
+	char sourcedir[BLOCK_SIZE];
+	char filename[BLOCK_SIZE];
+	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
+
+	get_setting("project type", project_type);
+	if (strcmp(project_type, "cpp") == 0) {
+		get_setting("directory", directory);
+		get_setting("source dir", sourcedir);
+		get_setting("project name", project_name);
+
+		sprintf(filename, "%s%c%s%c%s.pro",
+				directory, DIRECTORY_SEPARATOR, sourcedir,
+				DIRECTORY_SEPARATOR, project_name);
+
+		if (file_exists(filename) != 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 /* returns 1 if the given makefile section is empty */
 int empty_makefile_section(char * makefilename,
 						   char * section)
@@ -327,6 +355,14 @@ void save_makefile_as(char * filename)
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
 	fprintf(fp, "%s", "PREFIX?=/usr/local\n\n");
 
+	/* if this is a QT project then create a build directory
+	   for the GUI */
+	if (is_qt_project() != 0) {
+		fprintf(fp, "%s", "CURDIR := $(shell pwd)\n");
+		fprintf(fp, "%s", "GUI_DIR := $(CURDIR)/build\n");
+		fprintf(fp, "%s", "$(shell [ -d \"$(GUI_DIR)\" ] || mkdir -p $(GUI_DIR))\n\n");
+	}
+
 	fprintf(fp,"all:\n");
 
 	fprintf(fp,"debug:\n");
@@ -609,10 +645,18 @@ void save_makefile_install(char * filename,
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
 		if (is_library(project_name) == 0) {
-			/* executable */
-			add_makefile_entry_to_file(filename, section,
-									   "install -m 755 --strip ${APP} " \
-									   "${DESTDIR}${PREFIX}/bin");
+			if (is_qt_project() != 0) {
+				/* QT executable */
+				add_makefile_entry_to_file(filename, section,
+										   "install -m 755 --strip ${GUI_DIR}/${APP} " \
+										   "${DESTDIR}${PREFIX}/bin");
+			}
+			else {
+				/* executable */
+				add_makefile_entry_to_file(filename, section,
+										   "install -m 755 --strip ${APP} " \
+										   "${DESTDIR}${PREFIX}/bin");
+			}
 		}
 		else {
 			/* header files */
@@ -848,19 +892,38 @@ static void save_makefile_cpp(char * filename)
 		(strcmp(project_type,"C++")==0) ||
 		(strcmp(project_type,"cpp")==0) ||
 		(strcmp(project_type,"CPP")==0)) {
+
 		if (is_library(project_name) == 0) {
 			/* compile an executable */
-			if (empty_makefile_section(filename,"all") == 1) {
-				sprintf(str, "g++ -Wall -pedantic -O3 "	\
-						"-o ${APP} %s/*.cpp -I%s %s",
-						sourcedir, sourcedir, compile_args);
+
+			if (is_qt_project() != 0) {
+				/* if this is a QT project then create a Makefile
+				   using qmake */
+				sprintf(str, "%s",
+						"qmake ${CURDIR}/src/${APP}.pro -o " \
+						"${GUI_DIR}/Makefile");
 				add_makefile_entry_to_file(filename, "all", str);
-			}
-			if (empty_makefile_section(filename,"debug") == 1) {
-				sprintf(str, "g++ -Wall -pedantic -g " \
-						"-o ${APP} %s/*.cpp -I%s %s",
-						sourcedir, sourcedir, compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
+
+				sprintf(str, "%s", "$(MAKE) -C $(GUI_DIR)");
+				add_makefile_entry_to_file(filename, "all", str);
+
+				sprintf(str, "%s", "$(MAKE) -C $(GUI_DIR)/ debug");
+				add_makefile_entry_to_file(filename, "debug", str);
+			}
+			else {
+				if (empty_makefile_section(filename,"all") == 1) {
+					sprintf(str, "g++ -Wall -pedantic -O3 "	\
+							"-o ${APP} %s/*.cpp -I%s %s",
+							sourcedir, sourcedir, compile_args);
+					add_makefile_entry_to_file(filename, "all", str);
+				}
+				if (empty_makefile_section(filename,"debug") == 1) {
+					sprintf(str, "g++ -Wall -pedantic -g " \
+							"-o ${APP} %s/*.cpp -I%s %s",
+							sourcedir, sourcedir, compile_args);
+					add_makefile_entry_to_file(filename, "debug", str);
+				}
 			}
 		}
 		else {
