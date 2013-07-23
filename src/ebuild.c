@@ -31,8 +31,10 @@ int save_file(char * directory)
 	char license[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char depends[BLOCK_SIZE];
+	char repository[BLOCK_SIZE];
+	char installdir[BLOCK_SIZE];
 	char * build_depends[MAX_FILES];
-	int i, no_of_depends;
+	int i, no_of_depends, use_git = 0;
 
 	get_setting("project name",project_name);
 	get_setting("version",version);
@@ -41,6 +43,21 @@ int save_file(char * directory)
 	get_setting("license",license);
 	get_setting("depends ebuild",depends);
 	get_setting("description",description);
+	get_setting("vcs repository",repository);
+
+	/* decide whether to use a git repository */
+	sprintf(installdir, "%s%cinstall",
+			directory, DIRECTORY_SEPARATOR);
+	/* if an install subdirectory exists then don't use
+	   a git repository, since it probably doesn't
+	   contain binaries */
+	if (directory_exists(installdir) == 0) {
+		if (strlen(repository) > 0) {
+			if (strstr(repository,"git") != NULL) {
+				use_git = 1;
+			}
+		}
+	}
 
 	no_of_depends =
 		separate_files(depends,
@@ -59,9 +76,21 @@ int save_file(char * directory)
 
 	fprintf(fp,"%s","EAPI=4\n\n");
 
+	if (use_git == 1) {
+		fprintf(fp,"%s","inherit git\n\n");
+	}
+
 	fprintf(fp,"DESCRIPTION=\"%s\"\n",description);
 	fprintf(fp,"HOMEPAGE=\"%s\"\n",homepage);
-	fprintf(fp,"%s","SRC_URI=\"${PN}/${P}.tar.gz\"\n");
+
+	if (use_git == 0) {
+		/* use the compressed source code */
+		fprintf(fp,"%s","SRC_URI=\"${PN}/${P}.tar.gz\"\n");
+	}
+	else {
+		/* use a git repository */
+		fprintf(fp,"EGIT_REPO_URI=\"%s\"\n", repository);
+	}
 
 	fprintf(fp,"LICENSE=\"%s\"\n",license);
 	fprintf(fp,"%s","SLOT=\"0\"\n");
