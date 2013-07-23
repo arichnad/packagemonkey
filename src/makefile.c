@@ -538,7 +538,7 @@ static void save_makefile_uninstall(char * filename,
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -f ${PREFIX}/share/icons/hicolor/scalable/apps/${APP}.svg");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "${PREFIX}/share/pixmaps/${APP}.svg");
+								   "rm -f ${PREFIX}/share/pixmaps/${APP}.svg");
 	}
 }
 
@@ -1082,7 +1082,7 @@ void save_makefile(int no_of_binaries, char ** binaries)
 	sprintf(str,"%s %s/*.src.rpm %s/*.gz %s/*.xz",
 			COMMAND_DELETE, RPM_SUBDIR, ARCH_SUBDIR, ARCH_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
-	sprintf(str,"%s  %s/*.gz %s/*.pet %s/*.txz",
+	sprintf(str,"%s %s/*.gz %s/*.pet %s/*.txz",
 			COMMAND_DELETE,
 			PUPPY_SUBDIR, PUPPY_SUBDIR, SLACK_SUBDIR);
 	add_makefile_entry_to_file(filename, "clean", str);
