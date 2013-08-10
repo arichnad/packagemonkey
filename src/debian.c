@@ -461,6 +461,7 @@ static void save_control()
 	char filename[BLOCK_SIZE];
 	char email_address[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char homepage[BLOCK_SIZE];
 	char vcs_browser[BLOCK_SIZE];
 	char vcs_repository[BLOCK_SIZE];
@@ -475,6 +476,7 @@ static void save_control()
 	filename[0]=0;
 	email_address[0]=0;
 	project_name[0]=0;
+	project_type[0]=0;
 	homepage[0]=0;
 	vcs_browser[0]=0;
 	vcs_repository[0]=0;
@@ -491,6 +493,7 @@ static void save_control()
 			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 	get_setting("email", email_address);
 	get_setting("project name", project_name);
+	get_setting("project type", project_type);
 	get_setting("homepage",homepage);
 	get_setting("vcs browser", vcs_browser);
 	get_setting("vcs repository", vcs_repository);
@@ -561,20 +564,17 @@ static void save_control()
 	if (is_library(project_name) == 0) {
 		/* not a library */
 		fprintf(fp, "Package: %s\n", project_name);
-		if (strlen(section)==0) {
-			fprintf(fp, "%s",
-					"Section: contrib/utils\n");
-		}
-		else {
-			fprintf(fp, "Section: %s\n", section);
-		}
 	}
 	else {
 		/* library */
 		fprintf(fp, "Package: %s0\n", project_name);
-		fprintf(fp, "%s", "Section: libs\n");
 	}
-    fprintf(fp, "%s", "Architecture: any\n");
+	if (is_script_language(project_type) == 0) {
+		fprintf(fp, "%s", "Architecture: any\n");
+	}
+	else {
+		fprintf(fp, "%s", "Architecture: all\n");
+	}
     fprintf(fp, "%s", "Depends: ${shlibs:Depends}, " \
 			"${misc:Depends}");
 	if (strlen(depends) > 0) {
@@ -1630,6 +1630,7 @@ static int save_debian_build_script(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char project_version[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
@@ -1638,6 +1639,7 @@ static int save_debian_build_script(char * directory)
 			directory, DIRECTORY_SEPARATOR);
 
 	get_setting("project name",project_name);
+	get_setting("project type",project_type);
 	get_setting("version",project_version);
 	get_setting("release",release);
 
@@ -1660,7 +1662,12 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp,"PREV_VERSION=%s\n",project_version);
 	fprintf(fp,"VERSION=%s\n",project_version);
 	fprintf(fp,"RELEASE=%s\n",release);
-	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	if (is_script_language(project_type) == 0) {
+		fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	}
+	else {
+		fprintf(fp, "%s", "ARCH_TYPE=all\n");
+	}
 	fprintf(fp, "%s", "DIR=${APP}-${VERSION}\n\n");
 
 	fprintf(fp, "%s", "if [ $ARCH_TYPE == \"x86_64\" ]; then\n");
