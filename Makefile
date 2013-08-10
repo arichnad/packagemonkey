@@ -9,7 +9,8 @@ all:
 debug:
 	gcc -Wall -std=gnu99 -pedantic -g -o ${APP} src/*.c -Isrc -lz
 source:
-	tar -cvzf ../${APP}_${VERSION}.orig.tar.gz ../${APP}-${VERSION} --exclude-vcs
+	tar -cvf ../${APP}_${VERSION}.orig.tar ../${APP}-${VERSION} --exclude-vcs
+	gzip -f9n ../${APP}_${VERSION}.orig.tar
 install:
 	mkdir -p ${DESTDIR}/usr
 	mkdir -p ${DESTDIR}${PREFIX}
@@ -28,5 +29,4 @@ clean:
 	rm -fr deb.* debian/${APP} rpmpackage/${ARCH_TYPE}
 	rm -f ../${APP}*.deb ../${APP}*.changes ../${APP}*.asc ../${APP}*.dsc
 	rm -f rpmpackage/*.src.rpm archpackage/*.gz archpackage/*.xz
-	rm -f  puppypackage/*.gz puppypackage/*.pet slackpackage/*.txz
 	rm -f puppypackage/*.gz puppypackage/*.pet slackpackage/*.txz

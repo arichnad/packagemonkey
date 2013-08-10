@@ -1116,8 +1116,10 @@ void save_makefile(int no_of_binaries, char ** binaries)
 
 	/* add lines to the makefile if they don't exist */
 	add_makefile_entry_to_file(filename, "source",
-							   "tar -cvzf ../${APP}_${VERSION}.orig.tar.gz " \
+							   "tar -cvf ../${APP}_${VERSION}.orig.tar " \
 							   "../${APP}-${VERSION} --exclude-vcs");
+	add_makefile_entry_to_file(filename, "source",
+							   "gzip -f9n ../${APP}_${VERSION}.orig.tar");
 
     save_makefile_install(filename, "install", no_of_binaries, binaries,
 						  project_name, project_type, commandline,

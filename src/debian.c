@@ -508,6 +508,20 @@ static void save_control()
 	if (!fp) return;
 
     fprintf(fp, "Source: %s\n", project_name);
+	if (is_library(project_name) == 0) {
+		/* not a library */
+		if (strlen(section)==0) {
+			fprintf(fp, "%s",
+					"Section: contrib/utils\n");
+		}
+		else {
+			fprintf(fp, "Section: %s\n", section);
+		}
+	}
+	else {
+		/* library */
+		fprintf(fp, "%s", "Section: libs\n");
+	}
     fprintf(fp, "%s", "Priority: extra\n");
     fprintf(fp, "Maintainer: %s\n", email_address);
     fprintf(fp, "Build-Depends: debhelper (>= %s)",
