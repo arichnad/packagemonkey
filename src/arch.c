@@ -23,6 +23,7 @@ static void save_PKGBUILD(char * directory)
 {
 	char email_address[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
 	char description[BLOCK_SIZE];
@@ -45,6 +46,7 @@ static void save_PKGBUILD(char * directory)
 
 	get_setting("email", email_address);
 	get_setting("project name", project_name);
+	get_setting("project type", project_type);
 	get_setting("version", version);
 	get_setting("release", release);
 	get_setting("description", description);
@@ -61,7 +63,13 @@ static void save_PKGBUILD(char * directory)
     fprintf(fp, "pkgver=%s\n", version);
 	fprintf(fp, "pkgrel=%s\n", release);
 	fprintf(fp, "pkgdesc=\"%s\"\n", description);
-	fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
+
+	if (is_script_language(project_type) == 0) {	
+		fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
+	}
+	else {
+		fprintf(fp, "%s", "arch=('any')\n");
+	}
 	fprintf(fp, "url=\"%s\"\n",homepage);
 	fprintf(fp, "license=('%s')\n",license);
 	fprintf(fp, "%s","groups=()\n");
@@ -156,11 +164,13 @@ static int save_script(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
 
 	get_setting("project name", project_name);
+	get_setting("project type", project_type);
 	get_setting("version", version);
 	get_setting("release",release);
 
@@ -176,7 +186,13 @@ static int save_script(char * directory)
 	fprintf(fp, "PREV_VERSION=%s\n", version);
 	fprintf(fp, "VERSION=%s\n",version);
 	fprintf(fp, "RELEASE=%s\n",release);
-	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	
+	if (is_script_language(project_type) == 0) {	
+		fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+	}
+	else {
+		fprintf(fp, "%s", "ARCH_TYPE=any\n");
+	}
 	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
 	fprintf(fp, "SOURCE=%s/${APP}-${VERSION}.tar.gz\n",
 			ARCH_SUBDIR);

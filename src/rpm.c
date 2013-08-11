@@ -178,7 +178,8 @@ static int save_spec(char * project_directory,
 	fprintf(fp, "Summary: %s\n", description_brief);
 	fprintf(fp, "License: %s\n", license);
 	fprintf(fp, "URL: %s\n", homepage);
-	fprintf(fp, "Packager: %s\n", email_address);   
+	fprintf(fp, "Packager: %s\n", email_address);
+
 	if (strlen(source_package) > 0) {
 		fprintf(fp, "Source0: %s\n", source_package);
 	}
@@ -187,6 +188,11 @@ static int save_spec(char * project_directory,
 				"Source0: http://yourdomainname.com/src/" \
 				"%{name}_%{version}.orig.tar.gz\n");
 	}
+
+	if (is_script_language(project_type) != 0) {
+	    fprintf(fp, "%s", "BuildArch: noarch\n");
+    }
+
 	if (strlen(categories) > 0) {
 		parse_desktop_category(categories,
 							   group_main, group_additional);
