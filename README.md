@@ -10,7 +10,7 @@ Description
 
 Creating installable packages for Linux distros has always been a bit of a black art.  There is a lot of documentation out there and it's often voluminous and not especially easy to interpret.  When doing packaging by hand there are also many ways to go wrong.
 
-Packagemonkey is intended to make packaging simpler, and enable the creation of multiple different types of package including deb, RPM, ebuild, Arch, PET and TXZ.  With a single command line statement you can generate all the necessary files and scripts, obeying all the various packaging rules.  When combined with Open Build Service this makes it easy to distribute software in a user friendly manner on many different distros. 
+Packagemonkey is intended to make packaging simpler by enabling the creation of multiple different types of package including deb, RPM, ebuild, Arch, PET and TXZ.  With a single command line statement you can generate all the necessary files and scripts, obeying all the various packaging rules.  When combined with Open Build Service this makes it easy to distribute software in a user friendly manner on many different distros. 
 
 Installation
 ------------
