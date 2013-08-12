@@ -63,6 +63,10 @@
 /* character used to separate multiple lines within a string */
 #define STRING_SEPARATOR '^'
 
+/* default C/C++ standards */
+#define DEFAULT_C_STANDARD   "gnu99"
+#define DEFAULT_CPP_STANDARD "c++11"
+
 void trim(char * str);
 int is_numeric(char * str);
 int file_exists(char * filename);

@@ -899,6 +899,10 @@ static void save_makefile_cpp(char * filename)
 
 	/* the standard to be used by gcc/g++ */
 	get_setting("c standard", c_standard);
+	if (strcmp(c_standard, DEFAULT_C_STANDARD)==0) {
+		sprintf(c_standard, "%s",
+				DEFAULT_CPP_STANDARD);
+	}
 
 	/* compiler arguments */
 	get_setting("compile", compile_args);
@@ -931,15 +935,15 @@ static void save_makefile_cpp(char * filename)
 			}
 			else {
 				if (empty_makefile_section(filename,"all") == 1) {
-					sprintf(str, "g++ -Wall -pedantic -O3 "	\
+					sprintf(str, "g++ -Wall -pedantic -O3 -std=%s "	\
 							"-o ${APP} %s/*.cpp -I%s %s",
-							sourcedir, sourcedir, compile_args);
+							c_standard, sourcedir, sourcedir, compile_args);
 					add_makefile_entry_to_file(filename, "all", str);
 				}
 				if (empty_makefile_section(filename,"debug") == 1) {
-					sprintf(str, "g++ -Wall -pedantic -g " \
+					sprintf(str, "g++ -Wall -pedantic -g -std=%s " \
 							"-o ${APP} %s/*.cpp -I%s %s",
-							sourcedir, sourcedir, compile_args);
+							c_standard, sourcedir, sourcedir, compile_args);
 					add_makefile_entry_to_file(filename, "debug", str);
 				}
 			}
@@ -948,16 +952,16 @@ static void save_makefile_cpp(char * filename)
 			/* compile a shared library */
 			if (empty_makefile_section(filename,"all") == 1) {
 				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
-						"-pedantic -fPIC -O3 " \
+						"-pedantic -fPIC -O3 -std=%s " \
 						"-o ${LIBNAME} %s/*.cpp -I%s %s",
-						sourcedir, sourcedir, compile_args);
+						c_standard, sourcedir, sourcedir, compile_args);
 				add_makefile_entry_to_file(filename, "all", str);
 			}
 			if (empty_makefile_section(filename,"debug") == 1) {
 				sprintf(str, "g++ -shared -Wl,-soname,${SONAME} " \
-						"-pedantic -fPIC -g " \
+						"-pedantic -fPIC -g -std=%s " \
 						"-o ${LIBNAME} %s/*.cpp -I%s %s",
-						sourcedir, sourcedir, compile_args);
+						c_standard, sourcedir, sourcedir, compile_args);
 				add_makefile_entry_to_file(filename, "debug", str);
 			}
 		}

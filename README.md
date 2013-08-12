@@ -282,7 +282,7 @@ Set the Debian version.
 If the project uses a scripted language, such as Python or Perl, then this specifies the initial script to be run.  This should be just the filename and not include the full path.
 
 <b>--cstandard [standard]</b><br>
-The standard to be used by the gcc or g++ compiler.  Examples are c99 and gnu99.
+The standard to be used by the gcc or g++ compiler.  Examples are c99, gnu99, c++0x, gnu++0x, c++11 and gnu++11.
 
 <b>--librarypath [paths]</b><br>
 Specify LD_LIBRARY_PATH.

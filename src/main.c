@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
 	add_setting("source package", "");
 	add_setting("project full name", "");
 	add_setting("mime types","");
-	add_setting("c standard","gnu99");
+	add_setting("c standard", DEFAULT_C_STANDARD);
 	add_setting("main script","");
 	add_setting("source dir","src");
 	add_setting("build dir","bin");
