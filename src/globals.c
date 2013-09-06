@@ -38,7 +38,7 @@ void trim(char * str)
 			(str[i] != 13)) {
 			end = i;
 			break;
-		}		
+		}
 	}
 
 	for (i = start; i <= end; i++) {
@@ -193,7 +193,7 @@ int valid_email(char * email_address)
 				state++;
 			}
 			break;
-		}	
+		}
 		case 1: {
 			if (email_address[i] == ' ') {
 				state++;
@@ -212,7 +212,7 @@ int valid_email(char * email_address)
 				state++;
 			}
 			break;
-		}	
+		}
 		case 4: {
 			if (email_address[i] == '@') {
 				state++;
@@ -225,7 +225,7 @@ int valid_email(char * email_address)
 				state++;
 			}
 			break;
-		}	
+		}
 		case 6: {
 			if (email_address[i] == '.') {
 				state++;
@@ -238,7 +238,7 @@ int valid_email(char * email_address)
 				state++;
 			}
 			break;
-		}	
+		}
 		case 8: {
 			if (email_address[i] == '>') {
 				state++;
@@ -283,7 +283,7 @@ int valid_gpg(char * email_address)
 				found = 1;
 				break;
 			}
-		}		
+		}
 	}
 
 	fclose(fp);
@@ -307,7 +307,7 @@ void detect_project_type(char * directory, char * project_type)
 	FILE * fp;
 	const int no_of_types = 7;
 	const char * proj_type[] = {
-		"c","cpp","py","rbbas","rbfrm",
+		"cpp","c","py","rbbas","rbfrm",
 		"vala","java"
 	};
 
@@ -337,7 +337,7 @@ void detect_project_type(char * directory, char * project_type)
 			if (file_exists(temp_filename) == 0) continue;
 			fp = fopen(temp_filename,"r");
 			if (!fp) continue;
-		
+
 			while (!feof(fp)) {
 				if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
 					if (strlen(linestr) == 0) continue;
@@ -408,7 +408,7 @@ int replace_build_script_version(char * filename,
 
 	fp_new = fopen(new_filename,"w");
 	if (!fp_new) return -1;
-	
+
 	fp = fopen(filename,"r");
 	if (!fp) return -1;
 
@@ -555,10 +555,10 @@ int is_script(char * filename)
 			if (strlen(linestr) < 2) continue;
 			if ((linestr[0] == '#') &&
 				(linestr[1] == '!')) {
-				found = 1; 
+				found = 1;
 			}
 			break;
-		}		
+		}
 	}
 
 	fclose(fp);
@@ -602,7 +602,7 @@ int files_exist(char * directory, char * file_extension)
 				valid_data = 1;
 			}
 		}
-	}	
+	}
 	fclose(fp);
 
 	if ((exists == -1) && (valid_data==1)) {
@@ -631,7 +631,7 @@ void print_script(char * source_script, char * name)
 	printf("    FILE * fp;\n\n");
 	printf("    fp = fopen(filename,\"w\");\n");
 	printf("    if (!fp) return;\n");
-	
+
 	while (!feof(fp)) {
 		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
 			if (strlen(linestr) == 0) continue;
@@ -668,7 +668,7 @@ void directory_size(char * directory,
 			TEMP_DIRECTORY, DIRECTORY_SEPARATOR);
 
 	sprintf(commandstr,"cd %s; du -sh > %s",
-			directory,temp_filename); 
+			directory,temp_filename);
 
 	i = system(commandstr);
 
@@ -677,7 +677,7 @@ void directory_size(char * directory,
 
 	fp = fopen(temp_filename,"r");
 	if (!fp) return;
-	
+
 	while (!feof(fp)) {
 		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
 			if (strlen(linestr) == 0) continue;
@@ -878,10 +878,10 @@ void relative_install_path(char * filename,
 			for (i = 1; i < strlen(rel)-1; i++) {
 				if (rel[i] == '/') {
 					sprintf(relative,"%s",&rel[i+1]);
-					return;					
+					return;
 				}
 			}
 		}
-	}	
+	}
 	sprintf(relative,"%s",&rel[1]);
 }
