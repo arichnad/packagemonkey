@@ -26,7 +26,7 @@ static void save_slack_desc(char * directory)
 	char description[BLOCK_SIZE];
 	char str[BLOCK_SIZE];
 	FILE * fp;
-	int i, max, n, ctr = 0, start;
+	int i, max_line_length, line_ctr = 0, char_ctr = 0, start;
 
 	get_setting("project name", project_name);
 	get_setting("description brief", description_brief);
@@ -69,41 +69,40 @@ static void save_slack_desc(char * directory)
 			   "length within slack-desc\n");
 	}
 	fprintf(fp, "%s", str);
-	
+
 	fprintf(fp, "%s:\n", project_name);
-	max = 79 - strlen(project_name) - 2;
+	max_line_length = 79 - strlen(project_name) - 2;
 	for (i = 0; i < 9; i++) {
 		fprintf(fp, "%s:", project_name);
-		n = 0;
-		start = ctr;
+		line_ctr = 0;
+		start = char_ctr;
 
-		if (ctr < strlen(description)) {
+		if (char_ctr < strlen(description)) {
 			fprintf(fp, "%s", " ");
 		}
 
-		while ((n < max) &&
-			   (ctr < strlen(description))) {			
-			ctr++;
-			n++;
+		while ((line_ctr < max_line_length) &&
+			   (char_ctr < strlen(description))) {
+			char_ctr++;
+			line_ctr++;
 		}
 
-		if (n == max) {
-			while ((ctr > 1) && (description[ctr] != ' ')) {
-				ctr--;
-				n--;
+		if (line_ctr == max_line_length) {
+			while ((char_ctr > 1) && (description[char_ctr] != ' ')) {
+				char_ctr--;
+				line_ctr--;
 			}
-			while ((ctr > 1) && (description[ctr] == ' ')) {
-				ctr--;
-				n--;
+			while ((char_ctr > 1) && (description[char_ctr] == ' ')) {
+				char_ctr--;
+				line_ctr--;
 			}
-			ctr++;
-			n++;
-			strncpy(str, &description[start], n);
-			str[n] = 0;
+			char_ctr++;
+			line_ctr++;
+			strncpy(str, &description[start], char_ctr-start);
+			str[line_ctr] = 0;
 			fprintf(fp, "%s", str);
-			start += n;
-			ctr++;
-			n++;
+			char_ctr++;
+			line_ctr++;
 		}
 		else {
 			if (start < strlen(description)) {
@@ -111,9 +110,8 @@ static void save_slack_desc(char * directory)
 				start = strlen(description);
 			}
 		}
-		
+
 		fprintf(fp, "%s", "\n");
-		
 	}
 
 	fclose(fp);
