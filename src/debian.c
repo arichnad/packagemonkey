@@ -180,7 +180,7 @@ static int debian_changelog_spec_write(char * directory,
 				(linestr[0] != ' ') &&
 				(linestr[0] != '\t')) {
 				debian_parse_changelog_header(linestr,
-											  versionstr);				
+											  versionstr);
 				buffer_ctr = 0;
 			}
 			else {
@@ -227,7 +227,7 @@ static int debian_changelog_spec_write(char * directory,
 				}
 			}
 		}
-	}	
+	}
 
 	fclose(fp);
 
@@ -273,7 +273,7 @@ int debian_changelog_to_spec(char * directory)
 	while (!feof(fp)) {
 		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
 			fprintf(spec_file, "%s", linestr);
-			if (strlen(linestr) == 0) continue;			
+			if (strlen(linestr) == 0) continue;
 			if (strncmp(linestr,"%changelog",10)==0) {
 				break;
 			}
@@ -312,7 +312,7 @@ static float get_debian_version()
 static void get_debian_standard(char * standard)
 {
 	float debian_version = get_debian_version();
-	
+
 	if ((int)debian_version == 6) {
 		sprintf(standard,"%s","3.9.2");
 	}
@@ -324,7 +324,7 @@ static void get_debian_standard(char * standard)
 static void get_debhelper_version(char * debhelper_version)
 {
 	float debian_version = get_debian_version();
-	
+
 	if ((int)debian_version == 6) {
 		sprintf(debhelper_version, "%s", "8.0.0");
 	}
@@ -471,6 +471,7 @@ static void save_control()
 	char description[BLOCK_SIZE];
 	char section[BLOCK_SIZE];
 	char suggests[BLOCK_SIZE];
+	char str[BLOCK_SIZE];
 
 	directory[0]=0;
 	filename[0]=0;
@@ -503,6 +504,13 @@ static void save_control()
 	get_setting("depends deb", depends);
 	get_setting("build deb", build_depends);
 	get_setting("suggests deb", suggests);
+
+	if (strcmp(project_type,"py") == 0) {
+		if (strstr(depends,"${python:Depends}")==0) {
+			sprintf(str,"${python:Depends}, %s", depends);
+			sprintf(depends,"%s",str);
+		}
+	}
 
 	get_debian_standard(standard);
 	get_debhelper_version(dh_version);
@@ -1350,6 +1358,7 @@ static int save_rules(char * directory,
 	else {
 		fprintf(fp,"%s","install: build clean\n");
 	}
+
 	fprintf(fp,"%s","		 dh_testdir\n");
 	fprintf(fp,"%s","		 dh_testroot\n");
 	fprintf(fp,"%s","		 dh_prep\n");
@@ -1379,6 +1388,10 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","			  dh_gencontrol\n");
 	fprintf(fp,"%s","			  dh_md5sums\n");
 	fprintf(fp,"%s","			  dh_builddeb\n\n");
+
+	if (strcmp(project_type,"py") == 0) {
+		fprintf(fp,"%s","		 dh_python2\n");
+	}
 
 	fprintf(fp,"%s","binary-arch: build install\n\n");
 
@@ -1721,7 +1734,7 @@ static int save_library_dirs(char * directory)
 	if (is_library(project_name) == 0) return 0;
 
 	get_setting("version", version);
-	
+
 	for (i = 0; i < 2; i++) {
 		if (i == 0) {
 			sprintf(filename,"%s%c%s%c%s0.dirs",
@@ -1762,7 +1775,7 @@ static int save_library_links(char * directory)
 	if (is_library(project_name) == 0) return 0;
 
 	get_setting("version", version);
-	
+
 	for (i = 0; i < 2; i++) {
 		if (i == 0) {
 			sprintf(filename,"%s%c%s%c%s0.links",
@@ -1801,7 +1814,7 @@ static int save_library_install(char * directory)
 	if (is_library(project_name) == 0) return 0;
 
 	get_setting("version", version);
-	
+
 	for (i = 0; i < 2; i++) {
 		if (i == 0) {
 			sprintf(filename,"%s%c%s%c%s0.install",
