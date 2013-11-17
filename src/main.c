@@ -634,7 +634,7 @@ int main(int argc, char* argv[])
 		(directory_exists(directory) == 0)) {
 		printf("Directory %s not found\n", directory);
 		return -1;
-	} 
+	}
 
 	/* get the project name from the directory */
 	get_subdirectory(directory,project_name);
@@ -668,7 +668,7 @@ int main(int argc, char* argv[])
 	if (strlen(license) == 0) {
 		printf("No license specified\n");
 		return -1;
-	} 
+	}
 	if (valid_license(license)==0) {
 		printf("%s is not a recognised license.\n",license);
 		return -1;
@@ -741,7 +741,7 @@ int main(int argc, char* argv[])
 			   "should be specified using the " \
 			   "--categories option\n");
 		show_categories_additional();
-		return -1;		
+		return -1;
 	}
 	if (valid_additional_category(additional_category) == -1) {
 		printf("%s is not a valid additional category\n\n",
@@ -755,7 +755,11 @@ int main(int argc, char* argv[])
 	detect_project_type(directory, project_type);
 	if (strlen(project_type) > 0) {
 		add_setting("project type", project_type);
-		printf("Project Type: %s\n", project_type);
+		printf("Project Type: %s", project_type);
+		if (is_library(project_name) != 0) {
+			printf(" library");
+		}
+		printf("\n");
 	}
 
 	get_setting("main script", mainscript);
@@ -877,4 +881,3 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
-

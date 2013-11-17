@@ -71,7 +71,7 @@ int empty_makefile_section(char * makefilename,
 					if ((linestr[i] != 10) &&
 						(linestr[i] != 13)) {
 						linestr2[j++] = linestr[i];
-					}				
+					}
 				}
 				else {
 					/* this is a line and not a section heading */
@@ -152,7 +152,7 @@ int get_makefile_entry_from_file(char * makefilename,
 					if ((linestr[i] != 10) &&
 						(linestr[i] != 13)) {
 						makefile_line[j++] = linestr[i];
-					}				
+					}
 				}
 				else {
 					/* this is a line and not a section heading */
@@ -228,7 +228,7 @@ int add_makefile_entry_to_file(char * makefilename,
 
 	fp_new = fopen(new_filename,"w");
 	if (!fp_new) return -1;
-	
+
 	fp = fopen(makefilename,"r");
 	if (!fp) return -1;
 
@@ -243,7 +243,7 @@ int add_makefile_entry_to_file(char * makefilename,
 					if ((linestr[i] != 10) &&
 						(linestr[i] != 13)) {
 						linestr2[j++] = linestr[i];
-					}				
+					}
 				}
 				else {
 					/* this is a line and not a section heading */
@@ -429,7 +429,7 @@ static void save_makefile_install_scripts(char * filename,
 	if (is_library(project_name) != 0) return;
 
 	/* a main script must have been specified */
-	if (strlen(mainscript) == 0) return;	
+	if (strlen(mainscript) == 0) return;
 
 	/* if this is not a script language */
 	if (is_script_language(project_type) == 0) return;
@@ -467,7 +467,7 @@ static void save_makefile_install_scripts(char * filename,
 	/* else */
 	sprintf(str, "echo 'else' >> %s", runscript);
 	add_makefile_entry_to_file(filename, section, str);
-	
+
 	sprintf(str, "echo '  cd /usr/share/%s' >> %s",
 			project_name, runscript);
 	add_makefile_entry_to_file(filename, section, str);
@@ -534,7 +534,7 @@ static void save_makefile_install_scripts(char * filename,
 
 	/* make the script runable */
 	sprintf(str, "chmod +x %s", runscript);
-	add_makefile_entry_to_file(filename, section, str);	
+	add_makefile_entry_to_file(filename, section, str);
 }
 
 /* instructions to uninstall */
@@ -585,7 +585,7 @@ static void save_makefile_uninstall(char * filename,
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "ldconfig");
 	}
-	
+
 	if (strlen(commandline) == 0) {
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -f ${PREFIX}/share/applications/${APP}.desktop");
@@ -620,7 +620,7 @@ void save_makefile_install(char * filename,
 
 	add_makefile_entry_to_file(filename, section,
 							   "mkdir -p ${DESTDIR}/usr");
-	
+
 	add_makefile_entry_to_file(filename, section,
 							   "mkdir -p ${DESTDIR}${PREFIX}");
 
