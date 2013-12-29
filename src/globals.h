@@ -99,6 +99,7 @@ void save_description(FILE * fp,
 					  char * description,
 					  int leading_space);
 int is_script_language(char * project_type);
+int is_c_language(char * project_type);
 void relative_install_path(char * filename,
 						   char * relative,
 						   char * binaries,

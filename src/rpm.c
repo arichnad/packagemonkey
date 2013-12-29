@@ -269,7 +269,7 @@ static int save_spec(char * project_directory,
 		}
 	}
 
-	fprintf(fp, "%s", "# Make install but to the RPM BUILDROOT directory\n");	
+	fprintf(fp, "%s", "# Make install but to the RPM BUILDROOT directory\n");
 	if (is_library(project_name) == 0) {
 		fprintf(fp, "%s", "make install -B DESTDIR=%{buildroot} PREFIX=/usr\n\n");
 	}
@@ -403,11 +403,13 @@ static int save_script(char * directory)
 	FILE * fp;
 	char filename[BLOCK_SIZE];
 	char project_name[BLOCK_SIZE];
+	char project_type[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char commandstr[BLOCK_SIZE];
 	char release[BLOCK_SIZE];
 
 	get_setting("project name", project_name);
+	get_setting("project type", project_type);
 	get_setting("version", version);
 	get_setting("release",release);
 
@@ -434,6 +436,11 @@ static int save_script(char * directory)
 
 	fprintf(fp, "%s",
 			"sudo yum groupinstall \"Development Tools\"\n");
+	if (is_c_language(project_type) != 0) {
+		fprintf(fp, "%s",
+				"sudo yum groupinstall " \
+				"\"C Development Tools and Libraries\"\n");
+	}
 	fprintf(fp, "%s", "sudo yum install rpmdevtools\n\n");
 
 	fprintf(fp, "%s", "# setup the rpmbuild directory tree\n");

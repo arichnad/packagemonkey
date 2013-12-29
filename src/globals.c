@@ -852,6 +852,17 @@ int is_script_language(char * project_type)
 	return 0;
 }
 
+/* is the given project type C/C++ ? */
+int is_c_language(char * project_type)
+{
+	if ((strcmp(project_type,"c") == 0) ||
+		(strcmp(project_type,"cpp") == 0)) {
+		return 1;
+	}
+
+	return 0;
+}
+
 /* Takes an absolute path/filename and returns the
    relative path/filename to the project directory.
    This avoids having hardcoded absolute paths in
