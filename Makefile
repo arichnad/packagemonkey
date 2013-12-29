@@ -15,7 +15,7 @@ install:
 	mkdir -p ${DESTDIR}/usr
 	mkdir -p ${DESTDIR}${PREFIX}
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	install -m 755 --strip ${APP} ${DESTDIR}${PREFIX}/bin
+	install -m 755 -s ${APP} ${DESTDIR}${PREFIX}/bin
 	mkdir -m 755 -p ${DESTDIR}${PREFIX}/share
 	mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/man
 	mkdir -m 755 -p ${DESTDIR}${PREFIX}/share/man/man1
