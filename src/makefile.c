@@ -666,13 +666,13 @@ void save_makefile_install(char * filename,
 			if (is_qt_project() != 0) {
 				/* QT executable */
 				add_makefile_entry_to_file(filename, section,
-										   "install -m 755 --strip ${GUI_DIR}/${APP} " \
+										   "install -m 755 -s ${GUI_DIR}/${APP} " \
 										   "${DESTDIR}${PREFIX}/bin");
 			}
 			else {
 				/* executable */
 				add_makefile_entry_to_file(filename, section,
-										   "install -m 755 --strip ${APP} " \
+										   "install -m 755 -s ${APP} " \
 										   "${DESTDIR}${PREFIX}/bin");
 			}
 		}
