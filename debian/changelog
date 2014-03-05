@@ -1,0 +1,17 @@
+packagemonkey (1.02-1) stable; urgency=medium
+
+  * Exclude debian directory from orig.tar.gz
+
+ -- Bob Mottram (4096 bits) <bob@robotics.uk.to>  Wed, 05 Mar 2014 19:25:00 +0100
+
+packagemonkey (1.01-1) stable; urgency=medium
+
+  * Some other changes
+
+ -- Bob Mottram (4096 bits) <bob@robotics.uk.to>  Wed, 05 Mar 2014 19:25:00 +0100
+
+packagemonkey (1.00-1) stable; urgency=medium
+
+  * Initial release
+
+ -- Bob Mottram (4096 bits) <bob@robotics.uk.to>  Wed, 05 Mar 2014 19:25:00 +0100
