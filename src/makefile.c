@@ -1124,6 +1124,12 @@ void save_makefile(int no_of_binaries, char ** binaries)
 							   "../${APP}-${VERSION} --exclude-vcs");
 	add_makefile_entry_to_file(filename, "source",
 							   "gzip -f9n ../${APP}_${VERSION}.orig.tar");
+	add_makefile_entry_to_file(filename, "sourcedeb",
+							   "tar -cvf ../${APP}_${VERSION}.orig.tar " \
+							   "../${APP}-${VERSION} --exclude-vcs " \
+							   "--exclude 'debian'");
+	add_makefile_entry_to_file(filename, "sourcedeb",
+							   "gzip -f9n ../${APP}_${VERSION}.orig.tar");
 
     save_makefile_install(filename, "install", no_of_binaries, binaries,
 						  project_name, project_type, commandline,

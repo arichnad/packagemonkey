@@ -1701,7 +1701,7 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp, "%s", "mv ../${APP} ../${DIR}\n\n");
 
 	fprintf(fp, "%s", "# Create a source archive\n");
-	fprintf(fp, "%s", "make source\n\n");
+	fprintf(fp, "%s", "make sourcedeb\n\n");
 
 	fprintf(fp, "%s", "# Build the package\n");
 	fprintf(fp, "%s", "dpkg-buildpackage -F\n\n");
