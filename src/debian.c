@@ -1390,7 +1390,7 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","			  dh_builddeb\n\n");
 
 	if (strcmp(project_type,"py") == 0) {
-		fprintf(fp,"%s","		 dh_python2\n");
+		/*fprintf(fp,"%s","		 dh_python2\n");*/
 	}
 
 	fprintf(fp,"%s","binary-arch: build install\n\n");
