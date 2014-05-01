@@ -3,7 +3,7 @@ packagemonkey
 
 <b>A tool to make packaging easier</b>
 
-<img src="https://github.com/fuzzgun/packagemonkey/blob/master/img/packagemonkey320.png?raw=true" width=200/>
+<img src="https://github.com/bashrc/packagemonkey/blob/master/img/packagemonkey320.png?raw=true" width=200/>
 
 Description
 -----------
@@ -23,7 +23,7 @@ But if you prefer not to get involved with binaries then this program is pretty 
 
 Check out the latest source code:
 
-    git clone https://github.com/fuzzgun/packagemonkey.git
+    git clone https://github.com/bashrc/packagemonkey.git
 
 Then to build and install:
 
@@ -64,7 +64,7 @@ To create packaging files and scripts first make sure that you are in the foobar
                   -e "Name <name@mydomainname.com>" \
                   --brief "Tool to make packaging easier" \
                   --desc "Making packing easier than it previously was." \
-                  --homepage "https://github.com/fuzzgun/packagemonkey.git" \
+                  --homepage "https://github.com/bashrc/packagemonkey.git" \
                   --section "utils" --version "0.10" \
                   --categories "Utility/ConsoleOnly" --compile "-lz" \
                   --dependsdeb "build-essential, lintian"
@@ -115,8 +115,8 @@ To package a C, C++ or Vala library put your code into a subdirectory named "src
 				  "input to output transformation. Both classical " \
 				  "tree-based and Cartesian forms of Genetic Programming " \
 				  "are supported, including self-modifying variants." \
-                  --homepage "https://github.com/fuzzgun/libgpr" \
-				  --repository "https://github.com/fuzzgun/libgpr.git" \
+                  --homepage "https://github.com/bashrc/libgpr" \
+				  --repository "https://github.com/bashrc/libgpr.git" \
 				  --section "libs" --categories "Development/ArtificialIntelligence" \
                   --cstandard "c99" --compile "-lm -lz -fopenmp" \
                   --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
@@ -315,4 +315,4 @@ Show help.
 Bugs
 ----
 
-Report bugs at https://github.com/fuzzgun/packagemonkey/issues
+Report bugs at https://github.com/bashrc/packagemonkey/issues
