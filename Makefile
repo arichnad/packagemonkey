@@ -1,5 +1,5 @@
 APP=packagemonkey
-VERSION=1.02
+VERSION=1.03
 RELEASE=1
 ARCH_TYPE=`uname -m`
 PREFIX?=/usr/local

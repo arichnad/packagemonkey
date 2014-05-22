@@ -1689,7 +1689,11 @@ static int save_debian_build_script(char * directory)
 	fprintf(fp, "%s", "fi\n");
 	fprintf(fp, "%s", "if [ $ARCH_TYPE == \"i686\" ]; then\n");
 	fprintf(fp, "%s", "    ARCH_TYPE=\"i386\"\n");
+	fprintf(fp, "%s", "fi\n");
+	fprintf(fp, "%s", "if [ $ARCH_TYPE == \"armv7l\" ]; then\n");
+	fprintf(fp, "%s", "    ARCH_TYPE=\"armhf\"\n");
 	fprintf(fp, "%s", "fi\n\n");
+
 
 	/* alter the version numbers */
 	script_version_numbers(fp,"debian");
