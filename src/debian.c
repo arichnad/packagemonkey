@@ -1352,7 +1352,8 @@ static int save_rules(char * directory,
 	fprintf(fp,"%s","		dh_clean\n\n");
 
 	if ((strlen(project_type) != 0) &&
-		(is_script_language(project_type) == 0)) {
+		(is_script_language(project_type) == 0) &&
+		(is_library(project_name) == 0)) {
 		fprintf(fp,"%s","install: build clean ${application}\n");
 	}
 	else {
