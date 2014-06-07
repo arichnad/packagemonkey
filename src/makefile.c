@@ -353,7 +353,13 @@ void save_makefile_as(char * filename)
 	}
 
 	fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
-	fprintf(fp, "%s", "PREFIX?=/usr/local\n\n");
+	fprintf(fp, "%s", "PREFIX?=/usr/local\n");
+	fprintf(fp, "%s", "LIBDIR=lib\n\n");
+
+	fprintf(fp, "%s", "MACHINE := $(shell uname -m)\n");
+	fprintf(fp, "%s", "ifeq ($(MACHINE), x86_64)\n");
+	fprintf(fp, "%s", "LIBDIR = lib64\n");
+	fprintf(fp, "%s", "endif\n\n");
 
 	/* if this is a QT project then create a build directory
 	   for the GUI */
@@ -575,11 +581,11 @@ static void save_makefile_uninstall(char * filename,
 	else {
 		/* remove the library */
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f ${PREFIX}/lib/${LIBNAME}");
+								   "rm -f ${PREFIX}/${LIBDIR}/${LIBNAME}");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f ${PREFIX}/lib/${APP}.so");
+								   "rm -f ${PREFIX}/${LIBDIR}/${APP}.so");
 		add_makefile_entry_to_file(filename, "uninstall",
-								   "rm -f ${PREFIX}/lib/${SONAME}");
+								   "rm -f ${PREFIX}/${LIBDIR}/${SONAME}");
 		add_makefile_entry_to_file(filename, "uninstall",
 								   "rm -rf ${PREFIX}/include/${APP}");
 		add_makefile_entry_to_file(filename, "uninstall",
@@ -626,9 +632,9 @@ void save_makefile_install(char * filename,
 
 	if (is_library(project_name) != 0) {
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -p ${DESTDIR}${PREFIX}/lib");
+								   "mkdir -p ${DESTDIR}${PREFIX}/${LIBDIR}");
 		add_makefile_entry_to_file(filename, section,
-								   "mkdir -p ${DESTDIR}${PREFIX}/lib/${APP}");
+								   "mkdir -p ${DESTDIR}${PREFIX}/${LIBDIR}/${APP}");
 	}
 	else {
 		add_makefile_entry_to_file(filename, section,
@@ -691,15 +697,15 @@ void save_makefile_install(char * filename,
 			/* library */
 			add_makefile_entry_to_file(filename, section,
 									   "install -m 755 ${LIBNAME} " \
-									   "${DESTDIR}${PREFIX}/lib");
+									   "${DESTDIR}${PREFIX}/${LIBDIR}");
 
 			if (is_install_lib == 0) {
 				add_makefile_entry_to_file(filename, section,
-										   "ln -sf ${DESTDIR}${PREFIX}/lib/${LIBNAME} " \
-										   "${DESTDIR}${PREFIX}/lib/${SONAME}");
+										   "ln -sf ${DESTDIR}${PREFIX}/${LIBDIR}/${LIBNAME} " \
+										   "${DESTDIR}${PREFIX}/${LIBDIR}/${SONAME}");
 				add_makefile_entry_to_file(filename, section,
-										   "ln -sf ${DESTDIR}${PREFIX}/lib/${LIBNAME} " \
-										   "${DESTDIR}${PREFIX}/lib/${APP}.so");
+										   "ln -sf ${DESTDIR}${PREFIX}/${LIBDIR}/${LIBNAME} " \
+										   "${DESTDIR}${PREFIX}/${LIBDIR}/${APP}.so");
 			}
 		}
 	}

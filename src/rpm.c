@@ -228,7 +228,12 @@ static int save_spec(char * project_directory,
 	fprintf(fp, "%s", "mkdir -p %{buildroot}/etc\n");
 	fprintf(fp, "%s", "mkdir -p %{buildroot}/etc/%{name}\n");
 	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr\n");
-	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/bin\n");
+	if (is_library(project_name) == 0) {
+        fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/bin\n");
+    }
+    else {
+        fprintf(fp, "%s", "mkdir -p %{buildroot}%{_includedir}/%{name}\n");
+    }
 
 	/* create directories for binaries */
 	if (no_of_binaries > 0) {
@@ -245,8 +250,8 @@ static int save_spec(char * project_directory,
 	}
 
 	if (is_library(project_name) != 0) {
-		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/lib\n");
-		fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/lib/%{name}\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}%{_libdir}\n");
+		fprintf(fp, "%s", "mkdir -p %{buildroot}%{_libdir}/%{name}\n");
 	}
 	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share\n");
 	fprintf(fp, "%s", "mkdir -p %{buildroot}/usr/share/man\n");
@@ -314,7 +319,13 @@ static int save_spec(char * project_directory,
 		fprintf(fp, "%s", "/usr/share/%{name}/*\n");
 	}
 
-	fprintf(fp, "%s", "%{_bindir}/*\n");
+	if (is_library(project_name) == 0) {
+        fprintf(fp, "%s", "%{_bindir}/*\n");
+    }
+    else {
+        fprintf(fp, "%s", "%{_libdir}/*\n");
+        fprintf(fp, "%s", "%{_includedir}/%{name}/*\n");
+    }
 	fprintf(fp, "%s", "%{_mandir}/man1/*\n");
 	if (strlen(commandline) == 0) {
 		fprintf(fp, "%s", "%attr(644,root,root) " \
@@ -344,7 +355,7 @@ static int save_spec(char * project_directory,
 	else {
 		/* install libraries */
 		for (i = 0; i < no_of_binaries; i++) {
-			fprintf(fp, "%%attr(755,root,root) /usr/lib/%%{name}/%s\n",
+			fprintf(fp, "%%attr(755,root,root) %%{_libdir}/%%{name}/%s\n",
 					get_subdirectory_string(binaries[i]));
 		}
 	}
@@ -365,7 +376,8 @@ static int save_spec(char * project_directory,
 			}
 			if (file_is_library(&binaries[i][j]) != 0) {
 				fprintf(fp,
-						"ln -sf /usr/lib/%s.0.0.1 /usr/lib/%%{name}/%s\n",
+						"ln -sf %%{_libdir}/%s.0.0.1 " \
+                        "%%{_libdir}/%%{name}/%s\n",
 						&binaries[i][j], &binaries[i][j]);
 			}
 		}
@@ -382,7 +394,7 @@ static int save_spec(char * project_directory,
 				}
             }
 			if (file_is_library(&binaries[i][j]) != 0) {
-				fprintf(fp, "rm /usr/lib/%s\n", &binaries[i][j]);
+				fprintf(fp, "rm %%{_libdir}/%s\n", &binaries[i][j]);
 			}
         }
 		fprintf(fp, "%s", "\n");
