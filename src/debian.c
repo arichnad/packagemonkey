@@ -1749,7 +1749,7 @@ static int save_library_dirs(char * directory)
 					project_name);
 		}
 		else {
-			sprintf(filename,"%s%c%s%c%s-dev.dirs",
+			sprintf(filename,"%s%c%s%c%s0-dev.dirs",
 					directory, DIRECTORY_SEPARATOR,
 					DEB_SUBDIR, DIRECTORY_SEPARATOR,
 					project_name);
@@ -1836,7 +1836,7 @@ static int save_library_install(char * directory)
 					project_name);
 		}
 		else {
-			sprintf(filename,"%s%c%s%c%s-dev.install",
+			sprintf(filename,"%s%c%s%c%s0-dev.install",
 					directory, DIRECTORY_SEPARATOR,
 					DEB_SUBDIR, DIRECTORY_SEPARATOR,
 					project_name);
