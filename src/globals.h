@@ -93,6 +93,7 @@ int files_exist(char * directory, char * file_extension);
 void print_script(char * source_script, char * name);
 void directory_size(char * directory,
 					char * dir_size);
+void get_library_path(char * path);
 void script_version_numbers(FILE * fp,
 							char * script_name);
 void save_description(FILE * fp,

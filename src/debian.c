@@ -1731,6 +1731,7 @@ static int save_library_dirs(char * directory)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char library_path[10];
 	FILE * fp;
 	int i;
 
@@ -1756,7 +1757,9 @@ static int save_library_dirs(char * directory)
 		fp = fopen(filename, "w");
 		if (!fp) return -1;
 
-		fprintf(fp,"%s","usr/lib\n");
+		get_library_path(library_path);
+
+		fprintf(fp, "usr/%s\n", library_path);
 		if (i == 1) {
 			fprintf(fp,"usr/include/%s\n",project_name);
 		}
@@ -1772,6 +1775,7 @@ static int save_library_links(char * directory)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char library_path[10];
 	FILE * fp;
 	int i;
 
@@ -1797,8 +1801,11 @@ static int save_library_links(char * directory)
 		fp = fopen(filename, "w");
 		if (!fp) return -1;
 
-		fprintf(fp,"usr/lib/%s-%s.so.0.0.1 usr/lib/%s.so.0\n",
-				project_name, version, project_name);
+		get_library_path(library_path);
+
+		fprintf(fp,"usr/%s/%s-%s.so.0.0.1 usr/%s/%s.so.0\n",
+				library_path, project_name,
+				version, library_path, project_name);
 
 		fclose(fp);
 	}
@@ -1811,6 +1818,7 @@ static int save_library_install(char * directory)
 	char project_name[BLOCK_SIZE];
 	char version[BLOCK_SIZE];
 	char filename[BLOCK_SIZE];
+	char library_path[10];
 	FILE * fp;
 	int i;
 
@@ -1836,14 +1844,16 @@ static int save_library_install(char * directory)
 		fp = fopen(filename, "w");
 		if (!fp) return -1;
 
-		fprintf(fp,"%s","usr/lib/lib*.so\n");
-		fprintf(fp,"%s","usr/lib/lib*.so.*\n");
+		get_library_path(library_path);
+
+		fprintf(fp, "usr/%s/lib*.so\n", library_path);
+		fprintf(fp, "usr/%s/lib*.so.*\n", library_path);
 		if (i == 1) {
-			fprintf(fp,"usr/include/%s/*\n",project_name);
-			fprintf(fp,"%s","usr/lib*.a\n");
-			fprintf(fp,"%s","usr/lib/*.la\n");
-			fprintf(fp,"%s","usr/lib/pkgconfig/*\n");
-			fprintf(fp,"%s","usr/share/pkgconfig/*\n");
+			fprintf(fp, "usr/include/%s/*\n",project_name);
+			fprintf(fp, "%s","usr/lib*.a\n");
+			fprintf(fp, "usr/%s/*.la\n", library_path);
+			fprintf(fp, "usr/%s/pkgconfig/*\n", library_path);
+			fprintf(fp, "%s","usr/share/pkgconfig/*\n");
 		}
 
 		fclose(fp);

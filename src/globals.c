@@ -81,6 +81,19 @@ int directory_exists(char * name)
 	return 1;
 }
 
+/**
+ * @brief Returns the path where library binaries are stored
+ * @param path Returned library path
+ */
+void get_library_path(char * path)
+{
+	if (directory_exists("/usr/lib64") != 0) {
+		sprintf(path,"%s","lib64");
+		return;
+	}
+	sprintf(path,"%s","lib");
+}
+
 /* returns the extension of a filename */
 void get_file_extension(char * filename, char * extension)
 {
