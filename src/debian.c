@@ -170,7 +170,10 @@ static int debian_changelog_spec_write(char * directory,
 	if (file_exists(filename) == 0) return 0;
 
 	fp = fopen(filename, "r");
-	if (!fp) return 0;
+	if (!fp) {
+		printf("Unable to read from %s\n", filename);
+		return 0;
+	}
 
 	while (!feof(fp)) {
 		if (fgets(linestr, BLOCK_SIZE-1, fp) != NULL) {
@@ -258,7 +261,10 @@ int debian_changelog_to_spec(char * directory)
 
 	/* read from the spec file */
 	fp = fopen(spec_filename, "r");
-	if (!fp) return -1;
+	if (!fp) {
+		printf("Unable to read from %s\n", spec_filename);
+		return -1;
+	}
 
 	/* create a temporary file */
 	sprintf(temp_filename,"%s%cpm_changelog",
@@ -442,8 +448,11 @@ static void save_compat()
 			DIRECTORY_SEPARATOR,
 			DEB_SUBDIR, DIRECTORY_SEPARATOR);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 	while ((i< strlen(dh_version)-1) && (dh_version[i]!='.')) {
 		fprintf(fp, "%c", dh_version[i]);
 		i++;
@@ -515,8 +524,11 @@ static void save_control()
 	get_debian_standard(standard);
 	get_debhelper_version(dh_version);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
     fprintf(fp, "Source: %s\n", project_name);
 	if (is_library(project_name) == 0) {
@@ -643,8 +655,11 @@ static int save_copyright_gpl(char * filename, float version)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -718,8 +733,11 @@ static int save_copyright_lgpl2(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -782,8 +800,11 @@ static int save_copyright_lgpl3(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -845,8 +866,11 @@ static int save_copyright_agpl1(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -904,8 +928,11 @@ static int save_copyright_agpl3(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -964,8 +991,11 @@ static int save_copyright_bsd(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -1056,8 +1086,11 @@ static int save_copyright_mit(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -1136,8 +1169,11 @@ static int save_copyright_apache(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -1206,8 +1242,11 @@ static int save_copyright_mozilla(char * filename)
 	get_setting("project", project_name);
 	get_setting("vcs browser", vcs_browser);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return -1;
+	}
 
 	fprintf(fp,"Format: http://www.debian.org/doc/" \
 			"packaging-manuals/copyright-format/1.0/\n");
@@ -1325,8 +1364,11 @@ static int save_rules(char * directory,
 	get_setting("project type",project_type);
 	get_setting("commandline",commandline);
 
-	fp = fopen(filename,"w");
-	if (!fp) return 0;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return 0;
+	}
 
 	fprintf(fp,"%s","#!/usr/bin/make -f\n\n");
 
@@ -1442,8 +1484,11 @@ static void save_manpages(char * directory)
 			project_name);
 
 	/* save debian/manpages */
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 	fprintf(fp,"man/%s.1.gz\n",project_name);
 	fclose(fp);
 
@@ -1454,8 +1499,11 @@ static void save_manpages(char * directory)
 			directory,
 			DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR,
 			project_name);
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 	fprintf(fp,".TH %s 1 \"%02d %s %d\" \"\" " \
 			"\"User's Manual\"\n\n",
 			project_name, day, monthname[month], year);
@@ -1526,8 +1574,11 @@ static void save_changelog(char * directory)
 	get_setting("release",release);
 	get_setting("email",email_address);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
 	fprintf(fp,"%s (%s-%s) stable; urgency=medium\n\n",
 			project_name, project_version, release);
@@ -1558,8 +1609,11 @@ static void save_include_binary(char * directory,
 
 	get_setting("project name",project_name);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
 	fprintf(fp,"man/%s.1.gz\n",project_name);
 
@@ -1583,8 +1637,11 @@ static void save_format(char * directory)
 
 	if (file_exists(filename) != 0) return;
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
 	fprintf(fp,"3.0 (quilt)");
 
@@ -1603,8 +1660,11 @@ static void save_docs(char * directory)
 
 	if (file_exists(filename) != 0) return;
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
 	fprintf(fp,"README.md\n");
 
@@ -1626,8 +1686,11 @@ static void save_readme(char * directory)
 
 	get_setting("project name",project_name);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return;
+	}
 
 	fprintf(fp,"%s\n",project_name);
 	for (i = 0; i < strlen(project_name); i++) {
@@ -1667,8 +1730,11 @@ static int save_debian_build_script(char * directory)
 		return 0;
 	}
 
-	fp = fopen(filename,"w");
-	if (!fp) return 0;
+	fp = fopen(filename, "w");
+	if (!fp) {
+		printf("Unable to write to %s\n", filename);
+		return 0;
+	}
 
 	fprintf(fp,"#!/bin/bash\n\n");
 
@@ -1755,7 +1821,10 @@ static int save_library_dirs(char * directory)
 					project_name);
 		}
 		fp = fopen(filename, "w");
-		if (!fp) return -1;
+		if (!fp) {
+			printf("Unable to write to %s\n", filename);
+			return -1;
+		}
 
 		get_library_path(library_path);
 
@@ -1799,7 +1868,10 @@ static int save_library_links(char * directory)
 					project_name);
 		}
 		fp = fopen(filename, "w");
-		if (!fp) return -1;
+		if (!fp) {
+			printf("Unable to write to %s\n", filename);
+			return -1;
+		}
 
 		get_library_path(library_path);
 
@@ -1842,7 +1914,10 @@ static int save_library_install(char * directory)
 					project_name);
 		}
 		fp = fopen(filename, "w");
-		if (!fp) return -1;
+		if (!fp) {
+			printf("Unable to write to %s\n", filename);
+			return -1;
+		}
 
 		get_library_path(library_path);
 
