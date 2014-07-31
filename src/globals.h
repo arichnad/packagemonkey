@@ -53,12 +53,13 @@
 #define COMMAND_MOVE   "mv"
 
 /* subdirectories to create within the project directory */
-#define ARCH_SUBDIR   "archpackage"
-#define RPM_SUBDIR    "rpmpackage"
-#define DEB_SUBDIR    "debian"
-#define PUPPY_SUBDIR  "puppypackage"
-#define EBUILD_SUBDIR "ebuildpackage"
-#define SLACK_SUBDIR  "slackpackage"
+#define ARCH_SUBDIR      "archpackage"
+#define RPM_SUBDIR       "rpmpackage"
+#define DEB_SUBDIR       "debian"
+#define PUPPY_SUBDIR     "puppypackage"
+#define EBUILD_SUBDIR    "ebuildpackage"
+#define SLACK_SUBDIR     "slackpackage"
+#define BUILDROOT_SUBDIR "buildroot"
 
 /* character used to separate multiple lines within a string */
 #define STRING_SEPARATOR '^'
