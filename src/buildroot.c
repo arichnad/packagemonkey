@@ -217,7 +217,7 @@ static int save_makefile(char * directory)
         }
     }
 
-    fprintf(fp,"%s\n","$(eval $(generic-package))");
+    fprintf(fp,"\n%s\n","$(eval $(generic-package))");
 
     fclose(fp);
     return 0;
