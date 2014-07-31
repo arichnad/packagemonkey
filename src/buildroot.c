@@ -3,7 +3,7 @@
   http://buildroot.uclibc.org/downloads/manual/manual.html#adding-packages
 
   packagemonkey - a package creation assistant
-  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2014  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,21 +84,29 @@ static int save_config_in(char * directory)
     fprintf(fp,"%s\n", project_name_constant);
     fprintf(fp,"\tbool \"%s\"\n", project_name);
 
-    n = separate_files(selects, packages, MAX_FILES);
-    for (i = 0; i < n; i++) {
-        get_project_name_constant(packages[i], selects_constant);
-        fprintf(fp,"\tselect %s\n", selects_constant);
+    if (strlen(selects) > 0) {
+        n = separate_files(selects, packages, MAX_FILES);
+        for (i = 0; i < n; i++) {
+            get_project_name_constant(packages[i], selects_constant);
+            fprintf(fp,"\tselect %s\n", selects_constant);
+        }
+
+        /* free allocated memory */
+        for (i = 0; i < n; i++) {
+            free(packages[i]);
+        }
     }
 
-    /* free allocated memory */
-    for (i = 0; i < n; i++) {
-        free(packages[i]);
-    }
-
-    n = separate_files(depends, packages, MAX_FILES);
-    for (i = 0; i < n; i++) {
-        get_project_name_constant(packages[i], depends_constant);
-        fprintf(fp,"\tdepends on %s\n", depends_constant);
+    if (strlen(depends)>0) {
+        n = separate_files(depends, packages, MAX_FILES);
+        for (i = 0; i < n; i++) {
+            get_project_name_constant(packages[i], depends_constant);
+            fprintf(fp,"\tdepends on %s\n", depends_constant);
+        }
+        /* free allocated memory */
+        for (i = 0; i < n; i++) {
+            free(packages[i]);
+        }
     }
 
     fprintf(fp,"\t%s\n","help");
@@ -108,10 +116,6 @@ static int save_config_in(char * directory)
 
     fclose(fp);
 
-    /* free allocated memory */
-    for (i = 0; i < n; i++) {
-        free(packages[i]);
-    }
 
     return 0;
 }
@@ -168,7 +172,7 @@ static int save_makefile(char * directory)
     if (strlen(commit) > 0) {
         fprintf(fp,"%s_VERSION = %s\n", project_name_upper, commit);
         if ((strstr(download_site,"git:")) ||
-			(strstr(download_site,"github"))) {
+            (strstr(download_site,"github"))) {
             fprintf(fp,"%s\n","MYPKG_SITE_METHOD = git");
         }
         else if (strstr(download_site,"svn:")) {
@@ -194,21 +198,23 @@ static int save_makefile(char * directory)
 
     /*fprintf(fp,"%s_INSTALL_STAGING = YES\n",project_name_upper);*/
 
-    n = separate_files(br_dependencies, packages, MAX_FILES);
-    if (n > 0) {
-        fprintf(fp,"%s_DEPENDENCIES = ",
-                project_name_upper);
-        for (i = 0; i < n; i++) {
-            fprintf(fp,"%s", packages[i]);
-            if (i < n-1) {
-                fprintf(fp,"\t %c\n",'/');
+    if (strlen(br_dependencies) > 0) {
+        n = separate_files(br_dependencies, packages, MAX_FILES);
+        if (n > 0) {
+            fprintf(fp,"%s_DEPENDENCIES = ",
+                    project_name_upper);
+            for (i = 0; i < n; i++) {
+                fprintf(fp,"%s", packages[i]);
+                if (i < n-1) {
+                    fprintf(fp,"\t %c\n",'/');
+                }
             }
+            fprintf(fp,"%s","\n");
         }
-        fprintf(fp,"%s","\n");
-    }
-    /* free allocated memory */
-    for (i = 0; i < n; i++) {
-        free(packages[i]);
+        /* free allocated memory */
+        for (i = 0; i < n; i++) {
+            free(packages[i]);
+        }
     }
 
     fprintf(fp,"%s\n","$(eval $(generic-package))");
