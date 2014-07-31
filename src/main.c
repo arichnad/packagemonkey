@@ -608,6 +608,42 @@ int main(int argc, char* argv[])
 				printf("No Debian version number given\n");
 			}
 		}
+
+		/* buildroot Config.in select packages */
+		if (strcmp(argv[i],"--brselect")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("brselect",argv[i]);
+			}
+		}
+		/* buildroot Config.in depends packages */
+		if (strcmp(argv[i],"--brdepends")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("brdepends",argv[i]);
+			}
+		}
+		/* buildroot makefile site parameter */
+		if (strcmp(argv[i],"--downloadsite")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("downloadsite",argv[i]);
+			}
+		}
+		/* buildroot makefile dependencies parameter */
+		if (strcmp(argv[i],"--brdependencies")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("brdependencies",argv[i]);
+			}
+		}
+		/* buildroot makefile commit (version) parameter */
+		if (strcmp(argv[i],"--commit")==0) {
+			i++;
+			if (i < argc) {
+				add_setting("commit",argv[i]);
+			}
+		}
 		/* list the Debian sections */
 		if (strcmp(argv[i],"--list-sections")==0) {
 			debian_list_sections();
