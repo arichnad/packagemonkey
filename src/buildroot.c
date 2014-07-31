@@ -133,6 +133,7 @@ static int save_makefile(char * directory)
     char project_name_upper[BLOCK_SIZE];
     char download_site[BLOCK_SIZE];
     char br_dependencies[BLOCK_SIZE];
+    char commit[BLOCK_SIZE];
     char * packages[MAX_FILES];
 
     get_setting("project name", project_name);
@@ -141,6 +142,7 @@ static int save_makefile(char * directory)
     get_setting("downloadsite", download_site);
     get_setting("brdependencies", br_dependencies);
     get_setting("license", license);
+    get_setting("commit", commit);
 
     sprintf(filename,"%s%c%s.mk",directory,DIRECTORY_SEPARATOR,project_name);
     fp = fopen(filename,"w");
@@ -160,11 +162,31 @@ static int save_makefile(char * directory)
     string_to_upper(project_name, project_name_upper);
     string_to_upper(license, license_upper);
 
-    fprintf(fp,"%s_VERSION = %s\n",project_name_upper,version);
-    fprintf(fp,"%s_SOURCE = %s-$(%s_VERSION).tar.gz\n",
-            project_name_upper, project_name, project_name_upper);
     fprintf(fp,"%s_SITE = %s\n",
             project_name_upper, download_site);
+
+    if (strlen(commit) > 0) {
+        fprintf(fp,"%s_VERSION = %s\n", project_name_upper, commit);
+        if ((strstr(download_site,"git:")) ||
+			(strstr(download_site,"github"))) {
+            fprintf(fp,"%s\n","MYPKG_SITE_METHOD = git");
+        }
+        else if (strstr(download_site,"svn:")) {
+            fprintf(fp,"%s\n","MYPKG_SITE_METHOD = svn");
+        }
+        else if (strstr(download_site,"launchpad")) {
+            fprintf(fp,"%s\n","MYPKG_SITE_METHOD = bzr");
+        }
+        else if (strstr(download_site,"cvs:")) {
+            fprintf(fp,"%s\n","MYPKG_SITE_METHOD = cvs");
+        }
+    }
+    else {
+        fprintf(fp,"%s_VERSION = %s\n",project_name_upper,version);
+        fprintf(fp,"%s_SOURCE = %s-$(%s_VERSION).tar.gz\n",
+                project_name_upper, project_name, project_name_upper);
+    }
+
     fprintf(fp,"%s_LICENSE = %s\n",
             project_name_upper, license_upper);
     fprintf(fp,"%s_LICENSE_FILES = LICENSE\n",
