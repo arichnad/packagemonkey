@@ -107,6 +107,16 @@ void show_help()
 		   "Show or set the project version number\n");
 	printf(" -r  --release                     " \
 		   "Set the project release number\n");
+	printf("     --brselect                    " \
+		   "buildroot select entries from Config.in\n");
+	printf("     --brdepends                   " \
+		   "buildroot depends entries from Config.in\n");
+	printf("     --downloadsite                " \
+		   "buildroot URL to download source code from\n");
+	printf("     --brdependencies              " \
+		   "buildroot makefile dependencies\n");
+	printf("     --commit                      " \
+		   "Commit if downloading from a repo\n");
 	printf(" -h  --help                        " \
 		   "Show help\n");
 }

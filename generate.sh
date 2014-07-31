@@ -10,7 +10,7 @@ if [ -f debian/changelog ]; then
   cp debian/changelog /tmp/changelog
 fi
 
-rm -rf debian rpmpackage archpackage puppypackage ebuildpackage
+rm -rf debian rpmpackage archpackage puppypackage ebuildpackage buildroot
 rm -f rpm.sh debian.sh arch.sh puppy.sh ebuild.sh
 
 if [ -f /tmp/changelog ]; then
