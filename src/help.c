@@ -116,7 +116,7 @@ void show_help()
 	printf("     --brdependencies              " \
 		   "buildroot makefile dependencies\n");
 	printf("     --commit                      " \
-		   "Commit if downloading from a repo\n");
+		   "Commit hash if downloading from a repo\n");
 	printf(" -h  --help                        " \
 		   "Show help\n");
 }

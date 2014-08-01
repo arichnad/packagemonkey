@@ -61,13 +61,13 @@ Create a subdirectory called "install", then insert your files within that direc
 To create packaging files and scripts first make sure that you are in the foobar directory, then you could then run something like:
 
     packagemonkey --name "Foo Bar" --cmd --dir "." -l "gpl3" \
-                  -e "Name <name@mydomainname.com>" \
-                  --brief "Tool to make packaging easier" \
-                  --desc "Making packing easier than it previously was." \
-                  --homepage "https://github.com/bashrc/packagemonkey.git" \
-                  --section "utils" --version "0.10" \
-                  --categories "Utility/ConsoleOnly" --compile "-lz" \
-                  --dependsdeb "build-essential, lintian"
+        -e "Name <name@mydomainname.com>" \
+        --brief "Tool to make packaging easier" \
+        --desc "Making packing easier than it previously was." \
+        --homepage "https://github.com/bashrc/packagemonkey.git" \
+        --section "utils" --version "0.10" \
+        --categories "Utility/ConsoleOnly" --compile "-lz" \
+        --dependsdeb "build-essential, lintian"
 
 For convenience it may be a good idea to put that into a script, so that it can easily be called again later without needing to be re-typed.
 
@@ -88,14 +88,14 @@ Packaging Scripts
 If you are packaging scripts written for an interpreted language, such as Python or Perl, then you don't need to use the install directory as in the previous example.  Put your script files into a subdirectory called src then run something like the following, substituting your own project details.
 
     packagemonkey -n "My Python Project" --cmd --dir "." -l "bsd" \
-                  -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
-                  --brief "Example Python Project Packaging" \
-                  --desc "Example of how to use packagemonkey with a " \
-				  "Python project" --homepage "https://myprojecturl" \
-                  --repository "https://myprojectrepository.git" \
-                  --section "utils" --version "0.1.2" \
-                  --categories "Office/Email" \
-                  --dependsdeb "python (>= 2.7.0)" --mainscript "main.py"
+        -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
+        --brief "Example Python Project Packaging" \
+        --desc "Example of how to use packagemonkey with a " \
+        "Python project" --homepage "https://myprojecturl" \
+        --repository "https://myprojectrepository.git" \
+        --section "utils" --version "0.1.2" \
+        --categories "Office/Email" \
+        --dependsdeb "python (>= 2.7.0)" --mainscript "main.py"
 
 An important option is mainscript which determines which script should be called first.  So in the above example there is expected to exist a script called src/main.py
 
@@ -105,21 +105,38 @@ Packaging Libraries
 To package a C, C++ or Vala library put your code into a subdirectory named "src" and ensure that the name of the project and project directory name begins with "lib".  An example is as follows:
 
     packagemonkey -n "libgpr" --version "1.03" --cmd --dir "." -l "bsd" \
-                  -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
-                  --brief "Library for genetic programming" \
-                  --desc "Making the inclusion of Genetic Programming " \
-				  "easy within any C/C++ application. Genetic programming " \
-				  "(GP) is a powerful technique, inspired by the process " \
-				  "of natural selection, which can be utilized to " \
-				  "automatically discover programs which produce a desired " \
-				  "input to output transformation. Both classical " \
-				  "tree-based and Cartesian forms of Genetic Programming " \
-				  "are supported, including self-modifying variants." \
-                  --homepage "https://github.com/bashrc/libgpr" \
-				  --repository "https://github.com/bashrc/libgpr.git" \
-				  --section "libs" --categories "Development/ArtificialIntelligence" \
-                  --cstandard "c99" --compile "-lm -lz -fopenmp" \
-                  --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
+        -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
+        --brief "Library for genetic programming" \
+        --desc "Making the inclusion of Genetic Programming " \
+        "easy within any C/C++ application. Genetic programming " \
+        "(GP) is a powerful technique, inspired by the process " \
+        "of natural selection, which can be utilized to " \
+        "automatically discover programs which produce a desired " \
+        "input to output transformation. Both classical " \
+        "tree-based and Cartesian forms of Genetic Programming " \
+        "are supported, including self-modifying variants." \
+        --homepage "https://github.com/bashrc/libgpr" \
+        --repository "https://github.com/bashrc/libgpr.git" \
+        --section "libs" --categories "Development/ArtificialIntelligence" \
+        --cstandard "c99" --compile "-lm -lz -fopenmp" \
+        --dependsdeb "gnuplot, libz-dev" --dependsarch "gnuplot, libzip"
+
+Packaging for buildroot
+-----------------------
+
+An example of calling packagemonkey to also create files for Buildroot. Here _brdepends_ is used to specify a dependency and the sourcecode is obtained using a combination of the _downloadsite_ option and the commit option to specify a particular location in the repository (which might correspond to a release).
+
+    packagemonkey -n "Packagemonkey" --version "1.03" --cmd \
+        --dir "." -l "gpl3" -e "Bob Mottram (4096 bits) <bob@robotics.uk.to>" \
+        --brief "Tool to make packaging easier" --desc "Long description" \
+        --section "utils" --categories "Utility/ConsoleOnly" --compile \
+        "-lz" --builddeb "zlib1g-dev" --dependsdeb \
+        "build-essential, lintian, zlib1g" --buildrpm "zlib-devel" \
+        --dependsrpm "zlib" --brdepends "zlib" --downloadsite \
+        "https://github.com/bashrc/packagemonkey" --brdependencies \
+        "zlib" --commit "704cf2f2c6a80be2f5256a7a4e761df0259a4bb4"
+
+Buildroot files will then appear in the subdirectory _buildroot/package/<project name>_ and can be copied over to your Buildroot installation.
 
 Packaging GUI Applications
 --------------------------
@@ -307,6 +324,21 @@ Show or set the project version number.  If only a single option exists then thi
 
 <b>-r, --release [number]</b><br>
 Set the project release number.
+
+<b>--brselect[package1, package2...]</b><br>
+This is a buildroot option which specifies the list of select packages within the Config.in file.
+
+<b>--brdepends<[ackage1, package2...]</b><br>
+This is a buildroot option which specifies the list of "depends on" packages within the Config.in file.
+
+<b>--downloadsite[URL]</b><br>
+Buildroot option which specifies where the source code will be downloaded from.
+
+<b>--brdependencies[package1, package2...]</b><br>
+Buildroot list of dependencies which appear within the makefile.
+
+<b>--commit[hash]</b><br>
+Hash of the specific commit to be used when downloading source from a repository.
 
 <b>-h, --help</b><br>
 Show help.
