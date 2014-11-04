@@ -356,9 +356,9 @@ void save_makefile_as(char * filename)
 	fprintf(fp, "%s", "PREFIX?=/usr/local\n");
 	fprintf(fp, "%s", "LIBDIR=lib\n\n");
 
-	fprintf(fp, "%s", "if [ -d \"/usr/lib64\" ]; then \\\n");
-	fprintf(fp, "%s", "LIBDIR = lib64\\\n");
-	fprintf(fp, "%s", "fi\n\n");
+	fprintf(fp, "%s", "ifeq ($(shell if [ -d /usr/lib64 ]; then echo \"found\"; fi;), \"found\")\n");
+	fprintf(fp, "%s", "LIBDIR = lib64\n");
+	fprintf(fp, "%s", "endif\n");
 
 	/* if this is a QT project then create a build directory
 	   for the GUI */
