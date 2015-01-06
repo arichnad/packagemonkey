@@ -460,12 +460,12 @@ static void save_makefile_install_scripts(char * filename,
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* if installed to the local directory */
-	sprintf(str, "echo 'if [ -d ${DESTDIR}/usr/local/share/${APP} ]; then' >> %s",
+	sprintf(str, "echo 'if [ -d ${DESTDIR}${PREFIX}/share/${APP} ]; then' >> %s",
 			runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
 	/* move to the project directory */
-	sprintf(str, "echo '  cd ${DESTDIR}/usr/local/share/${APP}' >> %s",
+	sprintf(str, "echo '  cd ${DESTDIR}${PREFIX}/share/${APP}' >> %s",
 			runscript);
 	add_makefile_entry_to_file(filename, section, str);
 
