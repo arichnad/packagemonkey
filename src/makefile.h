@@ -1,6 +1,6 @@
 /*
   packagemonkey - a package creation assistant
-  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2013-2015  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ int get_makefile_entry(char * section, char * entry);
 int add_makefile_entry_to_file(char * makefilename, char * section, char * entry);
 int add_makefile_entry(char * section, char * entry);
 int empty_makefile_section(char * makefilename,
-						   char * section);
+                           char * section);
 int save_configure(char * directory);
 
 #endif

@@ -3,7 +3,7 @@
   http://buildroot.uclibc.org/downloads/manual/manual.html#adding-packages
 
   packagemonkey - a package creation assistant
-  Copyright (C) 2014  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2014-2015  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

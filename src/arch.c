@@ -1,6 +1,6 @@
 /*
   packagemonkey - a package creation assistant
-  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2013-2015  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,244 +21,244 @@
 /* save the PKGBUILD file */
 static void save_PKGBUILD(char * directory)
 {
-	char email_address[BLOCK_SIZE];
-	char project_name[BLOCK_SIZE];
-	char project_type[BLOCK_SIZE];
-	char version[BLOCK_SIZE];
-	char release[BLOCK_SIZE];
-	char description[BLOCK_SIZE];
-	char homepage[BLOCK_SIZE];
-	char license[BLOCK_SIZE];
-	char depends[BLOCK_SIZE];
-	char build_depends[BLOCK_SIZE];
-	char source_package[BLOCK_SIZE];
-	char filename[BLOCK_SIZE];
-	FILE * fp;
-	char * package_list[MAX_FILES];
-	char optional_depends[BLOCK_SIZE];
-	int i, no_of_packages;
+    char email_address[BLOCK_SIZE];
+    char project_name[BLOCK_SIZE];
+    char project_type[BLOCK_SIZE];
+    char version[BLOCK_SIZE];
+    char release[BLOCK_SIZE];
+    char description[BLOCK_SIZE];
+    char homepage[BLOCK_SIZE];
+    char license[BLOCK_SIZE];
+    char depends[BLOCK_SIZE];
+    char build_depends[BLOCK_SIZE];
+    char source_package[BLOCK_SIZE];
+    char filename[BLOCK_SIZE];
+    FILE * fp;
+    char * package_list[MAX_FILES];
+    char optional_depends[BLOCK_SIZE];
+    int i, no_of_packages;
 
-	sprintf(filename, "%s%cPKGBUILD",
-			directory, DIRECTORY_SEPARATOR);
+    sprintf(filename, "%s%cPKGBUILD",
+            directory, DIRECTORY_SEPARATOR);
 
-	fp = fopen(filename,"w");
-	if (!fp) return;
+    fp = fopen(filename,"w");
+    if (!fp) return;
 
-	get_setting("email", email_address);
-	get_setting("project name", project_name);
-	get_setting("project type", project_type);
-	get_setting("version", version);
-	get_setting("release", release);
-	get_setting("description", description);
-	get_setting("homepage",homepage);
-	get_setting("license",license);
-	get_setting("depends arch",depends);
-	get_setting("suggests arch",optional_depends);
-	get_setting("build arch",build_depends);
-	get_setting("source package",source_package);
+    get_setting("email", email_address);
+    get_setting("project name", project_name);
+    get_setting("project type", project_type);
+    get_setting("version", version);
+    get_setting("release", release);
+    get_setting("description", description);
+    get_setting("homepage",homepage);
+    get_setting("license",license);
+    get_setting("depends arch",depends);
+    get_setting("suggests arch",optional_depends);
+    get_setting("build arch",build_depends);
+    get_setting("source package",source_package);
 
 
     fprintf(fp, "# Maintainer: %s\n", email_address);
     fprintf(fp, "pkgname=%s\n",project_name);
     fprintf(fp, "pkgver=%s\n", version);
-	fprintf(fp, "pkgrel=%s\n", release);
-	fprintf(fp, "pkgdesc=\"%s\"\n", description);
+    fprintf(fp, "pkgrel=%s\n", release);
+    fprintf(fp, "pkgdesc=\"%s\"\n", description);
 
-	if (is_script_language(project_type) == 0) {	
-		fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
-	}
-	else {
-		fprintf(fp, "%s", "arch=('any')\n");
-	}
-	fprintf(fp, "url=\"%s\"\n",homepage);
-	fprintf(fp, "license=('%s')\n",license);
-	fprintf(fp, "%s","groups=()\n");
-
-	fprintf(fp, "%s", "depends=(");
-	no_of_packages =
-		separate_files(depends, package_list,
-					   MAX_FILES);
-	for (i = 0; i < no_of_packages; i++) {
-		if (i > 0) {
-			fprintf(fp, "%s", " ");
-		}
-		fprintf(fp, "'%s'", package_list[i]);
-		free(package_list[i]);
-	}
-	fprintf(fp,"%s",")\n");
-
-	fprintf(fp, "%s", "makedepends=(");
-	no_of_packages =
-		separate_files(build_depends, package_list,
-					   MAX_FILES);
-	for (i = 0; i < no_of_packages; i++) {
-		if (i > 0) {
-			fprintf(fp, "%s", " ");
-		}
-		fprintf(fp, "'%s'", package_list[i]);
-		free(package_list[i]);
-	}
-	fprintf(fp,"%s",")\n");
-
-	fprintf(fp, "%s", "optdepends=(");
-	no_of_packages =
-		separate_files(optional_depends, package_list,
-					   MAX_FILES);
-	for (i = 0; i < no_of_packages; i++) {
-		if (i > 0) {
-			fprintf(fp, "%s", " ");
-		}
-		fprintf(fp, "'%s'", package_list[i]);
-		free(package_list[i]);
-	}
-	fprintf(fp,"%s",")\n");
-
-	fprintf(fp, "%s", "provides=()\n");
-	fprintf(fp, "%s", "conflicts=()\n");
-	fprintf(fp, "%s", "replaces=()\n");
-	fprintf(fp, "%s", "backup=()\n");
-	fprintf(fp, "%s", "options=()\n");
-	fprintf(fp, "%s", "install=\n");
-	fprintf(fp, "%s", "changelog=\n");
-	if (strlen(source_package) == 0) {
-	    fprintf(fp, "%s", "source=($pkgname-$pkgver.tar.gz)\n");
+    if (is_script_language(project_type) == 0) {
+        fprintf(fp, "%s", "arch=('i686' 'x86_64')\n");
     }
-	else {
-	    fprintf(fp, "source=(%s)\n",source_package);
+    else {
+        fprintf(fp, "%s", "arch=('any')\n");
     }
-	fprintf(fp, "%s", "noextract=()\n");
-	fprintf(fp, "%s", "md5sums=()\n");
-	fprintf(fp, "%s", "build() {\n");
-	fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
-	fprintf(fp, "%s", "  ./configure --prefix=/usr\n");
-	fprintf(fp, "%s", "  make\n");
-	fprintf(fp, "%s", "}\n");
-	fprintf(fp, "%s", "package() {\n");
-	fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
-	if (is_library(project_name) == 0) {	
-		fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" PREFIX=\"/usr\" install\n");
-	}
-	else {
-		fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" PREFIX=\"/usr\" instlib\n");
-	}
-	fprintf(fp, "%s", "}\n");
+    fprintf(fp, "url=\"%s\"\n",homepage);
+    fprintf(fp, "license=('%s')\n",license);
+    fprintf(fp, "%s","groups=()\n");
 
-	if (is_library(project_name) != 0) {
-		fprintf(fp, "%s", "post_install() {\n");
-		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
-				"/usr/lib/$pkgname.so.0\n");
-		fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
-				"/usr/lib/$pkgname.so\n");
-		fprintf(fp, "%s", "  ldconfig\n");
-		fprintf(fp, "%s", "}\n");
-		fprintf(fp, "%s", "post_remove() {\n");
-		fprintf(fp, "%s", "  ldconfig\n");
-		fprintf(fp, "%s", "}\n");
-	}
+    fprintf(fp, "%s", "depends=(");
+    no_of_packages =
+        separate_files(depends, package_list,
+                       MAX_FILES);
+    for (i = 0; i < no_of_packages; i++) {
+        if (i > 0) {
+            fprintf(fp, "%s", " ");
+        }
+        fprintf(fp, "'%s'", package_list[i]);
+        free(package_list[i]);
+    }
+    fprintf(fp,"%s",")\n");
+
+    fprintf(fp, "%s", "makedepends=(");
+    no_of_packages =
+        separate_files(build_depends, package_list,
+                       MAX_FILES);
+    for (i = 0; i < no_of_packages; i++) {
+        if (i > 0) {
+            fprintf(fp, "%s", " ");
+        }
+        fprintf(fp, "'%s'", package_list[i]);
+        free(package_list[i]);
+    }
+    fprintf(fp,"%s",")\n");
+
+    fprintf(fp, "%s", "optdepends=(");
+    no_of_packages =
+        separate_files(optional_depends, package_list,
+                       MAX_FILES);
+    for (i = 0; i < no_of_packages; i++) {
+        if (i > 0) {
+            fprintf(fp, "%s", " ");
+        }
+        fprintf(fp, "'%s'", package_list[i]);
+        free(package_list[i]);
+    }
+    fprintf(fp,"%s",")\n");
+
+    fprintf(fp, "%s", "provides=()\n");
+    fprintf(fp, "%s", "conflicts=()\n");
+    fprintf(fp, "%s", "replaces=()\n");
+    fprintf(fp, "%s", "backup=()\n");
+    fprintf(fp, "%s", "options=()\n");
+    fprintf(fp, "%s", "install=\n");
+    fprintf(fp, "%s", "changelog=\n");
+    if (strlen(source_package) == 0) {
+        fprintf(fp, "%s", "source=($pkgname-$pkgver.tar.gz)\n");
+    }
+    else {
+        fprintf(fp, "source=(%s)\n",source_package);
+    }
+    fprintf(fp, "%s", "noextract=()\n");
+    fprintf(fp, "%s", "md5sums=()\n");
+    fprintf(fp, "%s", "build() {\n");
+    fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
+    fprintf(fp, "%s", "  ./configure --prefix=/usr\n");
+    fprintf(fp, "%s", "  make\n");
+    fprintf(fp, "%s", "}\n");
+    fprintf(fp, "%s", "package() {\n");
+    fprintf(fp, "%s", "  cd \"$srcdir/$pkgname-$pkgver\"\n");
+    if (is_library(project_name) == 0) {
+        fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" PREFIX=\"/usr\" install\n");
+    }
+    else {
+        fprintf(fp, "%s", "  make DESTDIR=\"$pkgdir/\" PREFIX=\"/usr\" instlib\n");
+    }
+    fprintf(fp, "%s", "}\n");
+
+    if (is_library(project_name) != 0) {
+        fprintf(fp, "%s", "post_install() {\n");
+        fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
+                "/usr/lib/$pkgname.so.0\n");
+        fprintf(fp, "%s", "  ln -sf /usr/lib/$pkgname-$pkgver.so.0.0.$pkgrel " \
+                "/usr/lib/$pkgname.so\n");
+        fprintf(fp, "%s", "  ldconfig\n");
+        fprintf(fp, "%s", "}\n");
+        fprintf(fp, "%s", "post_remove() {\n");
+        fprintf(fp, "%s", "  ldconfig\n");
+        fprintf(fp, "%s", "}\n");
+    }
 
     fclose(fp);
 }
 
 static int save_script(char * directory)
 {
-	FILE * fp;
-	char filename[BLOCK_SIZE];
-	char project_name[BLOCK_SIZE];
-	char project_type[BLOCK_SIZE];
-	char version[BLOCK_SIZE];
-	char commandstr[BLOCK_SIZE];
-	char release[BLOCK_SIZE];
+    FILE * fp;
+    char filename[BLOCK_SIZE];
+    char project_name[BLOCK_SIZE];
+    char project_type[BLOCK_SIZE];
+    char version[BLOCK_SIZE];
+    char commandstr[BLOCK_SIZE];
+    char release[BLOCK_SIZE];
 
-	get_setting("project name", project_name);
-	get_setting("project type", project_type);
-	get_setting("version", version);
-	get_setting("release",release);
+    get_setting("project name", project_name);
+    get_setting("project type", project_type);
+    get_setting("version", version);
+    get_setting("release",release);
 
-	sprintf(filename,"%s%carch.sh",
-			directory, DIRECTORY_SEPARATOR);
+    sprintf(filename,"%s%carch.sh",
+            directory, DIRECTORY_SEPARATOR);
 
-	fp = fopen(filename,"w");
-	if (!fp) return -1;
+    fp = fopen(filename,"w");
+    if (!fp) return -1;
 
-	fprintf(fp, "%s", "#!/bin/bash\n\n");
+    fprintf(fp, "%s", "#!/bin/bash\n\n");
 
-	fprintf(fp, "APP=%s\n",project_name);
-	fprintf(fp, "PREV_VERSION=%s\n", version);
-	fprintf(fp, "VERSION=%s\n",version);
-	fprintf(fp, "RELEASE=%s\n",release);
-	
-	if (is_script_language(project_type) == 0) {	
-		fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
-	}
-	else {
-		fprintf(fp, "%s", "ARCH_TYPE=any\n");
-	}
-	fprintf(fp, "%s", "CURRDIR=`pwd`\n");
-	fprintf(fp, "SOURCE=%s/${APP}-${VERSION}.tar.gz\n",
-			ARCH_SUBDIR);
+    fprintf(fp, "APP=%s\n",project_name);
+    fprintf(fp, "PREV_VERSION=%s\n", version);
+    fprintf(fp, "VERSION=%s\n",version);
+    fprintf(fp, "RELEASE=%s\n",release);
 
-	/* alter the version numbers */
-	script_version_numbers(fp,"arch");
+    if (is_script_language(project_type) == 0) {
+        fprintf(fp, "%s", "ARCH_TYPE=`uname -m`\n");
+    }
+    else {
+        fprintf(fp, "%s", "ARCH_TYPE=any\n");
+    }
+    fprintf(fp, "%s", "CURRDIR=`pwd`\n");
+    fprintf(fp, "SOURCE=%s/${APP}-${VERSION}.tar.gz\n",
+            ARCH_SUBDIR);
 
-	/*fprintf(fp, "%s", "\n# Set the type of architecture\n");
-	fprintf(fp, "sed -i \"s/arch=('any')/" \
-			"arch=('${ARCH_TYPE}')/g\" \"%s/PKGBUILD\"\n",
-			ARCH_SUBDIR);*/
+    /* alter the version numbers */
+    script_version_numbers(fp,"arch");
 
-	fprintf(fp, "%s", "\n# Create the source code\n");
-	fprintf(fp, "%s", "make clean\n");
-	fprintf(fp, "%s %s/*.gz\n", COMMAND_DELETE, ARCH_SUBDIR);
-	fprintf(fp, "%s", "\n# having the root directory called name-version seems essential\n");
-	fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
-	fprintf(fp, "%s", "tar -cvzf ${SOURCE} ../${APP}-${VERSION} --exclude-vcs\n");
-	fprintf(fp, "%s", "\n# rename the root directory without the version number\n");
-	fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
+    /*fprintf(fp, "%s", "\n# Set the type of architecture\n");
+    fprintf(fp, "sed -i \"s/arch=('any')/" \
+            "arch=('${ARCH_TYPE}')/g\" \"%s/PKGBUILD\"\n",
+            ARCH_SUBDIR);*/
 
-	fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
-	fprintf(fp, "%s", "CHECKSM=$(md5sum ${SOURCE})\n");
-	fprintf(fp, "sed -i \"s/md5sums[^)]*)/" \
-			"md5sums=(${CHECKSM%%%% *})/g\" %s/PKGBUILD\n",
-			ARCH_SUBDIR);
+    fprintf(fp, "%s", "\n# Create the source code\n");
+    fprintf(fp, "%s", "make clean\n");
+    fprintf(fp, "%s %s/*.gz\n", COMMAND_DELETE, ARCH_SUBDIR);
+    fprintf(fp, "%s", "\n# having the root directory called name-version seems essential\n");
+    fprintf(fp, "%s", "mv ../${APP} ../${APP}-${VERSION}\n");
+    fprintf(fp, "%s", "tar -cvzf ${SOURCE} ../${APP}-${VERSION} --exclude-vcs\n");
+    fprintf(fp, "%s", "\n# rename the root directory without the version number\n");
+    fprintf(fp, "%s", "mv ../${APP}-${VERSION} ../${APP}\n");
 
-	fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
+    fprintf(fp, "%s", "\n# calculate the MD5 checksum\n");
+    fprintf(fp, "%s", "CHECKSM=$(md5sum ${SOURCE})\n");
+    fprintf(fp, "sed -i \"s/md5sums[^)]*)/" \
+            "md5sums=(${CHECKSM%%%% *})/g\" %s/PKGBUILD\n",
+            ARCH_SUBDIR);
 
-	fprintf(fp, "%s", "\n# Create the package\n");
-	/*fprintf(fp, "%s", "makepkg\n");*/
-	fprintf(fp, "%s", "tar -c -f ${APP}-${VERSION}.pkg.tar .\n");
-	fprintf(fp, "%s","sync\n");
-	fprintf(fp, "%s", "xz ${APP}-${VERSION}.pkg.tar\n");
-	fprintf(fp, "%s","sync\n");
+    fprintf(fp, "\ncd %s\n", ARCH_SUBDIR);
 
-	fprintf(fp, "%s", "\n# Move back to the original directory\n");
-	fprintf(fp, "%s", "cd ${CURRDIR}\n\n");
+    fprintf(fp, "%s", "\n# Create the package\n");
+    /*fprintf(fp, "%s", "makepkg\n");*/
+    fprintf(fp, "%s", "tar -c -f ${APP}-${VERSION}.pkg.tar .\n");
+    fprintf(fp, "%s","sync\n");
+    fprintf(fp, "%s", "xz ${APP}-${VERSION}.pkg.tar\n");
+    fprintf(fp, "%s","sync\n");
 
-	fclose(fp);
+    fprintf(fp, "%s", "\n# Move back to the original directory\n");
+    fprintf(fp, "%s", "cd ${CURRDIR}\n\n");
 
-	sprintf(commandstr,"chmod +x %s", filename);
-	return system(commandstr);
+    fclose(fp);
+
+    sprintf(commandstr,"chmod +x %s", filename);
+    return system(commandstr);
 }
 
 int save_arch()
 {
-	char directory[BLOCK_SIZE];
-	char arch_directory[BLOCK_SIZE];
-	char commandstr[BLOCK_SIZE];
-	int retval=0;
+    char directory[BLOCK_SIZE];
+    char arch_directory[BLOCK_SIZE];
+    char commandstr[BLOCK_SIZE];
+    int retval=0;
 
-	get_setting("directory",directory);
-	sprintf(arch_directory,"%s%c%s",
-			directory, DIRECTORY_SEPARATOR,
-			ARCH_SUBDIR);
+    get_setting("directory",directory);
+    sprintf(arch_directory,"%s%c%s",
+            directory, DIRECTORY_SEPARATOR,
+            ARCH_SUBDIR);
 
-	/* create a directory for building arch packages */
-	if (directory_exists(arch_directory)==0) {
-		sprintf(commandstr,"%s %s",
-				COMMAND_MKDIR, arch_directory);
-		retval = system(commandstr);
-	}
+    /* create a directory for building arch packages */
+    if (directory_exists(arch_directory)==0) {
+        sprintf(commandstr,"%s %s",
+                COMMAND_MKDIR, arch_directory);
+        retval = system(commandstr);
+    }
 
-	save_PKGBUILD(arch_directory);
-	save_script(directory);
+    save_PKGBUILD(arch_directory);
+    save_script(directory);
 
-	return retval;
+    return retval;
 }

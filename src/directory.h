@@ -1,6 +1,6 @@
 /*
   packagemonkey - a package creation assistant
-  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2013-2015  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -41,18 +41,18 @@ enum {
     WALK_BADIO
 };
 
-#define WS_NONE		0
-#define WS_RECURSIVE	(1 << 0)
-#define WS_DEFAULT	WS_RECURSIVE
-#define WS_FOLLOWLINK	(1 << 1)	/* follow symlinks */
-#define WS_DOTFILES	(1 << 2)	/* per unix convention, .file is hidden */
-#define WS_MATCHDIRS	(1 << 3)	/* if pattern is used on dir names too */
+#define WS_NONE     0
+#define WS_RECURSIVE    (1 << 0)
+#define WS_DEFAULT  WS_RECURSIVE
+#define WS_FOLLOWLINK   (1 << 1)    /* follow symlinks */
+#define WS_DOTFILES (1 << 2)    /* per unix convention, .file is hidden */
+#define WS_MATCHDIRS    (1 << 3)    /* if pattern is used on dir names too */
 
 int files_in_directory(char *dname, char *pattern, int spec,
-					   char ** filenames, int * no_of_filenames,
-					   int max_filenames);
+                       char ** filenames, int * no_of_filenames,
+                       int max_filenames);
 int get_directories(char ** filenames, int no_of_filenames,
-					char ** directories);
+                    char ** directories);
 char * get_subdirectory_string(char * directory);
 
 #endif

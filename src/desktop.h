@@ -1,6 +1,6 @@
 /*
   packagemonkey - a package creation assistant
-  Copyright (C) 2013  Bob Mottram <bob@robotics.uk.to>
+  Copyright (C) 2013-2015  Bob Mottram <bob@robotics.uk.to>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,6 @@ void show_categories();
 void show_categories_main();
 void show_categories_additional();
 void free_desktop_to_puppy_desktop(char * free_desktop_categories,
-								   char * puppy_desktop_categories);
+                                   char * puppy_desktop_categories);
 
 #endif
