@@ -858,7 +858,8 @@ void save_description(FILE * fp,
 int is_script_language(char * project_type)
 {
     if ((strcmp(project_type,"py") == 0) ||
-        (strcmp(project_type,"pl") == 0)) {
+        (strcmp(project_type,"pl") == 0) ||
+        (strcmp(project_type,"php") == 0)) {
         return 1;
     }
 
