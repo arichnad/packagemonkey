@@ -51,6 +51,20 @@ char * sections_wheezy[] = {
     "x11","xfce","zope"
 };
 
+char * sections_jessie[] = {
+    "admin","cli-mono","comm","database","debian-installer",
+    "debug","devel","doc","editors","electronics",
+    "embedded","fonts","games","gnome","gnu-r",
+    "gnustep","graphics","hamradio","haskell","httpd",
+    "interpreters","java","kde","kernel","libdevel",
+    "libs","lisp","localization","mail","math",
+    "misc","net","news","ocaml","oldlibs",
+    "otherosfs","perl","php","python","ruby",
+    "science","shells","sound","tex","text",
+    "utils","vcs","video","virtual","web",
+    "x11","xfce","zope"
+};
+
 /* extracts the version from the changelog entry header */
 void debian_parse_changelog_header(char * linestr,
                                    char * version)
@@ -345,7 +359,7 @@ static int get_sections(char *** sections)
     float debian_version = get_debian_version();
 
     /* default */
-    *sections = sections_wheezy;
+    *sections = sections_jessie;
 
     if ((int)debian_version == 6) {
         *sections = sections_squeeze;
