@@ -1398,14 +1398,14 @@ static int save_rules(char * directory,
     fprintf(fp,"%s","build-arch: build-stamp\n");
     fprintf(fp,"%s","build-indep: build-stamp\n");
     fprintf(fp,"%s","build-stamp:\n");
-    fprintf(fp,"%s","       dh_testdir\n");
-    fprintf(fp,"%s","       touch build-stamp\n\n");
+    fprintf(fp,"%s","\tdh_testdir\n");
+    fprintf(fp,"%s","\ttouch build-stamp\n\n");
 
     fprintf(fp,"%s","clean:\n");
-    fprintf(fp,"%s","       dh_testdir\n");
-    fprintf(fp,"%s","       dh_testroot\n");
-    fprintf(fp,"%s","       rm -f build-stamp\n");
-    fprintf(fp,"%s","       dh_clean\n\n");
+    fprintf(fp,"%s","\tdh_testdir\n");
+    fprintf(fp,"%s","\tdh_testroot\n");
+    fprintf(fp,"%s","\trm -f build-stamp\n");
+    fprintf(fp,"%s","\tdh_clean\n\n");
 
     if ((strlen(project_type) != 0) &&
         (is_script_language(project_type) == 0) &&
@@ -1416,38 +1416,38 @@ static int save_rules(char * directory,
         fprintf(fp,"%s","install: build clean\n");
     }
 
-    fprintf(fp,"%s","        dh_testdir\n");
-    fprintf(fp,"%s","        dh_testroot\n");
-    fprintf(fp,"%s","        dh_prep\n");
-    fprintf(fp,"%s","        dh_installdirs\n");
+    fprintf(fp,"%s","\tdh_testdir\n");
+    fprintf(fp,"%s","\tdh_testroot\n");
+    fprintf(fp,"%s","\tdh_prep\n");
+    fprintf(fp,"%s","\tdh_installdirs\n");
 
     if (is_library(project_name) == 0) {
-        fprintf(fp,"         ${MAKE} install -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
+        fprintf(fp,"\t${MAKE} install -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
                 DEB_SUBDIR);
     }
     else {
-        fprintf(fp,"         ${MAKE} instlib -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
+        fprintf(fp,"\t${MAKE} instlib -B DESTDIR=${CURDIR}/%s/${APP} PREFIX=/usr\n",
                 DEB_SUBDIR);
     }
 
     fprintf(fp,"%s","binary-indep: build install\n");
-    /*fprintf(fp,"%s","           dh_shlibdeps\n");*/ /* TODO check */
-    fprintf(fp,"%s","             dh_testdir\n");
-    fprintf(fp,"%s","             dh_testroot\n");
-    fprintf(fp,"%s","             dh_installchangelogs\n");
-    fprintf(fp,"%s","             dh_installdocs\n");
-    fprintf(fp,"%s","             dh_installexamples\n");
-    fprintf(fp,"%s","             dh_installman\n");
-    fprintf(fp,"%s","             dh_link\n");
-    fprintf(fp,"%s","             dh_compress\n");
-    fprintf(fp,"%s","             dh_fixperms\n");
-    fprintf(fp,"%s","             dh_installdeb\n");
-    fprintf(fp,"%s","             dh_gencontrol\n");
-    fprintf(fp,"%s","             dh_md5sums\n");
-    fprintf(fp,"%s","             dh_builddeb\n\n");
+    /*fprintf(fp,"%s","\tdh_shlibdeps\n");*/ /* TODO check */
+    fprintf(fp,"%s","\tdh_testdir\n");
+    fprintf(fp,"%s","\tdh_testroot\n");
+    fprintf(fp,"%s","\tdh_installchangelogs\n");
+    fprintf(fp,"%s","\tdh_installdocs\n");
+    fprintf(fp,"%s","\tdh_installexamples\n");
+    fprintf(fp,"%s","\tdh_installman\n");
+    fprintf(fp,"%s","\tdh_link\n");
+    fprintf(fp,"%s","\tdh_compress\n");
+    fprintf(fp,"%s","\tdh_fixperms\n");
+    fprintf(fp,"%s","\tdh_installdeb\n");
+    fprintf(fp,"%s","\tdh_gencontrol\n");
+    fprintf(fp,"%s","\tdh_md5sums\n");
+    fprintf(fp,"%s","\tdh_builddeb\n\n");
 
     if (strcmp(project_type,"py") == 0) {
-        /*fprintf(fp,"%s","      dh_python2\n");*/
+        /*fprintf(fp,"%s","\tdh_python2\n");*/
     }
 
     fprintf(fp,"%s","binary-arch: build install\n\n");
